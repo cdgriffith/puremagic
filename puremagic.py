@@ -109,7 +109,7 @@ def _identify_all(data):
             matches.append([magic_row[2], magic_row[3], magic_row[4],
                             _confidence(magic_row) ])
     # Continue onto searching for magic numbers in the footer
-    for magic_row in MAGIC_STANDARD_FOOTER_ARRAY:
+    for magic_row in MAGIC_FOOTER_ARRAY:
         end = len(data) - magic_row[1]
         start = start - len(magic_row[0])
         if  len(magic_row[0]) > length:
