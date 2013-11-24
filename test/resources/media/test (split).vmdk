@@ -1,0 +1,21 @@
+# Disk DescriptorFile
+version=1
+encoding="windows-1252"
+CID=fffffffe
+parentCID=ffffffff
+isNativeSnapshot="no"
+createType="twoGbMaxExtentSparse"
+
+# Extent description
+RW 104448 SPARSE "test-s001"
+
+# The Disk Data Base 
+#DDB
+
+ddb.virtualHWVersion = "8"
+ddb.longContentID = "44285d2a935c800a4ebb1c8efffffffe"
+ddb.uuid = "60 00 C2 98 02 71 24 99-3d d7 a8 42 4d 32 fd 91"
+ddb.geometry.cylinders = "103"
+ddb.geometry.heads = "16"
+ddb.geometry.sectors = "63"
+ddb.adapterType = "ide"

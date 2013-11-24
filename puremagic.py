@@ -45,14 +45,8 @@ Gary C. Kessler
     For use of his File Signature Tables, available at:
     http://www.garykessler.net/library/file_sigs.html
 """
-__author__ = "Christopher D. Griffith"
-__copyright__ = "Copyright (c) 2013, Christopher Griffith"
-__credits__ = ["Christopher Griffith", "Gary C. Kessler"]
-__license__ = "Simplified BSD License"
+__author__ = "Chris Griffith"
 __version__ = "0.1.0"
-__maintainer__ = "Christopher Griffith"
-__email__ = "chris@christophergriffith.net"
-__status__ = "Prototype"
 
 
 def _identify(data):
@@ -72,7 +66,7 @@ def _identify(data):
             return magic_row
     
     # Continue onto searching for magic numbers in the footer
-    for magic_row in MAGIC_STANDARD_FOOTER_ARRAY:
+    for magic_row in MAGIC_FOOTER_ARRAY:
         end = len(data) - magic_row[1]
         start = start - len(magic_row[0])
         if  len(magic_row[0]) > length:
