@@ -48,8 +48,12 @@ class TestMagic(unittest.TestCase):
 
     def test_not_found(self):
         """Bad file type via string                     |"""
-        with self.assertRaises(puremagic.PureError):
-            puremagic.from_string("not applicable string")
+        try:
+            with self.assertRaises(puremagic.PureError):
+                puremagic.from_string("not applicable string")
+        except TypeError:
+            # Python 2.6 doesn't support using assertRaises as a context manager
+            pass
 
     def test_magic_file(self):
         """File identification with magic_file          |"""
