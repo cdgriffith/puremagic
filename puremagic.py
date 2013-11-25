@@ -13,7 +13,6 @@ Gary C. Kessler
     http://www.garykessler.net/library/file_sigs.html
 """
 import os
-import ast
 
 __author__ = "Chris Griffith"
 __version__ = "1.1dev"
@@ -28,7 +27,7 @@ def _load_magic(name="magic_array.data", location=None):
     magic_file_loc = os.path.join(loc, name)
     with open(magic_file_loc, "rb") as mf:
         incoming_stream = mf.read()
-    magic_array = ast.literal_eval(incoming_stream)
+    magic_array = eval(incoming_stream)
     if isinstance(magic_array, list):
         return magic_array
     else:
@@ -59,12 +58,8 @@ def _identify(data):
 
 def _confidence(row):
     length = len(row[0])
-    if length >= 3:
-        length += 1
-    if length > 10:
-        con = 0.9
-    else:
-        con = float("0.{0}".format(length))
+    length += 1 if length >= 3 else .5
+    con = 0.9 if length > 10 else float("0.{0}".format(length))
     return con
 
 
@@ -107,9 +102,8 @@ def from_file(filename, mime=False):
     """Opens file, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead."""
-    fin = open(filename, "rb")
-    data = fin.read()
-    fin.close()
+    with open(filename, "rb") as fin:
+        data = fin.read()
     return _magic(data, mime)
 
 
@@ -168,7 +162,7 @@ def _main():
         try:
             print("'{0}' : {1}".format(fn, from_file(fn, options.mime)))
         except PureError:
-            print"'{0}' : could not be Identified".format(fn)
+            print("'{0}' : could not be Identified".format(fn))
 
 
 if __name__ == '__main__':

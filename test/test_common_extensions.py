@@ -13,10 +13,12 @@ MEDIA_DIR = os.path.join(LOCAL_DIR, "resources", "media")
 SYSTEM_DIR = os.path.join(LOCAL_DIR, "resources", "system")
 
 
+
 class TestMagic(unittest.TestCase):
 
     def setUp(self):
-        self.mp4magic = "\x00\x00\x00\x1C\x66\x74\x79\x70\x4D\x53\x4E\x56\x01\x29\x00\x46\x4D\x53\x4E\x56\x6D\x70\x34\x32"
+        self.mp4magic = b"\x00\x00\x00\x1C\x66\x74\x79\x70\x4D\x53\x4E\
+\x56\x01\x29\x00\x46\x4D\x53\x4E\x56\x6D\x70\x34\x32"
         self.expect_ext = ".mp4"
         self.expect_mime = "video/mp4"
     
@@ -36,7 +38,7 @@ class TestMagic(unittest.TestCase):
         
     def test_string(self):
         """String identification                        |"""
-        ext = puremagic.from_string(str(self.mp4magic))
+        ext = puremagic.from_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
         
     def test_not_found(self):

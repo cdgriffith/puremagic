@@ -16,7 +16,6 @@ Disadvantages:
         
 Compatibility:
     Python 2.6+ (including 3.x)
-    The unit tests are currently only being developed for python 2.7
         
 Usage:
     import puremagic
