@@ -21,7 +21,7 @@ class TestMagic(unittest.TestCase):
         self.expect_mime = "video/mp4"
     
     def test_file(self):
-        """File identifcation                           |"""
+        """File identification                          |"""
         mp4file = NamedTemporaryFile(delete=False)
         mp4file.write(self.mp4magic)
         mp4file.close()
@@ -30,12 +30,12 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(self.expect_ext, ext)
         
     def test_hex_string(self):
-        """Hex string identifcation                     |"""
+        """Hex string identification                    |"""
         ext = puremagic.from_string(self.mp4magic)
         self.assertEqual(self.expect_ext, ext)
         
     def test_string(self):
-        """String identifcation                         |"""
+        """String identification                        |"""
         ext = puremagic.from_string(str(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
         
