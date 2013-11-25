@@ -95,7 +95,7 @@ def _magic(data, mime):
     info = _identify(data)
     if mime:
         return info[3]
-    return info[2]
+    return info[2][0] if isinstance(info[2], list) else info[2]
 
 
 def from_file(filename, mime=False):
