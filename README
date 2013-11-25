@@ -4,29 +4,18 @@ compatible, with no imports when used as a module. However this does come at the
 price of being incomplete. It is also designed to be a stand in for python-magic,
 it incorporates the functions from_file(filename[, mime]) and
 from_string(string[, mime]) however the magic_file() and magic_string() are more
-powerful and will also display confidence and duplicate matches. 
-
-Please feel free to add new file types or modify this
-and redistribute in any way as long as the copyright, conditions,
-license and acknowledgements are also included (LICENCE file). 
+powerful and will also display confidence and duplicate matches.
 
 Advantages over using a wrapper for 'file' or 'libmagic':
-    - Fast (4x faster testing with a jpg image)
+    - Faster
     - Lightweight (10x smaller compared to wrapper and 'file')
-    - Cross platform compatible (no tweaking or adding dlls)
-    - Minimal (less than 50 lines of logic)
+    - Cross platform compatible
     
 Disadvantages:
     - Not as powerful (Cannot identify nearly as many files)
-    - May contain errors (I'm not perfect, and some file have only one or two
-        byte magic numbers.)
         
 Compatibility:
     Python 2.6+ (including 3.x)
-    Python 2.4-2.7 if you removing the byte notation before each hex string
-        (Version testing and automatic handling could be done with code,
-            however it would slow the process down or require imports.)
-
     The unit tests are currently only being developed for python 2.7
         
 Usage:

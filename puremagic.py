@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-
+#-*- coding: utf-8 -*-
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
 compatible, with no imports when used as a module. 
 
-Copyright (c) 2013, Christopher D. Griffith
+© 2013 Chris Griffith - License: MIT (see LICENSE)
 
 Acknowledgements
 Gary C. Kessler
@@ -16,7 +16,7 @@ import os
 import ast
 
 __author__ = "Chris Griffith"
-__version__ = "1.0dev"
+__version__ = "1.1dev"
 
 
 class PureError(LookupError):
@@ -42,7 +42,7 @@ def _identify(data):
     # That way we do not try to identify bytes that don't exist
     length = len(data)
 
-    # Iterate through the items first via the header
+    # Iterate through the list of known magic strings
     for magic_row in _load_magic():
         start = magic_row[1]
         if start < 0:
