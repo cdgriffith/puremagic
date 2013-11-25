@@ -11,7 +11,7 @@ OFFICE_DIR = os.path.join(LOCAL_DIR, "resources", "office")
 ARCHIVE_DIR = os.path.join(LOCAL_DIR, "resources", "archive")
 MEDIA_DIR = os.path.join(LOCAL_DIR, "resources", "media")
 SYSTEM_DIR = os.path.join(LOCAL_DIR, "resources", "system")
-
+TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
 
 class TestMagic(unittest.TestCase):
@@ -40,68 +40,79 @@ class TestMagic(unittest.TestCase):
         """String identification                        |"""
         ext = puremagic.from_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
-        
+
+    def test_string_with_confidence(self):
+        """String identification: magic_string          |"""
+        ext = puremagic.magic_string(bytes(self.mp4magic))
+        self.assertEqual(self.expect_ext, ext[1][0][0])
+
     def test_not_found(self):
         """Bad file type via string                     |"""
-        with self.assertRaises(LookupError):
+        with self.assertRaises(puremagic.PureError):
             puremagic.from_string("not applicable string")
-       
+
+    def test_magic_file(self):
+        """File identification with magic_file          |"""
+        self.assertEqual(puremagic.magic_file(TGA_FILE)[1][0][0], ".tga")
+
+    def test_mime(self):
+        """Identify mime type                           |"""
+        self.assertEqual(puremagic.from_file(TGA_FILE, True), "image/tga")
+
     def test_images(self):
         """Test common image formats                    |"""
         for item in os.listdir(IMAGE_DIR):
-            try:
-                result = puremagic.from_file(os.path.join(IMAGE_DIR, item))
-                self.assertTrue(item.endswith(result))
-            except Exception as e:
-                self.fail(str(e) + item)
+            ext = puremagic.from_file(os.path.join(IMAGE_DIR, item))
+            self.assertTrue(item.endswith(ext),
+                            "Expected .{0}, got {1}".format(item.split(".")[1],
+                                                            ext))
 
     def test_video(self):
         """Test common video formats                    |"""
         for item in os.listdir(VIDEO_DIR):
-            try:
-                puremagic.from_file(os.path.join(VIDEO_DIR, item))
-            except Exception as e:
-                self.fail(str(e) + item)
+            ext = puremagic.from_file(os.path.join(VIDEO_DIR, item))
+            self.assertTrue(item.endswith(ext),
+                            "Expected .{0}, got {1}".format(item.split(".")[1],
+                                                            ext))
                 
     def test_audio(self):
         """Test common audio formats                    |"""
         for item in os.listdir(AUDIO_DIR):
-            try:
-                puremagic.from_file(os.path.join(AUDIO_DIR, item))
-            except Exception as e:
-                self.fail(str(e) + item)
+            ext = puremagic.from_file(os.path.join(AUDIO_DIR, item))
+            self.assertTrue(item.endswith(ext),
+                            "Expected .{0}, got {1}".format(item.split(".")[1],
+                                                            ext))
                 
     def test_office(self):
         """Test common office document formats          |"""
+        ### Office files have very similar magic numbers, and may overlap
         for item in os.listdir(OFFICE_DIR):
-            try:
-                puremagic.from_file(os.path.join(OFFICE_DIR, item))
-            except Exception as e:
-                self.fail(str(e) + item)
+            puremagic.from_file(os.path.join(OFFICE_DIR, item))
+
                 
     def test_archive(self):
         """Test common compressed archive formats       |"""
         for item in os.listdir(ARCHIVE_DIR):
-            try:
-                puremagic.from_file(os.path.join(ARCHIVE_DIR, item))
-            except Exception as e:
-                self.fail(str(e) + item)
+            ext = puremagic.from_file(os.path.join(ARCHIVE_DIR, item))
+            self.assertTrue(item.endswith(ext),
+                            "Expected .{0}, got {1}".format(item.split(".")[1],
+                                                            ext))
                 
     def test_media(self):
         """Test common media formats                    |"""
         for item in os.listdir(MEDIA_DIR):
-            try:
-                puremagic.from_file(os.path.join(MEDIA_DIR, item))
-            except Exception as e:
-                self.fail(str(e) + item)
+            ext = puremagic.from_file(os.path.join(MEDIA_DIR, item))
+            self.assertTrue(item.endswith(ext),
+                            "Expected .{0}, got {1}".format(item.split(".")[1],
+                                                            ext))
                 
     def test_system(self):
         """Test common system formats                   |"""
         for item in os.listdir(SYSTEM_DIR):
-            try:
-                puremagic.from_file(os.path.join(SYSTEM_DIR, item))
-            except Exception as e:
-                self.fail(str(e) + item)
+            ext = puremagic.from_file(os.path.join(SYSTEM_DIR, item))
+            self.assertTrue(item.endswith(ext),
+                            "Expected .{0}, got {1}".format(item.split(".")[1],
+                                                            ext))
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestMagic)
