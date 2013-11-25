@@ -15,7 +15,7 @@ Gary C. Kessler
 import os
 
 __author__ = "Chris Griffith"
-__version__ = "1.1dev"
+__version__ = "1.1"
 
 
 class PureError(LookupError):
@@ -23,6 +23,7 @@ class PureError(LookupError):
 
 
 def _load_magic(name="magic_array.data", location=None):
+    """ Return the magic array from the specified file """
     loc = location if location else os.path.abspath(os.path.dirname(__file__))
     magic_file_loc = os.path.join(loc, name)
     with open(magic_file_loc, "rb") as mf:
@@ -90,6 +91,7 @@ def _identify_all(data):
 
 
 def _magic(data, mime):
+    """ Discover what type of file it is based on the incoming string """
     if len(data) == 0:
         raise ValueError("Input was empty")
     info = _identify(data)
