@@ -66,7 +66,11 @@ class TestMagic(unittest.TestCase):
     def test_images(self):
         """Test common image formats                    |"""
         for item in os.listdir(IMAGE_DIR):
-            ext = puremagic.from_file(os.path.join(IMAGE_DIR, item))
+            try:
+                ext = puremagic.from_file(os.path.join(IMAGE_DIR, item))
+            except puremagic.PureError:
+                raise AssertionError("Could not identify file"
+                                     " '{0}'".format(item))
             self.assertTrue(item.endswith(ext),
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))
@@ -74,7 +78,11 @@ class TestMagic(unittest.TestCase):
     def test_video(self):
         """Test common video formats                    |"""
         for item in os.listdir(VIDEO_DIR):
-            ext = puremagic.from_file(os.path.join(VIDEO_DIR, item))
+            try:
+                ext = puremagic.from_file(os.path.join(VIDEO_DIR, item))
+            except puremagic.PureError:
+                raise AssertionError("Could not identify file"
+                                     " '{0}'".format(item))
             self.assertTrue(item.endswith(ext),
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))
@@ -82,7 +90,11 @@ class TestMagic(unittest.TestCase):
     def test_audio(self):
         """Test common audio formats                    |"""
         for item in os.listdir(AUDIO_DIR):
-            ext = puremagic.from_file(os.path.join(AUDIO_DIR, item))
+            try:
+                ext = puremagic.from_file(os.path.join(AUDIO_DIR, item))
+            except puremagic.PureError:
+                raise AssertionError("Could not identify file"
+                                     " '{0}'".format(item))
             self.assertTrue(item.endswith(ext),
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))
@@ -93,11 +105,14 @@ class TestMagic(unittest.TestCase):
         for item in os.listdir(OFFICE_DIR):
             puremagic.from_file(os.path.join(OFFICE_DIR, item))
 
-                
     def test_archive(self):
         """Test common compressed archive formats       |"""
         for item in os.listdir(ARCHIVE_DIR):
-            ext = puremagic.from_file(os.path.join(ARCHIVE_DIR, item))
+            try:
+                ext = puremagic.from_file(os.path.join(ARCHIVE_DIR, item))
+            except puremagic.PureError:
+                raise AssertionError("Could not identify file"
+                                     " '{0}'".format(item))
             self.assertTrue(item.endswith(ext),
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))
@@ -105,7 +120,11 @@ class TestMagic(unittest.TestCase):
     def test_media(self):
         """Test common media formats                    |"""
         for item in os.listdir(MEDIA_DIR):
-            ext = puremagic.from_file(os.path.join(MEDIA_DIR, item))
+            try:
+                ext = puremagic.from_file(os.path.join(MEDIA_DIR, item))
+            except puremagic.PureError:
+                raise AssertionError("Could not identify file "
+                                     "'{0}'".format(item))
             self.assertTrue(item.endswith(ext),
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))
@@ -113,7 +132,11 @@ class TestMagic(unittest.TestCase):
     def test_system(self):
         """Test common system formats                   |"""
         for item in os.listdir(SYSTEM_DIR):
-            ext = puremagic.from_file(os.path.join(SYSTEM_DIR, item))
+            try:
+                ext = puremagic.from_file(os.path.join(SYSTEM_DIR, item))
+            except puremagic.PureError:
+                raise AssertionError("Could not identify file"
+                                     " '{0}'".format(item))
             self.assertTrue(item.endswith(ext),
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))

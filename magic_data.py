@@ -1,4 +1,4 @@
-[
+magic_array = [
     #--# Footer #--#
     ### Image ###
     [b'\x54\x52\x55\x45\x56\x49\x53\x49\x4F\x4E\x2D\x58\x46\x49\x4C\x45\x2E\x00', -18, '.tga', 'image/tga', 'Truevision Targa Graphic file'],
@@ -614,3 +614,7 @@
     [b'\x3C', 0, '.xdr', '', 'BizTalk XML-Data Reduced Schema'],
     [b'\x78', 0, '.dmg', '', 'MacOS X image file'],
 ]
+
+max_length = len(sorted(magic_array, key=lambda x: len(x[0]),
+                        reverse=True)[0][0])
+
