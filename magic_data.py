@@ -1,11 +1,4 @@
 magic_array = [
-    #--# Footer #--#
-    ### Image ###
-    [b'\x54\x52\x55\x45\x56\x49\x53\x49\x4F\x4E\x2D\x58\x46\x49\x4C\x45\x2E\x00', -18, '.tga', 'image/tga', 'Truevision Targa Graphic file'],
-    ### Video ###
-    [b'\x00\x00\x01\xB7', -4, ['.mpg', '.mpeg'], 'video/mpeg', 'MPEG video file'],
-
-    #--# Header #--#
     ### Video ###
     [b'\x00\x00\x00\x14\x66\x74\x79\x70\x33\x67\x70', 0, ['.3gp','.3gpp', '.3g2'], 'video/3gpp', '3GPP 3rd Generation Partnership Project video file'],
     [b'\x00\x00\x00\x20\x66\x74\x79\x70\x33\x67\x70', 0, ['.3g2', '.3gp','.3gpp'], 'video/3gpp2', '3GPP2 3rd Generation Partnership Project video file'],
@@ -615,6 +608,19 @@ magic_array = [
     [b'\x78', 0, '.dmg', '', 'MacOS X image file'],
 ]
 
+magic_footer_array = [
+    ### Image ###
+    [
+        b'\x54\x52\x55\x45\x56\x49\x53\x49\x4F\x4E\x2D\x58\x46\x49\x4C\x45\x2E\x00',
+        -18, '.tga', 'image/tga', 'Truevision Targa Graphic file'],
+    ### Video ###
+    [b'\x00\x00\x01\xB7', -4, ['.mpg', '.mpeg'], 'video/mpeg',
+     'MPEG video file']
+]
+
 max_length = len(sorted(magic_array, key=lambda x: len(x[0]),
+                 reverse=True)[0][0])
+
+max_footer_length = len(sorted(magic_footer_array, key=lambda x: len(x[0]),
                         reverse=True)[0][0])
 

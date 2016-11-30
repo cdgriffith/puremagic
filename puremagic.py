@@ -14,7 +14,7 @@ Gary C. Kessler
 """
 import os
 
-from magic_data import magic_array, max_length
+from magic_data import *
 
 __author__ = "Chris Griffith"
 __version__ = "1.2"
@@ -24,100 +24,85 @@ class PureError(LookupError):
     """Do not have that type of file in our databanks"""
 
 
-def _identify(data):
-    """Attempt to identify 'data' by it's magic numbers"""
-
-    # Capture the length of the data
-    # That way we do not try to identify bytes that don't exist
-    length = len(data)
-
-    # Iterate through the list of known magic strings
-    for magic_row in magic_array:
-        start = magic_row[1]
-
-        if start < 0:
-            # Check footer instead of header
-            if data[start:] == magic_row[0]:
-                return magic_row
-        else:
-            end = magic_row[1] + len(magic_row[0])
-            if end > length:
-                continue
-            if data[start:end] == magic_row[0]:
-                return magic_row
-    raise PureError("Could not identify file")
-
-
 def _confidence(row):
     length = len(row[0])
-    length += 1 if length >= 3 else .5
+    length += 1 if length >= 3 else 0
     con = 0.9 if length > 10 else float("0.{0}".format(length))
     return con
 
 
-def _identify_all(data):
+def _identify_all(header, footer):
     """Attempt to identify 'data' by it's magic numbers"""
 
     # Capture the length of the data
     # That way we do not try to identify bytes that don't exist
-    length = len(data)
     matches = list()
-    # Iterate through the items first via the header
     for magic_row in magic_array:
         start = magic_row[1]
-        if start < 0:
-            # Check footer instead of header
-            if data[start:] == magic_row[0]:
-                matches.append([magic_row[2], magic_row[3], magic_row[4],
-                                _confidence(magic_row)])
-        else:
-            end = magic_row[1] + len(magic_row[0])
-            if end > length:
-                continue
-            if data[start:end] == magic_row[0]:
-                matches.append([magic_row[2], magic_row[3], magic_row[4],
-                                _confidence(magic_row)])
+        end = magic_row[1] + len(magic_row[0])
+        if end > len(header):
+            continue
+        if header[start:end] == magic_row[0]:
+            matches.append([magic_row[2], magic_row[3], magic_row[4],
+                            _confidence(magic_row)])
+
+    for magic_row in magic_footer_array:
+        start = magic_row[1]
+        if footer[start:] == magic_row[0]:
+            matches.append([magic_row[2], magic_row[3], magic_row[4],
+                            _confidence(magic_row)])
     if not matches:
         raise PureError("Could not identify file")
     return matches
 
 
-def _magic(data, mime):
+def _magic(header, footer, mime):
     """ Discover what type of file it is based on the incoming string """
-    if len(data) == 0:
+    if len(header) == 0:
         raise ValueError("Input was empty")
-    info = _identify(data)
+    info = _identify_all(header, footer)[0]
     if mime:
-        return info[3]
-    return info[2] if not isinstance(info[2], list) else info[2][0]
+        return info[1]
+    return info[0] if not isinstance(info[0], list) else info[0][0]
+
+
+def _file_details(filename):
+    with open(filename, "rb") as fin:
+        head = fin.read(max_length)
+        fin.seek(-max_footer_length, os.SEEK_END)
+        foot = fin.read()
+    return head, foot
+
+
+def _string_details(string):
+    return string[:max_length], string[-max_footer_length:]
 
 
 def from_file(filename, mime=False):
     """Opens file, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead."""
-    with open(filename, "rb") as fin:
-        data = fin.read(max_length)
-    return _magic(data, mime)
+
+    head, foot = _file_details(filename)
+    return _magic(head, foot, mime)
 
 
 def from_string(string, mime=False):
     """Reads in string, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead."""
-    return _magic(string[:max_length], mime)
+    head, foot = _string_details(string)
+    return _magic(head, foot, mime)
 
 
 def magic_file(filename):
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first."""
-    fin = open(filename, "rb")
-    data = fin.read()
-    fin.close()
-    if len(data) == 0:
+    head, foot = _file_details(filename)
+    if len(head) == 0:
         raise ValueError("Input was empty")
     try:
-        info = _identify_all(data)
+        info = _identify_all(head, foot)
     except PureError:
         info = []
     info.sort(key=lambda x: x[3], reverse=True)
@@ -129,7 +114,8 @@ def magic_string(string):
     arranged highest confidence match first"""
     if len(string) == 0:
         raise ValueError("Input was empty")
-    info = _identify_all(string)
+    head, foot = _string_details(string)
+    info = _identify_all(head, foot)
     info.sort(key=lambda x: x[3], reverse=True)
     return len(info), info
 

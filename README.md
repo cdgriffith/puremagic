@@ -33,8 +33,10 @@ Compatibility:
 you every possible result it finds, as well as the confidence.
 
 ```python
-    filename = "test/resources/images/test.gif"
     import puremagic
+
+    filename = "test/resources/images/test.gif"
+
     ext = puremagic.from_file(filename)
     # '.gif'
 
@@ -60,7 +62,10 @@ Lets try a more complicated file, such as Microsoft Office files.
 
 ```python
     puremagic.magic_file("test/resources/office/test.pptx")
-    # (21, [[['.docx', '.pptx', 'xlsx'], 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'Microsoft Office 2007+ Open XML Format Document file', 0.9],
+    # (21, [[['.docx', '.pptx', 'xlsx'],
+    #         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    #         'Microsoft Office 2007+ Open XML Format Document file',
+    #          0.9],
     #       ['.zip', 'application/zip', 'PKZIP Archive file', 0.5],
     #       ....
     # )
@@ -77,23 +82,22 @@ Newer Microsoft Office files are actually a set of zipped files. So
 
 ### Script
 
+*Usage*
 
-```
+```bash
     $ python puremagic.py [options] filename <filename2>...
 ```
-    
-### Practical Example
 
-```
-    import puremagic
-    
-    filename = "/path/unknownfile"
-    
-    try:
-        filename += puremagic.from_file(filename)
-    except puremagic.PureError:
-        #subclass of LookupError
-        filename += ".unknown"
+*Examples*
+
+```bash
+    $ python puremagic.py test/resources/images/test.gif
+    'test/resources/images/test.gif' : .gif
+
+    $ python puremagic.py -m test/resources/images/test.gif test/resources/audio/test.mp3
+    'test/resources/images/test.gif' : image/gif
+    'test/resources/audio/test.mp3' : audio/mpeg
+
 ```
 
 ### Acknowledgements
