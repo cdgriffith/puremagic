@@ -53,7 +53,7 @@ def _identify_all(header, footer):
                             _confidence(magic_row)])
     if not matches:
         raise PureError("Could not identify file")
-    return matches
+    return sorted(matches, key=lambda x: x[3], reverse=True)
 
 
 def _magic(header, footer, mime):
@@ -69,7 +69,10 @@ def _magic(header, footer, mime):
 def _file_details(filename):
     with open(filename, "rb") as fin:
         head = fin.read(max_length)
-        fin.seek(-max_footer_length, os.SEEK_END)
+        try:
+            fin.seek(-max_footer_length, os.SEEK_END)
+        except IOError:
+            fin.seek(0)
         foot = fin.read()
     return head, foot
 

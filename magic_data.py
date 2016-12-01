@@ -259,7 +259,6 @@ magic_array = [
     [b'\x80\x00\x00\x20\x03\x12\x04', 0, '.adx', '', 'Dreamcast audio'],
     [b'\x43\x52\x55\x53\x48\x20\x76', 0, '.cru', '', 'Crush compressed archive'],
     [b'\x00\x00\x1A\x00\x05\x10\x04', 0, '.123', '', 'Lotus 1-2-3 (v9)'],
-    [b'\x49\x44\x33\x03\x00\x00\x00', 0, '.koz', '', 'Sprint Music Store audio'],
     [b'\x00\x00\x49\x49\x58\x50\x52', 0, '.qxd', '', 'Quark Express (Intel)'],
     [b'\x52\x45\x47\x45\x44\x49\x54', 0, '.reg', '', 'WinNT Registry|Registry Undo files'],
     [b'\x52\x45\x47\x45\x44\x49\x54', 0, '.sud', '', 'WinNT Registry|Registry Undo files'],
@@ -618,9 +617,7 @@ magic_footer_array = [
      'MPEG video file']
 ]
 
-max_length = len(sorted(magic_array, key=lambda x: len(x[0]),
-                 reverse=True)[0][0])
+max_length = max([len(x[0]) + x[1] for x in magic_array])
 
-max_footer_length = len(sorted(magic_footer_array, key=lambda x: len(x[0]),
-                        reverse=True)[0][0])
+max_footer_length = max([len(x[0]) + abs(x[1]) for x in magic_footer_array])
 
