@@ -10,7 +10,7 @@ import multiprocessing
 
 root = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(root, "puremagic.py"), "r") as reuse_file:
+with open(os.path.join(root, "puremagic", "__init__.py"), "r") as reuse_file:
     reuse_content = reuse_file.read()
 
 attrs = dict(re.findall(r"__([a-z]+)__ *= *['\"](.+)['\"]", reuse_content))
@@ -29,8 +29,8 @@ setup(
     author_email='chris@cdgriffith.com',
     description='Pure python implementation of magic file detection',
     long_description=long_description,
-    py_modules=['puremagic', 'magic_data'],
-    scripts=['puremagic.py'],
+    packages=['puremagic'],
+    include_package_data=True,
     platforms='any',
     test_suite='nose.collector',
     classifiers=[
@@ -47,5 +47,5 @@ setup(
         ],
     extras_require={
         'testing': ["nose >= 1.3", "coverage >= 3.6", "argparse"],
-        },
+        }
 )
