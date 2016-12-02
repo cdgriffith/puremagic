@@ -16,16 +16,38 @@ display confidence and duplicate matches.
 Advantages over using a wrapper for 'file' or 'libmagic':
 
 * Faster
-* Lightweight (10x smaller compared to wrapper and 'file')
+* Lightweight
 * Cross platform compatible
+* No dependencies
     
 Disadvantages:
 
-* Not as powerful (Cannot identify nearly as many files)
+* Does not have as many file types
+* No multilingual comments
 * Duplications due to small or reused magic numbers
 
-Compatibility:
-    Tested on Python 2.6+ & 3.2+
+(Help fix the first two disadvantages by contributing!)
+
+### Compatibility:
+
+    * Python 2.6+
+    * Python 3.2+
+    * Pypy
+
+Using travis-ci to run continuous integration tests on listed platforms.
+(Note: Tested on 'Python' I mean 'CPython' implementation specifically, though
+it should work on other implementations as well.)
+
+
+## Install
+
+In either a virtualenv or globally, simply run:
+
+```bash
+    $ python setup.py install
+```
+
+It has no dependencies (other than the 2.7+ built-in argparse)
         
 ## Usage
 
@@ -60,16 +82,16 @@ you the count of matching items first, then for each match provides:
 *Usage*
 
 ```bash
-    $ python puremagic.py [options] filename <filename2>...
+    $ python -m puremagic [options] filename <filename2>...
 ```
 
 *Examples*
 
 ```bash
-    $ python puremagic.py test/resources/images/test.gif
+    $ python -m puremagic test/resources/images/test.gif
     'test/resources/images/test.gif' : .gif
 
-    $ python puremagic.py -m test/resources/images/test.gif test/resources/audio/test.mp3
+    $ python -m puremagic -m test/resources/images/test.gif test/resources/audio/test.mp3
     'test/resources/images/test.gif' : image/gif
     'test/resources/audio/test.mp3' : audio/mpeg
 
@@ -92,10 +114,12 @@ Look into python modules that wrap around libmagic or use something like Apache 
 ## Acknowledgements
 
 Gary C. Kessler
+
     For use of his File Signature Tables, available at:
     http://www.garykessler.net/library/file_sigs.html
 
 Freedesktop.org
+
     For use of their shared-mime-info file, available at:
     https://cgit.freedesktop.org/xdg/shared-mime-info/
 
