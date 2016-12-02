@@ -27,7 +27,7 @@ Disadvantages:
 Compatibility:
     Tested on Python 2.6+ & 3.2+
         
-### Usage
+## Usage
 
 `from_file` will return the most likely file extension. `magic_file` will give
 you every possible result it finds, as well as the confidence.
@@ -46,41 +46,16 @@ you every possible result it finds, as well as the confidence.
 
 ```
 
-In this example, it matches a gif file perfectly. And with `magic_file` it gives
+With `magic_file` it gives
 you the count of matching items first, then for each match provides:
 
 - possible extension(s)
 - mime type
-- descritpion
+- description
 - confidence (All headers have to perfectly match to make the list, however this orders it by longest header, therefore most precise, first)
 
-But we can see this gives us exactly what we want with the first item only,
-So why bother with more detail?
 
-Lets try a more complicated file, such as Microsoft Office files.
-
-
-```python
-    puremagic.magic_file("test/resources/office/test.pptx")
-    # (21, [[['.docx', '.pptx', 'xlsx'],
-    #         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    #         'Microsoft Office 2007+ Open XML Format Document file',
-    #          0.9],
-    #       ['.zip', 'application/zip', 'PKZIP Archive file', 0.5],
-    #       ....
-    # )
-
-    puremagic.from_file("test/resources/office/test.pptx")
-    # '.docx'
-
-```
-
-Newer Microsoft Office files are actually a set of zipped files. So
- it is able to identify it as an office file (and notice the lower confidence is properly a zip file),
- with the possible extensions, but will only label it as the first one.
-
-
-### Script
+## Script
 
 *Usage*
 
@@ -100,8 +75,30 @@ Newer Microsoft Office files are actually a set of zipped files. So
 
 ```
 
-### Acknowledgements
+## FAQ
+
+*The file type is actually X but it's showing up as Y with higher confidence?*
+
+This can happen when the file's signature happens
+to match a subset of a file standard. The subset signature will be longer,
+therefore report with greater confidence, because it will have both the base
+file type signature plus the additional subset one.
+
+*Your version isn't as complete as I want it to be, where else should I look?*
+
+Look into python modules that wrap around libmagic or use something like Apache Tika.
+
+
+## Acknowledgements
 
 Gary C. Kessler
     For use of his File Signature Tables, available at:
     http://www.garykessler.net/library/file_sigs.html
+
+Freedesktop.org
+    For use of their shared-mime-info file, available at:
+    https://cgit.freedesktop.org/xdg/shared-mime-info/
+
+## License
+
+MIT Licenced, see LICENSE, Copyright (c) 2013-2016 Chris Griffith

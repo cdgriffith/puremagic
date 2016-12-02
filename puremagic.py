@@ -20,12 +20,14 @@ from itertools import chain
 __author__ = "Chris Griffith"
 __version__ = "1.2"
 
+here = os.path.abspath(os.path.dirname(__file__))
+
 
 class PureError(LookupError):
     """Do not have that type of file in our databanks"""
 
 
-def _magic_data(filename='magic_data.json'):
+def _magic_data(filename=os.path.join(here, 'magic_data.json')):
     with open(filename) as f:
         data = json.load(f)
     for x in data['headers']:
@@ -82,9 +84,7 @@ def _magic(header, footer, mime, ext=None):
     """ Discover what type of file it is based on the incoming string """
     if len(header) == 0:
         raise ValueError("Input was empty")
-    info = _identify_all(header, footer, ext)
-    print(info)
-    info = info[0]
+    info = _identify_all(header, footer, ext)[0]
     if mime:
         return info[1]
     return info[0] if not isinstance(info[0], list) else info[0][0]
@@ -109,14 +109,15 @@ def _string_details(string):
 
 def ext_from_filename(filename):
     try:
-        base, ext = filename.rsplit(".", 1)
+        base, ext = filename.lower().rsplit(".", 1)
     except ValueError:
         return ''
+    ext = ".{0}".format(ext)
     exts = [x[2] for x in chain(magic_header_array, magic_footer_array)]
     if base[-4:].startswith(".") and ext not in exts:
         return "{0}.{1}".format(base[-4:], ext)
     else:
-        return ".{0}".format(ext)
+        return ext
 
 
 def from_file(filename, mime=False):
