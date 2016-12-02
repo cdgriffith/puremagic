@@ -13,8 +13,9 @@ Gary C. Kessler
     http://www.garykessler.net/library/file_sigs.html
 """
 import os
-
-from magic_data import *
+import json
+import binascii
+from itertools import chain
 
 __author__ = "Chris Griffith"
 __version__ = "1.2"
@@ -24,53 +25,77 @@ class PureError(LookupError):
     """Do not have that type of file in our databanks"""
 
 
-def _confidence(row):
-    length = len(row[0])
-    length += 1 if length >= 3 else 0
-    con = 0.9 if length > 10 else float("0.{0}".format(length))
-    return con
+def _magic_data(filename='magic_data.json'):
+    with open(filename) as f:
+        data = json.load(f)
+    for x in data['headers']:
+        x[0] = binascii.unhexlify(x[0].encode('ascii'))
+    for x in data['footers']:
+        x[0] = binascii.unhexlify(x[0].encode('ascii'))
+    return data['headers'], data['footers']
+
+magic_header_array, magic_footer_array = _magic_data()
 
 
-def _identify_all(header, footer):
+def _max_lengths():
+    max_header_length = max([len(x[0]) + x[1] for x in magic_header_array])
+    max_footer_length = max([len(x[0]) + abs(x[1]) for x in magic_footer_array])
+    return max_header_length, max_footer_length
+
+
+def _confidence(matches, ext=None):
+    results = []
+    for match in matches:
+        con = (0.8 if len(match[0]) > 9 else
+               float("0.{0}".format(len(match[0]))))
+        if ext == match[0]:
+            con = 0.9
+        results.append(match + [con])
+    return sorted(results, key=lambda x: x[3], reverse=True)
+
+
+def _identify_all(header, footer, ext=None):
     """Attempt to identify 'data' by it's magic numbers"""
 
     # Capture the length of the data
     # That way we do not try to identify bytes that don't exist
     matches = list()
-    for magic_row in magic_array:
+    for magic_row in magic_header_array:
         start = magic_row[1]
         end = magic_row[1] + len(magic_row[0])
         if end > len(header):
             continue
         if header[start:end] == magic_row[0]:
-            matches.append([magic_row[2], magic_row[3], magic_row[4],
-                            _confidence(magic_row)])
+            matches.append([magic_row[2], magic_row[3], magic_row[4]])
 
     for magic_row in magic_footer_array:
         start = magic_row[1]
         if footer[start:] == magic_row[0]:
-            matches.append([magic_row[2], magic_row[3], magic_row[4],
-                            _confidence(magic_row)])
+            matches.append([magic_row[2], magic_row[3], magic_row[4]])
     if not matches:
         raise PureError("Could not identify file")
-    return sorted(matches, key=lambda x: x[3], reverse=True)
+
+    return _confidence(matches, ext)
 
 
-def _magic(header, footer, mime):
+def _magic(header, footer, mime, ext=None):
     """ Discover what type of file it is based on the incoming string """
     if len(header) == 0:
         raise ValueError("Input was empty")
-    info = _identify_all(header, footer)[0]
+    info = _identify_all(header, footer, ext)
+    print(info)
+    info = info[0]
     if mime:
         return info[1]
     return info[0] if not isinstance(info[0], list) else info[0][0]
 
 
 def _file_details(filename):
+    max_head, max_foot = _max_lengths()
     with open(filename, "rb") as fin:
-        head = fin.read(max_length)
+        head = fin.read(max_head)
         try:
-            fin.seek(-max_footer_length, os.SEEK_END)
+            fin.seek(-max_foot, os.SEEK_END)
         except IOError:
             fin.seek(0)
         foot = fin.read()
@@ -78,7 +103,20 @@ def _file_details(filename):
 
 
 def _string_details(string):
-    return string[:max_length], string[-max_footer_length:]
+    max_head, max_foot = _max_lengths()
+    return string[:max_head], string[-max_foot:]
+
+
+def ext_from_filename(filename):
+    try:
+        base, ext = filename.rsplit(".", 1)
+    except ValueError:
+        return ''
+    exts = [x[2] for x in chain(magic_header_array, magic_footer_array)]
+    if base[-4:].startswith(".") and ext not in exts:
+        return "{0}.{1}".format(base[-4:], ext)
+    else:
+        return ".{0}".format(ext)
 
 
 def from_file(filename, mime=False):
@@ -87,7 +125,7 @@ def from_file(filename, mime=False):
     If mime is True it will return the mime type instead."""
 
     head, foot = _file_details(filename)
-    return _magic(head, foot, mime)
+    return _magic(head, foot, mime, ext_from_filename(filename))
 
 
 def from_string(string, mime=False):
@@ -105,7 +143,7 @@ def magic_file(filename):
     if len(head) == 0:
         raise ValueError("Input was empty")
     try:
-        info = _identify_all(head, foot)
+        info = _identify_all(head, foot, ext_from_filename(filename))
     except PureError:
         info = []
     info.sort(key=lambda x: x[3], reverse=True)
