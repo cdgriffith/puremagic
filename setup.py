@@ -29,6 +29,7 @@ setup(
     author_email='chris@cdgriffith.com',
     description='Pure python implementation of magic file detection',
     long_description=long_description,
+    package_data={'puremagic': ['*.json']},
     packages=['puremagic'],
     include_package_data=True,
     platforms='any',
