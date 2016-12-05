@@ -63,13 +63,12 @@ you every possible result it finds, as well as the confidence.
     # '.gif'
 
     puremagic.magic_file(filename)
-    # (2, [['.gif', 'image/gif', 'Graphics interchange format file (GIF87a)', 0.7],
-    #      ['.gif', '', 'GIF file', 0.5]])
+    # [['.gif', 'image/gif', 'Graphics interchange format file (GIF87a)', 0.7],
+    #  ['.gif', '', 'GIF file', 0.5]]
 
 ```
 
-With `magic_file` it gives
-you the count of matching items first, then for each match provides:
+With `magic_file` it gives each match, highest confidence first:
 
 - possible extension(s)
 - mime type
@@ -106,6 +105,12 @@ to match a subset of a file standard. The subset signature will be longer,
 therefore report with greater confidence, because it will have both the base
 file type signature plus the additional subset one.
 
+*You don't have sliding offsets that could better detect plenty of common formats, why's that?* 
+
+Design choice to be 1. a lot faster and 2. more accurate. Without more intelligent or deeper identification past a sliding 
+offset I don't feel comfortable including it as part of a 'magic number' library.
+
+
 *Your version isn't as complete as I want it to be, where else should I look?*
 
 Look into python modules that wrap around libmagic or use something like Apache Tika.
@@ -120,7 +125,7 @@ Gary C. Kessler
 
 Freedesktop.org
 
-    For use of their shared-mime-info file, available at:
+    For use of their shared-mime-info file (even if they do use XML, blea), available at:
     https://cgit.freedesktop.org/xdg/shared-mime-info/
 
 ## License
