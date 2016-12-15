@@ -10,6 +10,7 @@ Version 1.2
 - Adding CI tests support for 3.4, 3.5, 3.6 and pypy
 - Adding more basic documentation
 - Adding magic detection from https://www.freedesktop.org/wiki/Specifications/shared-mime-info-spec/
+- Removing testing on 3.2 due to Travis CI and coverage not getting along
 - Changing magic_file to not raise error on empty, simple provide an empty list
 - Changing magic_data py file to a json file so it's easier to understand and modify
 - Updating data to be a python file, so there is no dangerous eval
