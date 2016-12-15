@@ -63,7 +63,7 @@ class TestMagic(unittest.TestCase):
         try:
             self.assertRaises(ValueError, puremagic.magic_file, "test")
         finally:
-            os.unlink("test")
+            os.unlink("test_empty_file")
 
     def test_mime(self):
         """Identify mime type                           |"""
