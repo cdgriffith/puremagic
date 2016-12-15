@@ -61,7 +61,7 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(puremagic.magic_file(TGA_FILE)[0][0], ".tga")
         open("test_empty_file", "w").close()
         try:
-            self.assertRaises(ValueError, puremagic.magic_file, "test")
+            self.assertRaises(ValueError, puremagic.magic_file, "test_empty_file")
         finally:
             os.unlink("test_empty_file")
 
