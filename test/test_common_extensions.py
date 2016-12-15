@@ -59,7 +59,7 @@ class TestMagic(unittest.TestCase):
     def test_magic_file(self):
         """File identification with magic_file          |"""
         self.assertEqual(puremagic.magic_file(TGA_FILE)[0][0], ".tga")
-        open("test", "w").close()
+        open("test_empty_file", "w").close()
         try:
             self.assertRaises(ValueError, puremagic.magic_file, "test")
         finally:
