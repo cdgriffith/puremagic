@@ -5,6 +5,7 @@ puremagic is a pure python module that will identify a file based off it's
 magic numbers.
 
 [![Build Status](https://travis-ci.org/cdgriffith/puremagic.png?branch=master)](https://travis-ci.org/cdgriffith/puremagic)
+[![Coverage Status](https://coveralls.io/repos/github/cdgriffith/puremagic/badge.svg?branch=develop)](https://coveralls.io/github/cdgriffith/puremagic?branch=develop)
 
 It is designed to be minimalistic and inherently cross platform
 compatible. It is also designed to be a stand in for python-magic, it incorporates the
