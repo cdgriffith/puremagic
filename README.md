@@ -7,11 +7,14 @@ magic numbers.
 [![Build Status](https://travis-ci.org/cdgriffith/puremagic.png?branch=master)](https://travis-ci.org/cdgriffith/puremagic)
 
 It is designed to be minimalistic and inherently cross platform
-compatible. However this does come at the price of being incomplete.
-It is also designed to be a stand in for python-magic, it incorporates the
+compatible. It is also designed to be a stand in for python-magic, it incorporates the
 functions from_file(filename[, mime]) and from_string(string[, mime])
 however the magic_file() and magic_string() are more powerful and will also
 display confidence and duplicate matches.
+
+It does NOT try to match files off non-magic string. In other words 
+it will not search for a string within a certain window of bytes like 
+others might.
 
 Advantages over using a wrapper for 'file' or 'libmagic':
 
@@ -35,9 +38,6 @@ Disadvantages:
 * Pypy
 
 Using travis-ci to run continuous integration tests on listed platforms.
-(Note: Tested on 'Python' I mean 'CPython' implementation specifically, though
-it should work on other implementations as well.)
-
 
 ## Install
 
@@ -107,7 +107,8 @@ file type signature plus the additional subset one.
 
 *You don't have sliding offsets that could better detect plenty of common formats, why's that?* 
 
-Design choice to be 1. a lot faster and 2. more accurate. Without more intelligent or deeper identification past a sliding 
+Design choice, so it will be a lot faster and more accurate. Without more 
+intelligent or deeper identification past a sliding 
 offset I don't feel comfortable including it as part of a 'magic number' library.
 
 

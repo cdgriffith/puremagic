@@ -9,4 +9,7 @@ python:
     - "3.6-dev"
     - "pypy"
 
-script: nosetests
+install:
+    - pip install coveralls
+script: nosetests --with-coverage -vv --cover-package=puremagic test
+after_success: coveralls
