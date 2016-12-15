@@ -141,6 +141,16 @@ class TestMagic(unittest.TestCase):
                             "Expected .{0}, got {1}".format(item.split(".")[1],
                                                             ext))
 
+    def test_ext(self):
+        """Test ext from filename                       |"""
+        ext = puremagic.ext_from_filename("test.tar.bz2")
+        assert ext == ".tar.bz2", ext
+
+    def test_cmd_options(self):
+        """Test CLI options                             |"""
+        from puremagic.__main__ import _command_line_entry
+        _command_line_entry(__file__, "test.py")
+
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestMagic)
 unittest.TextTestRunner(verbosity=2).run(suite)

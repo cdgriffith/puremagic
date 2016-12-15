@@ -193,30 +193,26 @@ def magic_string(string):
     return info
 
 
-def _command_line_entry():
-    from optparse import OptionParser
-    usage = "usage: %prog [options] filename <filename2>..."
+def _command_line_entry(*args):
+    from argparse import ArgumentParser
+    import sys
     desc = "puremagic is a pure python file identification module. \
     It looks for matching magic numbers in the file to locate the file type. "
-    parser = OptionParser(usage=usage, version=__version__, description=desc)
-    parser.add_option("-m",
-                      "--mime",
-                      action="store_true",
-                      dest="mime",
-                      help="Return the mime type instead of file type")
-    (options, args) = parser.parse_args()
+    parser = ArgumentParser(description=desc)
+    parser.add_argument("-m",
+                        "--mime",
+                        action="store_true",
+                        dest="mime",
+                        help="Return the mime type instead of file type")
+    parser.add_argument('files', nargs="+")
+    args = parser.parse_args(args if args else sys.argv[1:])
 
-    if len(args) < 1:
-        parser.error("please specific a filename")
-        return
-
-    for fn in args:
+    for fn in args.files:
         if not os.path.exists(fn):
             print("File '{0}' does not exist!".format(fn))
-            print("Please check the location and filename and try again.")
             continue
         try:
-            print("'{0}' : {1}".format(fn, from_file(fn, options.mime)))
+            print("'{0}' : {1}".format(fn, from_file(fn, args.mime)))
         except PureError:
             print("'{0}' : could not be Identified".format(fn))
 
