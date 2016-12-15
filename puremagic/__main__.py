@@ -85,7 +85,7 @@ def _identify_all(header, footer, ext=None):
 
 def _magic(header, footer, mime, ext=None):
     """ Discover what type of file it is based on the incoming string """
-    if len(header) == 0:
+    if not header:
         raise ValueError("Input was empty")
     info = _identify_all(header, footer, ext)[0]
     if mime:
@@ -168,7 +168,7 @@ def magic_file(filename):
     :return: list of possible matches, highest confidence first
     """
     head, foot = _file_details(filename)
-    if len(head) == 0:
+    if not head:
         raise ValueError("Input was empty")
     try:
         info = _identify_all(head, foot, ext_from_filename(filename))
@@ -185,7 +185,7 @@ def magic_string(string):
     :param string: string representation to check
     :return: list of possible matches, highest confidence first
     """
-    if len(string) == 0:
+    if not string:
         raise ValueError("Input was empty")
     head, foot = _string_details(string)
     info = _identify_all(head, foot)

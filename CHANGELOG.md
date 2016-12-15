@@ -11,6 +11,7 @@ Version 1.2
 - Adding more basic documentation
 - Adding magic detection from https://www.freedesktop.org/wiki/Specifications/shared-mime-info-spec/
 - Removing testing on 3.2 due to Travis CI and coverage not getting along
+- Changing to argparse instead of optparse
 - Changing magic_file to not raise error on empty, simple provide an empty list
 - Changing magic_data py file to a json file so it's easier to understand and modify
 - Updating data to be a python file, so there is no dangerous eval

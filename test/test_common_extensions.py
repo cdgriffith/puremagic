@@ -45,6 +45,7 @@ class TestMagic(unittest.TestCase):
         """String identification: magic_string          |"""
         ext = puremagic.magic_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext[0][0])
+        self.assertRaises(ValueError, puremagic.magic_string, "")
 
     def test_not_found(self):
         """Bad file type via string                     |"""
@@ -58,6 +59,11 @@ class TestMagic(unittest.TestCase):
     def test_magic_file(self):
         """File identification with magic_file          |"""
         self.assertEqual(puremagic.magic_file(TGA_FILE)[0][0], ".tga")
+        open("test", "w").close()
+        try:
+            self.assertRaises(ValueError, puremagic.magic_file, "test")
+        finally:
+            os.unlink("test")
 
     def test_mime(self):
         """Identify mime type                           |"""
