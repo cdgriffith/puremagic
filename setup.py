@@ -21,7 +21,7 @@ with open("README.md", "r") as readme_file:
 setup(
     name='puremagic',
     version=attrs['version'],
-    url='https://github.com/cdgriffith/Reusables',
+    url='https://github.com/cdgriffith/puremagic',
     license='MIT',
     author=attrs['author'],
     tests_require=["nose >= 1.3", "coverage >= 3.6", "argparse"],
