@@ -160,7 +160,7 @@ def from_string(string, mime=False, filename=None):
     """
     head, foot = _string_details(string)
     if filename:
-        ext=ext_from_filename(filename)
+        ext = ext_from_filename(filename)
     else:
         ext = None
     return _magic(head, foot, mime, ext)
@@ -197,10 +197,10 @@ def magic_string(string, filename=None):
         raise ValueError("Input was empty")
     head, foot = _string_details(string)
     if filename:
-        ext=ext_from_filename(filename)
+        ext = ext_from_filename(filename)
     else:
         ext = None
-    info = _identify_all(head, foot,ext)
+    info = _identify_all(head, foot, ext)
     info.sort(key=lambda x: x[3], reverse=True)
     return info
 

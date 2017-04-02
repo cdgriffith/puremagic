@@ -45,7 +45,7 @@ class TestMagic(unittest.TestCase):
     def test_string_with_filename_hint(self):
         """String identification with filename hint     |"""
         filename=os.path.join(OFFICE_DIR, "test.xlsx")
-        f = open(filename,"rb")
+        f = open(filename, "rb")
         data = f.read()
         f.close()
         ext = puremagic.from_string(data)
@@ -65,7 +65,7 @@ class TestMagic(unittest.TestCase):
     def test_magic_string_with_filename_hint(self):
         """String identification: magic_string with hint|"""
         filename=os.path.join(OFFICE_DIR, "test.xlsx")
-        f = open(filename,"rb")
+        f = open(filename, "rb")
         data = f.read()
         f.close()
         ext = puremagic.magic_string(data, filename=filename)
