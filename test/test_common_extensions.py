@@ -41,13 +41,11 @@ class TestMagic(unittest.TestCase):
         ext = puremagic.from_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
 
-
     def test_string_with_filename_hint(self):
         """String identification with filename hint     |"""
         filename=os.path.join(OFFICE_DIR, "test.xlsx")
-        f = open(filename, "rb")
-        data = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            data = f.read()
         ext = puremagic.from_string(data)
         # .docx and .xlsx have same signature
         self.assertEqual(".docx", ext)
@@ -61,16 +59,13 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(self.expect_ext, ext[0][0])
         self.assertRaises(ValueError, puremagic.magic_string, "")
 
-
     def test_magic_string_with_filename_hint(self):
         """String identification: magic_string with hint|"""
         filename=os.path.join(OFFICE_DIR, "test.xlsx")
-        f = open(filename, "rb")
-        data = f.read()
-        f.close()
+        with open(filename, "rb") as f:
+            data = f.read()
         ext = puremagic.magic_string(data, filename=filename)
         self.assertEqual(".xlsx", ext[0][0])
-
 
     def test_not_found(self):
         """Bad file type via string                     |"""
@@ -78,7 +73,8 @@ class TestMagic(unittest.TestCase):
             with self.assertRaises(puremagic.PureError):
                 puremagic.from_string("not applicable string")
         except TypeError:
-            # Python 2.6 doesn't support using assertRaises as a context manager
+            # Python 2.6 doesn't support using
+            # assertRaises as a context manager
             pass
 
     def test_magic_file(self):
@@ -86,7 +82,8 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(puremagic.magic_file(TGA_FILE)[0][0], ".tga")
         open("test_empty_file", "w").close()
         try:
-            self.assertRaises(ValueError, puremagic.magic_file, "test_empty_file")
+            self.assertRaises(ValueError,
+                              puremagic.magic_file, "test_empty_file")
         finally:
             os.unlink("test_empty_file")
 
@@ -132,7 +129,7 @@ class TestMagic(unittest.TestCase):
 
     def test_office(self):
         """Test common office document formats          |"""
-        ### Office files have very similar magic numbers, and may overlap
+        # Office files have very similar magic numbers, and may overlap
         for item in os.listdir(OFFICE_DIR):
             puremagic.from_file(os.path.join(OFFICE_DIR, item))
 

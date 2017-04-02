@@ -141,7 +141,7 @@ https://cgit.freedesktop.org/xdg/shared-mime-info/
 License
 -------
 
-MIT Licenced, see LICENSE, Copyright (c) 2013-2016 Chris Griffith
+MIT Licenced, see LICENSE, Copyright (c) 2013-2017 Chris Griffith
 
 .. |BuildStatus| image:: https://travis-ci.org/cdgriffith/puremagic.png?branch=master
    :target: https://travis-ci.org/cdgriffith/puremagic
