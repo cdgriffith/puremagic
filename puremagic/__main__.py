@@ -3,9 +3,9 @@
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
-compatible, with no imports when used as a module. 
+compatible, with no imports when used as a module.
 
-© 2013-2016 Chris Griffith - License: MIT (see LICENSE)
+© 2013-2017 Chris Griffith - License: MIT (see LICENSE)
 
 Acknowledgements
 Gary C. Kessler
@@ -18,7 +18,7 @@ import binascii
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.2"
+__version__ = "1.3"
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -43,7 +43,8 @@ magic_header_array, magic_footer_array = _magic_data()
 def _max_lengths():
     """ The length of the largest magic string + its offset"""
     max_header_length = max([len(x[0]) + x[1] for x in magic_header_array])
-    max_footer_length = max([len(x[0]) + abs(x[1]) for x in magic_footer_array])
+    max_footer_length = max([len(x[0]) + abs(x[1])
+                             for x in magic_footer_array])
     return max_header_length, max_footer_length
 
 
@@ -147,17 +148,20 @@ def from_file(filename, mime=False):
     return _magic(head, foot, mime, ext_from_filename(filename))
 
 
-def from_string(string, mime=False):
+def from_string(string, mime=False, filename=None):
     """ Reads in string, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
+    If filename is provided it will be used in the computation.
 
     :param string: string representation to check
     :param mime: Return mime, not extension
+    :param filename: original filename
     :return: guessed extension or mime
     """
     head, foot = _string_details(string)
-    return _magic(head, foot, mime)
+    ext = ext_from_filename(filename) if filename else None
+    return _magic(head, foot, mime, ext)
 
 
 def magic_file(filename):
@@ -178,17 +182,20 @@ def magic_file(filename):
     return info
 
 
-def magic_string(string):
+def magic_string(string, filename=None):
     """ Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
+    If filename is provided it will be used in the computation.
 
     :param string: string representation to check
+    :param filename: original filename
     :return: list of possible matches, highest confidence first
     """
     if not string:
         raise ValueError("Input was empty")
     head, foot = _string_details(string)
-    info = _identify_all(head, foot)
+    ext = ext_from_filename(filename) if filename else None
+    info = _identify_all(head, foot, ext)
     info.sort(key=lambda x: x[3], reverse=True)
     return info
 

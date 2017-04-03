@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.3
+-----------
+
+- Adding filename extension hinting for string (Thanks to jiel)
+- Adding open office MIME tpyes (Thanks to jiel)
 
 Version 1.2
 -----------
