@@ -176,8 +176,8 @@ class TestMagic(unittest.TestCase):
 
     def test_cmd_options(self):
         """Test CLI options                             |"""
-        from puremagic.__main__ import _command_line_entry
-        _command_line_entry(__file__, "test.py")
+        from puremagic.main import command_line_entry
+        command_line_entry(__file__, "test.py")
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestMagic)
