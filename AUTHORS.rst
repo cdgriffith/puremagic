@@ -4,3 +4,4 @@ A big thank you to everyone that has helped!
 
 - Jonathan Barratt (reduxionist)
 - jiel
+- Victor Domingos (victordomingos)

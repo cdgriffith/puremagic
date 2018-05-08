@@ -1,11 +1,16 @@
 Changelog
 =========
 
+Version 1.4
+-----------
+
+- Fixing how `__main__` was implemented (Thanks to Victor Domingos)
+
 Version 1.3
 -----------
 
 - Adding filename extension hinting for string (Thanks to jiel)
-- Adding open office MIME tpyes (Thanks to jiel)
+- Adding open office MIME types (Thanks to jiel)
 
 Version 1.2
 -----------

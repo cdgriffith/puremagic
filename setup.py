@@ -10,7 +10,7 @@ import multiprocessing
 
 root = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(root, "puremagic", "__main__.py"), "r") as reuse_file:
+with open(os.path.join(root, "puremagic", "main.py"), "r") as reuse_file:
     reuse_content = reuse_file.read()
 
 attrs = dict(re.findall(r"__([a-z]+)__ *= *['\"](.+)['\"]", reuse_content))
