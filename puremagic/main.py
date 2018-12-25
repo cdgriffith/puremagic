@@ -73,8 +73,8 @@ def _confidence(matches, ext=None):
                float("0.{0}".format(len(match.extension))))
         if ext == match.extension:
             con = 0.9
-        results.append(PureMagicWithConfidence(**match._asdict(),
-                                               confidence=con))
+        results.append(
+            PureMagicWithConfidence(confidence=con, **match._asdict()))
     return sorted(results, key=lambda x: x.confidence, reverse=True)
 
 
