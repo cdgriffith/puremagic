@@ -3,3 +3,6 @@
 .ssh
 *dsa*
 .idea
+
+Pipfile
+Pipfile.lock
