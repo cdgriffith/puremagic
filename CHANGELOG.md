@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 1.5
+-----------
+
+- Adding full magic info in results (Thanks to David Shunfenthal)
+- Fixing magic_data.json not being added to sdist dist (Thanks to Andrey Zakharevich)
+
 Version 1.4
 -----------
 
