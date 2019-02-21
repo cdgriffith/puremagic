@@ -16,6 +16,7 @@ import os
 import json
 import binascii
 from itertools import chain
+from collections import namedtuple
 
 __author__ = "Chris Griffith"
 __version__ = "1.4"
@@ -24,6 +25,11 @@ __all__ = ['magic_file', 'magic_string', 'from_file', 'from_string',
            'magic_header_array']
 
 here = os.path.abspath(os.path.dirname(__file__))
+
+MAGIC_INFO_TYPES = ('byte_match', 'offset', 'extension', 'mime_type', 'name',)
+PureMagic = namedtuple('PureMagic', MAGIC_INFO_TYPES)
+PureMagicWithConfidence = namedtuple('PureMagicWithConfidence',
+                                     (MAGIC_INFO_TYPES + ('confidence',)))
 
 
 class PureError(LookupError):
@@ -34,11 +40,17 @@ def _magic_data(filename=os.path.join(here, 'magic_data.json')):
     """ Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
-    for x in data['headers']:
-        x[0] = binascii.unhexlify(x[0].encode('ascii'))
-    for x in data['footers']:
-        x[0] = binascii.unhexlify(x[0].encode('ascii'))
-    return data['headers'], data['footers']
+    headers = [_create_puremagic(x) for x in data['headers']]
+    footers = [_create_puremagic(x) for x in data['footers']]
+    return headers, footers
+
+
+def _create_puremagic(x):
+    return PureMagic(byte_match=binascii.unhexlify(x[0].encode('ascii')),
+                     offset=x[1],
+                     extension=x[2],
+                     mime_type=x[3],
+                     name=x[4])
 
 
 magic_header_array, magic_footer_array = _magic_data()
@@ -46,8 +58,9 @@ magic_header_array, magic_footer_array = _magic_data()
 
 def _max_lengths():
     """ The length of the largest magic string + its offset"""
-    max_header_length = max([len(x[0]) + x[1] for x in magic_header_array])
-    max_footer_length = max([len(x[0]) + abs(x[1])
+    max_header_length = max([len(x.byte_match) + x.offset
+                             for x in magic_header_array])
+    max_footer_length = max([len(x.byte_match) + abs(x.offset)
                              for x in magic_footer_array])
     return max_header_length, max_footer_length
 
@@ -56,12 +69,13 @@ def _confidence(matches, ext=None):
     """ Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
-        con = (0.8 if len(match[0]) > 9 else
-               float("0.{0}".format(len(match[0]))))
-        if ext == match[0]:
+        con = (0.8 if len(match.extension) > 9 else
+               float("0.{0}".format(len(match.extension))))
+        if ext == match.extension:
             con = 0.9
-        results.append(match + [con])
-    return sorted(results, key=lambda x: x[3], reverse=True)
+        results.append(
+            PureMagicWithConfidence(confidence=con, **match._asdict()))
+    return sorted(results, key=lambda x: x.confidence, reverse=True)
 
 
 def _identify_all(header, footer, ext=None):
@@ -71,17 +85,17 @@ def _identify_all(header, footer, ext=None):
     # That way we do not try to identify bytes that don't exist
     matches = list()
     for magic_row in magic_header_array:
-        start = magic_row[1]
-        end = magic_row[1] + len(magic_row[0])
+        start = magic_row.offset
+        end = magic_row.offset + len(magic_row.byte_match)
         if end > len(header):
             continue
-        if header[start:end] == magic_row[0]:
-            matches.append([magic_row[2], magic_row[3], magic_row[4]])
+        if header[start:end] == magic_row.byte_match:
+            matches.append(magic_row)
 
     for magic_row in magic_footer_array:
-        start = magic_row[1]
-        if footer[start:] == magic_row[0]:
-            matches.append([magic_row[2], magic_row[3], magic_row[4]])
+        start = magic_row.offset
+        if footer[start:] == magic_row.byte_match:
+            matches.append(magic_row)
     if not matches:
         raise PureError("Could not identify file")
 
@@ -94,8 +108,9 @@ def _magic(header, footer, mime, ext=None):
         raise ValueError("Input was empty")
     info = _identify_all(header, footer, ext)[0]
     if mime:
-        return info[1]
-    return info[0] if not isinstance(info[0], list) else info[0][0]
+        return info.mime_type
+    return info.extension if not \
+        isinstance(info.extension, list) else info[0].extension
 
 
 def _file_details(filename):
@@ -128,7 +143,8 @@ def ext_from_filename(filename):
     except ValueError:
         return ''
     ext = ".{0}".format(ext)
-    all_exts = [x[2] for x in chain(magic_header_array, magic_footer_array)]
+    all_exts = [x.extension for x in chain(magic_header_array,
+                                           magic_footer_array)]
 
     if base[-4:].startswith("."):
         # For double extensions like like .tar.gz
@@ -182,7 +198,7 @@ def magic_file(filename):
         info = _identify_all(head, foot, ext_from_filename(filename))
     except PureError:
         info = []
-    info.sort(key=lambda x: x[3], reverse=True)
+    info.sort(key=lambda x: x.confidence, reverse=True)
     return info
 
 
@@ -200,7 +216,7 @@ def magic_string(string, filename=None):
     head, foot = _string_details(string)
     ext = ext_from_filename(filename) if filename else None
     info = _identify_all(head, foot, ext)
-    info.sort(key=lambda x: x[3], reverse=True)
+    info.sort(key=lambda x: x.confidence, reverse=True)
     return info
 
 

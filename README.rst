@@ -35,8 +35,8 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 2.6+
--  Python 3.2+
+-  Python 2.7+
+-  Python 3.3+
 -  Pypy
 
 Using travis-ci to run continuous integration tests on listed platforms.
@@ -141,7 +141,7 @@ https://cgit.freedesktop.org/xdg/shared-mime-info/
 License
 -------
 
-MIT Licenced, see LICENSE, Copyright (c) 2013-2017 Chris Griffith
+MIT Licenced, see LICENSE, Copyright (c) 2013-2018 Chris Griffith
 
 .. |BuildStatus| image:: https://travis-ci.org/cdgriffith/puremagic.png?branch=master
    :target: https://travis-ci.org/cdgriffith/puremagic
