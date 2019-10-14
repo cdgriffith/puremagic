@@ -1073,6 +1073,12 @@
         ["2320786d6364", 0, "", "text/xmcd", "XMCD CD database"],
         ["4344303031", 32769, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"],
         ["4344303031", 34817, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"],
-        ["4344303031", 36865, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"]
+        ["4344303031", 36865, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"],
+        ["28b52ffd", 0, ".zst", "application/zstd", "ZStandard Archive"],
+        ["28b52ffd", 0, ".tzst", "application/x-zstd-compressed-tar", "ZStandard Tar Archive"],
+        ["28b52ffd", 0, ".tar.zst", "application/x-zstd-compressed-tar", "ZStandard Tar Archive"],
+        ["04224d18", 0, ".lz4", "application/x-lz4", "LZ4 Archive"],
+        ["04224d18", 0, ".tlz4", "application/x-lz4-compressed-tar", "LZ4 Tar Archive"],
+        ["04224d18", 0, ".tar.lz4", "application/x-lz4-compressed-tar", "LZ4 Tar Archive"]
     ]
 }

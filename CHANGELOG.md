@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 1.6
+-----------
+
+- Adding support for LZ4 and ZSTD archives (Thanks to Sergey Ponomarev)
+- Adding support for more office formats (Thanks to andrewpmk)
+
 Version 1.5
 -----------
 
