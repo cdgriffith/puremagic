@@ -64,6 +64,17 @@
         ["504b0304", 0, ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "MS Office Open XML Format Document"],
         ["504b0304", 0, ".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation", "MS Office Open XML Format Document"],
         ["504b0304", 0, ".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "MS Office Open XML Format Document"],
+        ["504b0304", 0, ".xlsb", "application/vnd.ms-excel.sheet.binary.macroenabled.12", "Microsoft Excel - Binary Workbook"],
+        ["504b0304", 0, ".xltm", "application/vnd.ms-excel.template.macroenabled.12", "Microsoft Excel - Macro-Enabled Template File"],
+        ["504b0304", 0, ".xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template", "Microsoft Office - OOXML - Spreadsheet Template"],
+        ["504b0304", 0, ".xlam", "application/vnd.ms-excel.addin.macroenabled.12", "Microsoft Excel - Add-In File"],
+        ["504b0304", 0, ".docm", "application/vnd.ms-word.document.macroEnabled.12", "Microsoft Word - Macro-Enabled Document"],
+        ["504b0304", 0, ".dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template", "Microsoft Office - OOXML - Word Document Template"],
+        ["504b0304", 0, ".dotm", "application/vnd.ms-word.template.macroenabled.12", "Microsoft Word - Macro-Enabled Template"],
+        ["504b0304", 0, ".pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12", "Microsoft PowerPoint - Macro-Enabled Presentation File"],
+        ["504b0304", 0, ".potx", "application/vnd.openxmlformats-officedocument.presentationml.template", "Microsoft Office - OOXML - Presentation Template"],
+        ["504b0304", 0, ".potm", "application/vnd.ms-powerpoint.template.macroenabled.12", "Microsoft PowerPoint - Macro-Enabled Template File"],
+        ["504b0304", 0, ".xlsm", "application/vnd.ms-excel.sheet.macroEnabled.12", "Microsoft Excel - Macro-Enabled Workbook"],
         ["7a626578", 0, ".info", "", "ZoomBrowser Image Index"],
         ["425a68", 0, ".tbz2", "", "bzip2 compressed archive"],
         ["ffd8ff", 0, ".jfif", "", "JPEG|EXIF|SPIFF images"],
@@ -1062,6 +1073,12 @@
         ["2320786d6364", 0, "", "text/xmcd", "XMCD CD database"],
         ["4344303031", 32769, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"],
         ["4344303031", 34817, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"],
-        ["4344303031", 36865, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"]
+        ["4344303031", 36865, ".iso", "application/octet-stream", "ISO-9660 CD Disc Image file"],
+        ["28b52ffd", 0, ".zst", "application/zstd", "ZStandard Archive"],
+        ["28b52ffd", 0, ".tzst", "application/x-zstd-compressed-tar", "ZStandard Tar Archive"],
+        ["28b52ffd", 0, ".tar.zst", "application/x-zstd-compressed-tar", "ZStandard Tar Archive"],
+        ["04224d18", 0, ".lz4", "application/x-lz4", "LZ4 Archive"],
+        ["04224d18", 0, ".tlz4", "application/x-lz4-compressed-tar", "LZ4 Tar Archive"],
+        ["04224d18", 0, ".tar.lz4", "application/x-lz4-compressed-tar", "LZ4 Tar Archive"]
     ]
 }
