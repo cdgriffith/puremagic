@@ -40,8 +40,10 @@ def _magic_data(filename=os.path.join(here, 'magic_data.json')):
     """ Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
-    headers = [_create_puremagic(x) for x in data['headers']]
-    footers = [_create_puremagic(x) for x in data['footers']]
+    headers = sorted((_create_puremagic(x) for x in data['headers']),
+                     key=lambda x: x.byte_match)
+    footers = sorted((_create_puremagic(x) for x in data['footers']),
+                     key=lambda x: x.byte_match)
     return headers, footers
 
 
