@@ -1012,6 +1012,7 @@
         ["7f454c46", 0, "", "", "ELF executable"],
         ["d4c3b2a1", 0, "", "", "WinDump (winpcap) capture file"],
         ["a1b2cd34", 0, "", "", "Extended tcpdump (libpcap) capture file"],
+        ["0a0d0d0a600000004d3c2b1a", 0, "", "application/octet-stream", "pcapng capture file"],
         ["05000000", 0, "", "", "INFO2 Windows recycle bin_2"],
         ["34cdb2a1", 0, "", "", "Tcpdump capture file"],
         ["fffe0000", 0, "", "", "UTF-32|UCS-4 file"],
