@@ -29,3 +29,9 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
+    - name: Upload to release
+      uses: JasonEtco/upload-to-release@master
+      with:
+        args: dist/puremagic-${{ github.ref }}-py3-none.any.whl
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
