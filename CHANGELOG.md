@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 1.7
+-----------
+
+- Adding support for PCAPNG files (thanks to bannsec)
+- Changing test suites to github workflows instead of TravisCI 
+
 Version 1.6
 -----------
 

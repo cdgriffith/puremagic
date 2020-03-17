@@ -15,12 +15,36 @@ TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
 
 class TestMagic(unittest.TestCase):
-
     def setUp(self):
         self.mp4magic = b"\x00\x00\x00\x1C\x66\x74\x79\x70\x4D\x53\x4E\
 \x56\x01\x29\x00\x46\x4D\x53\x4E\x56\x6D\x70\x34\x32"
         self.expect_ext = ".mp4"
         self.expect_mime = "video/mp4"
+
+    def group_test(self, directory):
+        failures = []
+        ext_failures = []
+        for item in os.listdir(directory):
+            print(item)
+            try:
+                ext = puremagic.from_file(os.path.join(directory, item))
+            except puremagic.PureError:
+                failures.append(item)
+            else:
+                if not item.endswith(ext):
+                    ext_failures.append((item, ext))
+        if failures:
+            raise AssertionError(
+                "The following items could not be identified from the {} folder: {}".format(
+                    directory, ", ".join(failures)
+                )
+            )
+        if ext_failures:
+            raise AssertionError(
+                "The following files did not have the expected extensions: {}".format(
+                    ", ".join(['"{}" expected "{}"'.format(item, ext) for item, ext in ext_failures])
+                )
+            )
 
     def test_file(self):
         """File identification                          |"""
@@ -82,8 +106,7 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(puremagic.magic_file(TGA_FILE)[0].extension, ".tga")
         open("test_empty_file", "w").close()
         try:
-            self.assertRaises(ValueError,
-                              puremagic.magic_file, "test_empty_file")
+            self.assertRaises(ValueError, puremagic.magic_file, "test_empty_file")
         finally:
             os.unlink("test_empty_file")
 
@@ -93,39 +116,15 @@ class TestMagic(unittest.TestCase):
 
     def test_images(self):
         """Test common image formats                    |"""
-        for item in os.listdir(IMAGE_DIR):
-            try:
-                ext = puremagic.from_file(os.path.join(IMAGE_DIR, item))
-            except puremagic.PureError:
-                raise AssertionError("Could not identify file"
-                                     " '{0}'".format(item))
-            self.assertTrue(item.endswith(ext),
-                            "Expected .{0}, got {1}".format(item.split(".")[1],
-                                                            ext))
+        self.group_test(IMAGE_DIR)
 
     def test_video(self):
         """Test common video formats                    |"""
-        for item in os.listdir(VIDEO_DIR):
-            try:
-                ext = puremagic.from_file(os.path.join(VIDEO_DIR, item))
-            except puremagic.PureError:
-                raise AssertionError("Could not identify file"
-                                     " '{0}'".format(item))
-            self.assertTrue(item.endswith(ext),
-                            "Expected .{0}, got {1}".format(item.split(".")[1],
-                                                            ext))
+        self.group_test(VIDEO_DIR)
 
     def test_audio(self):
         """Test common audio formats                    |"""
-        for item in os.listdir(AUDIO_DIR):
-            try:
-                ext = puremagic.from_file(os.path.join(AUDIO_DIR, item))
-            except puremagic.PureError:
-                raise AssertionError("Could not identify file"
-                                     " '{0}'".format(item))
-            self.assertTrue(item.endswith(ext),
-                            "Expected .{0}, got {1}".format(item.split(".")[1],
-                                                            ext))
+        self.group_test(AUDIO_DIR)
 
     def test_office(self):
         """Test common office document formats          |"""
@@ -135,39 +134,16 @@ class TestMagic(unittest.TestCase):
 
     def test_archive(self):
         """Test common compressed archive formats       |"""
-        for item in os.listdir(ARCHIVE_DIR):
-            try:
-                ext = puremagic.from_file(os.path.join(ARCHIVE_DIR, item))
-            except puremagic.PureError:
-                raise AssertionError("Could not identify file"
-                                     " '{0}'".format(item))
-            self.assertTrue(item.endswith(ext),
-                            "Expected .{0}, got {1}".format(item.split(".")[1],
-                                                            ext))
+        # pcapng files from https://wiki.wireshark.org/Development/PcapNg
+        self.group_test(ARCHIVE_DIR)
 
     def test_media(self):
         """Test common media formats                    |"""
-        for item in os.listdir(MEDIA_DIR):
-            try:
-                ext = puremagic.from_file(os.path.join(MEDIA_DIR, item))
-            except puremagic.PureError:
-                raise AssertionError("Could not identify file "
-                                     "'{0}'".format(item))
-            self.assertTrue(item.endswith(ext),
-                            "Expected .{0}, got {1}".format(item.split(".")[1],
-                                                            ext))
+        self.group_test(MEDIA_DIR)
 
     def test_system(self):
         """Test common system formats                   |"""
-        for item in os.listdir(SYSTEM_DIR):
-            try:
-                ext = puremagic.from_file(os.path.join(SYSTEM_DIR, item))
-            except puremagic.PureError:
-                raise AssertionError("Could not identify file"
-                                     " '{0}'".format(item))
-            self.assertTrue(item.endswith(ext),
-                            "Expected .{0}, got {1}".format(item.split(".")[1],
-                                                            ext))
+        self.group_test(SYSTEM_DIR)
 
     def test_ext(self):
         """Test ext from filename                       |"""
@@ -177,8 +153,10 @@ class TestMagic(unittest.TestCase):
     def test_cmd_options(self):
         """Test CLI options                             |"""
         from puremagic.main import command_line_entry
+
         command_line_entry(__file__, "test.py")
 
 
-suite = unittest.TestLoader().loadTestsFromTestCase(TestMagic)
-unittest.TextTestRunner(verbosity=2).run(suite)
+if __name__ == "__main__":
+    suite = unittest.TestLoader().loadTestsFromTestCase(TestMagic)
+    unittest.TextTestRunner(verbosity=2).run(suite)
