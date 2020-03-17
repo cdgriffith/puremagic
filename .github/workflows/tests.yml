@@ -39,7 +39,7 @@ jobs:
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
-        pytest --cov=puremagic test/
+        python -m pytest --cov=puremagic test/
         coveralls
     - name: Check distrubiton log description
       run: |

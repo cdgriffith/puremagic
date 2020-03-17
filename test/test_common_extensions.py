@@ -1,7 +1,8 @@
 import unittest
-import puremagic
 from tempfile import NamedTemporaryFile
 import os
+
+import puremagic
 
 LOCAL_DIR = os.path.realpath(os.path.dirname(__file__))
 IMAGE_DIR = os.path.join(LOCAL_DIR, "resources", "images")
