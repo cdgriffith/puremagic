@@ -5,8 +5,6 @@ from setuptools import setup
 import os
 import re
 
-# Fix for issues with nosetests, experienced on win7
-import multiprocessing
 
 root = os.path.abspath(os.path.dirname(__file__))
 
@@ -24,7 +22,6 @@ setup(
     url='https://github.com/cdgriffith/puremagic',
     license='MIT',
     author=attrs['author'],
-    tests_require=["nose >= 1.3", "coverage >= 3.6", "argparse"],
     install_requires=["argparse"],
     author_email='chris@cdgriffith.com',
     description='Pure python implementation of magic file detection',
@@ -33,7 +30,6 @@ setup(
     packages=['puremagic'],
     include_package_data=True,
     platforms='any',
-    test_suite='nose.collector',
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
@@ -45,8 +41,5 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Topic :: Utilities'
-        ],
-    extras_require={
-        'testing': ["nose >= 1.3", "coverage >= 3.6", "argparse"],
-        }
+        ]
 )
