@@ -33,6 +33,8 @@ jobs:
     - name: Upload to release
       uses: JasonEtco/upload-to-release@master
       with:
-        args: dist/puremagic-${PURE_MAGIC_VERSION}-py3-none.any.whl
+        args:
+          - dist/puremagic-${PURE_MAGIC_VERSION}-py3-none-any.whl
+          - dist/puremagic-${PURE_MAGIC_VERSION}.tar.gz
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

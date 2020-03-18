@@ -47,4 +47,5 @@ jobs:
         python setup.py sdist bdist_wheel
         twine check dist/*
         PURE_MAGIC_VERSION=$(python -c "import puremagic; print(puremagic.__version__)")
-        ls -lah "dist/puremagic-${PURE_MAGIC_VERSION}-py3-none.any.whl"
+        ls -lah "dist/puremagic-${PURE_MAGIC_VERSION}-py3-none-any.whl"
+        ls -lah "dist/puremagic-${PURE_MAGIC_VERSION}.tar.gz"
