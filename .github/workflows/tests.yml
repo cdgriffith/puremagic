@@ -46,4 +46,5 @@ jobs:
         pip install setuptools wheel twine
         python setup.py sdist bdist_wheel
         twine check dist/*
-        head "dist/puremagic-${{ github.ref }}-py3-none.any.whl"
+        PURE_MAGIC_VERSION=$(python -c "import puremagic; print(puremagic.__version__)")
+        ls -lah "dist/puremagic-${PURE_MAGIC_VERSION}-py3-none.any.whl"
