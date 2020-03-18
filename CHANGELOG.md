@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.8
+-----------
+
+- Adding support for various other files (thanks to Don Tsang)
+
 Version 1.7
 -----------
 
