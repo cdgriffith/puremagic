@@ -19,7 +19,7 @@ from itertools import chain
 from collections import namedtuple
 
 __author__ = "Chris Griffith"
-__version__ = "1.7"
+__version__ = "1.8"
 __all__ = ['magic_file', 'magic_string', 'from_file', 'from_string',
            'ext_from_filename', 'PureError', 'magic_footer_array',
            'magic_header_array']

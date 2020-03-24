@@ -10,3 +10,5 @@ A big thank you to everyone that has helped!
 - Sergey Ponomarev (stokito)
 - andrewpmk
 - bannsec
+- Don Tsang (DonaldTsang)
+- Oleksandr (msdinit)

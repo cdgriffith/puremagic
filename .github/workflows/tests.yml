@@ -5,9 +5,9 @@ name: Tests
 
 on:
   push:
-    branches: [ master, development ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ master, development ]
+    branches: [ master, develop ]
 
 jobs:
   build:
@@ -40,7 +40,7 @@ jobs:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
         python -m pytest --cov=puremagic test/
-        coveralls
+        coveralls || true
     - name: Check distrubiton log description
       run: |
         pip install setuptools wheel twine

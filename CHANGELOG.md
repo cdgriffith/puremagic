@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 1.8
+-----------
+
+- Adding support for various other files (thanks to Don Tsang)
+- Adding missing mime types (thanks to Oleksandr)
+
 Version 1.7
 -----------
 
