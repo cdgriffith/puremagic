@@ -1,6 +1,7 @@
 import unittest
 from tempfile import NamedTemporaryFile
 import os
+from io import BytesIO
 
 import puremagic
 
@@ -110,6 +111,12 @@ class TestMagic(unittest.TestCase):
             self.assertRaises(ValueError, puremagic.magic_file, "test_empty_file")
         finally:
             os.unlink("test_empty_file")
+
+    def test_stream(self):
+        """Stream identification                        |"""
+        ext = puremagic.from_stream(BytesIO(self.mp4magic))
+        self.assertEqual(self.expect_ext, ext)
+        self.assertRaises(ValueError, puremagic.from_stream, BytesIO(b""))
 
     def test_mime(self):
         """Identify mime type                           |"""

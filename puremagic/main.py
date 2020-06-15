@@ -21,8 +21,8 @@ from collections import namedtuple
 __author__ = "Chris Griffith"
 __version__ = "1.8"
 __all__ = ['magic_file', 'magic_string', 'from_file', 'from_string',
-           'ext_from_filename', 'PureError', 'magic_footer_array',
-           'magic_header_array']
+           'from_stream', 'ext_from_filename', 'PureError',
+           'magic_footer_array', 'magic_header_array']
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -134,6 +134,15 @@ def _string_details(string):
     return string[:max_head], string[-max_foot:]
 
 
+def _stream_details(stream):
+    """ Grab the start and end of the stream"""
+    max_head, max_foot = _max_lengths()
+    head = stream.read(max_head)
+    stream.seek(-max_foot, os.SEEK_END)
+    foot = stream.read()
+    return head, foot
+
+
 def ext_from_filename(filename):
     """ Scan a filename for it's extension.
 
@@ -182,6 +191,22 @@ def from_string(string, mime=False, filename=None):
     :return: guessed extension or mime
     """
     head, foot = _string_details(string)
+    ext = ext_from_filename(filename) if filename else None
+    return _magic(head, foot, mime, ext)
+
+
+def from_stream(stream, mime=False, filename=None):
+    """ Reads in stream, attempts to identify content based
+    off magic number and will return the file extension.
+    If mime is True it will return the mime type instead.
+    If filename is provided it will be used in the computation.
+
+    :param stream: stream representation to check
+    :param mime: Return mime, not extension
+    :param filename: original filename
+    :return: guessed extension or mime
+    """
+    head, foot = _stream_details(stream)
     ext = ext_from_filename(filename) if filename else None
     return _magic(head, foot, mime, ext)
 
