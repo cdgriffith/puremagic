@@ -35,7 +35,6 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 2.7+
 -  Python 3.4+
 -  Pypy
 
@@ -49,8 +48,6 @@ In either a virtualenv or globally, simply run:
 .. code:: bash
 
         $ python setup.py install
-
-It has no dependencies (other than the 2.7+ built-in argparse)
 
 Usage
 -----

@@ -28,7 +28,6 @@ class TestMagic(unittest.TestCase):
         failures = []
         ext_failures = []
         for item in os.listdir(directory):
-            print(item)
             try:
                 ext = puremagic.from_file(os.path.join(directory, item))
             except puremagic.PureError:
@@ -50,7 +49,7 @@ class TestMagic(unittest.TestCase):
             )
 
     def test_file(self):
-        """File identification                          |"""
+        """File identification """
         mp4file = NamedTemporaryFile(delete=False)
         mp4file.write(self.mp4magic)
         mp4file.close()
@@ -59,17 +58,17 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(self.expect_ext, ext)
 
     def test_hex_string(self):
-        """Hex string identification                    |"""
+        """Hex string identification """
         ext = puremagic.from_string(self.mp4magic)
         self.assertEqual(self.expect_ext, ext)
 
     def test_string(self):
-        """String identification                        |"""
+        """String identification """
         ext = puremagic.from_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
 
     def test_string_with_filename_hint(self):
-        """String identification with filename hint     |"""
+        """String identification with filename hint """
         filename = os.path.join(OFFICE_DIR, "test.xlsx")
         with open(filename, "rb") as f:
             data = f.read()
@@ -81,13 +80,13 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(".xlsx", ext)
 
     def test_string_with_confidence(self):
-        """String identification: magic_string          |"""
+        """String identification: magic_string """
         ext = puremagic.magic_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext[0].extension)
         self.assertRaises(ValueError, puremagic.magic_string, "")
 
     def test_magic_string_with_filename_hint(self):
-        """String identification: magic_string with hint|"""
+        """String identification: magic_string with hint """
         filename = os.path.join(OFFICE_DIR, "test.xlsx")
         with open(filename, "rb") as f:
             data = f.read()
@@ -95,7 +94,7 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(".xlsx", ext[0].extension)
 
     def test_not_found(self):
-        """Bad file type via string                     |"""
+        """Bad file type via string """
         try:
             with self.assertRaises(puremagic.PureError):
                 puremagic.from_string("not applicable string")
@@ -105,7 +104,7 @@ class TestMagic(unittest.TestCase):
             pass
 
     def test_magic_file(self):
-        """File identification with magic_file          |"""
+        """File identification with magic_file """
         self.assertEqual(puremagic.magic_file(TGA_FILE)[0].extension, ".tga")
         open("test_empty_file", "w").close()
         try:
@@ -114,13 +113,13 @@ class TestMagic(unittest.TestCase):
             os.unlink("test_empty_file")
 
     def test_stream(self):
-        """Stream identification                        |"""
+        """Stream identification """
         ext = puremagic.from_stream(BytesIO(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
         self.assertRaises(ValueError, puremagic.from_stream, BytesIO(b""))
 
     def test_magic_stream(self):
-        """File identification with magic_stream          |"""
+        """File identification with magic_stream """
         with open(TGA_FILE, "rb") as f:
             stream = BytesIO(f.read())
         result = puremagic.magic_stream(stream, TGA_FILE)
@@ -128,47 +127,47 @@ class TestMagic(unittest.TestCase):
         self.assertRaises(ValueError, puremagic.magic_stream, BytesIO(b""))
 
     def test_mime(self):
-        """Identify mime type                           |"""
+        """Identify mime type """
         self.assertEqual(puremagic.from_file(TGA_FILE, True), "image/tga")
 
     def test_images(self):
-        """Test common image formats                    |"""
+        """Test common image formats """
         self.group_test(IMAGE_DIR)
 
     def test_video(self):
-        """Test common video formats                    |"""
+        """Test common video formats """
         self.group_test(VIDEO_DIR)
 
     def test_audio(self):
-        """Test common audio formats                    |"""
+        """Test common audio formats """
         self.group_test(AUDIO_DIR)
 
     def test_office(self):
-        """Test common office document formats          |"""
+        """Test common office document formats """
         # Office files have very similar magic numbers, and may overlap
         for item in os.listdir(OFFICE_DIR):
             puremagic.from_file(os.path.join(OFFICE_DIR, item))
 
     def test_archive(self):
-        """Test common compressed archive formats       |"""
+        """Test common compressed archive formats """
         # pcapng files from https://wiki.wireshark.org/Development/PcapNg
         self.group_test(ARCHIVE_DIR)
 
     def test_media(self):
-        """Test common media formats                    |"""
+        """Test common media formats """
         self.group_test(MEDIA_DIR)
 
     def test_system(self):
-        """Test common system formats                   |"""
+        """Test common system formats """
         self.group_test(SYSTEM_DIR)
 
     def test_ext(self):
-        """Test ext from filename                       |"""
+        """Test ext from filename """
         ext = puremagic.ext_from_filename("test.tar.bz2")
         assert ext == ".tar.bz2", ext
 
     def test_cmd_options(self):
-        """Test CLI options                             |"""
+        """Test CLI options """
         from puremagic.main import command_line_entry
 
         command_line_entry(__file__, "test.py")
