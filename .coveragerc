@@ -1,0 +1,13 @@
+[report]
+omit =
+    */python?.?/*
+    */site-packages/*
+    */test/*
+    */pypy/*
+    */venv/*
+    */.*/*
+    */*.egg-info/*
+    */.mypy_cache/*
+    */.pytest_cache/*
+exclude_lines =
+    command_line_entry
