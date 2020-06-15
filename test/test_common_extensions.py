@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest
 from tempfile import NamedTemporaryFile
 import os

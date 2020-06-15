@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
@@ -19,40 +19,50 @@ from itertools import chain
 from collections import namedtuple
 
 __author__ = "Chris Griffith"
-__version__ = "1.8"
-__all__ = ['magic_file', 'magic_string', 'magic_stream', 'from_file',
-           'from_string', 'from_stream', 'ext_from_filename', 'PureError',
-           'magic_footer_array', 'magic_header_array']
+__version__ = "1.9"
+__all__ = [
+    "magic_file",
+    "magic_string",
+    "magic_stream",
+    "from_file",
+    "from_string",
+    "from_stream",
+    "ext_from_filename",
+    "PureError",
+    "magic_footer_array",
+    "magic_header_array",
+]
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-MAGIC_INFO_TYPES = ('byte_match', 'offset', 'extension', 'mime_type', 'name',)
-PureMagic = namedtuple('PureMagic', MAGIC_INFO_TYPES)
-PureMagicWithConfidence = namedtuple('PureMagicWithConfidence',
-                                     (MAGIC_INFO_TYPES + ('confidence',)))
+MAGIC_INFO_TYPES = (
+    "byte_match",
+    "offset",
+    "extension",
+    "mime_type",
+    "name",
+)
+PureMagic = namedtuple("PureMagic", MAGIC_INFO_TYPES)  # type: ignore
+PureMagicWithConfidence = namedtuple("PureMagicWithConfidence", (MAGIC_INFO_TYPES + ("confidence",)))  # type: ignore
 
 
 class PureError(LookupError):
     """Do not have that type of file in our databanks"""
 
 
-def _magic_data(filename=os.path.join(here, 'magic_data.json')):
+def _magic_data(filename=os.path.join(here, "magic_data.json")):
     """ Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
-    headers = sorted((_create_puremagic(x) for x in data['headers']),
-                     key=lambda x: x.byte_match)
-    footers = sorted((_create_puremagic(x) for x in data['footers']),
-                     key=lambda x: x.byte_match)
+    headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
+    footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
     return headers, footers
 
 
 def _create_puremagic(x):
-    return PureMagic(byte_match=binascii.unhexlify(x[0].encode('ascii')),
-                     offset=x[1],
-                     extension=x[2],
-                     mime_type=x[3],
-                     name=x[4])
+    return PureMagic(
+        byte_match=binascii.unhexlify(x[0].encode("ascii")), offset=x[1], extension=x[2], mime_type=x[3], name=x[4]
+    )
 
 
 magic_header_array, magic_footer_array = _magic_data()
@@ -60,10 +70,8 @@ magic_header_array, magic_footer_array = _magic_data()
 
 def _max_lengths():
     """ The length of the largest magic string + its offset"""
-    max_header_length = max([len(x.byte_match) + x.offset
-                             for x in magic_header_array])
-    max_footer_length = max([len(x.byte_match) + abs(x.offset)
-                             for x in magic_footer_array])
+    max_header_length = max([len(x.byte_match) + x.offset for x in magic_header_array])
+    max_footer_length = max([len(x.byte_match) + abs(x.offset) for x in magic_footer_array])
     return max_header_length, max_footer_length
 
 
@@ -71,12 +79,10 @@ def _confidence(matches, ext=None):
     """ Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
-        con = (0.8 if len(match.extension) > 9 else
-               float("0.{0}".format(len(match.extension))))
+        con = 0.8 if len(match.extension) > 9 else float("0.{0}".format(len(match.extension)))
         if ext == match.extension:
             con = 0.9
-        results.append(
-            PureMagicWithConfidence(confidence=con, **match._asdict()))
+        results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
     return sorted(results, key=lambda x: x.confidence, reverse=True)
 
 
@@ -111,8 +117,7 @@ def _magic(header, footer, mime, ext=None):
     info = _identify_all(header, footer, ext)[0]
     if mime:
         return info.mime_type
-    return info.extension if not \
-        isinstance(info.extension, list) else info[0].extension
+    return info.extension if not isinstance(info.extension, list) else info[0].extension
 
 
 def _file_details(filename):
@@ -152,10 +157,9 @@ def ext_from_filename(filename):
     try:
         base, ext = filename.lower().rsplit(".", 1)
     except ValueError:
-        return ''
+        return ""
     ext = ".{0}".format(ext)
-    all_exts = [x.extension for x in chain(magic_header_array,
-                                           magic_footer_array)]
+    all_exts = [x.extension for x in chain(magic_header_array, magic_footer_array)]
 
     if base[-4:].startswith("."):
         # For double extensions like like .tar.gz
@@ -268,15 +272,17 @@ def magic_stream(stream, filename=None):
 def command_line_entry(*args):
     from argparse import ArgumentParser
     import sys
-    desc = "puremagic is a pure python file identification module. \
-    It looks for matching magic numbers in the file to locate the file type. "
-    parser = ArgumentParser(description=desc)
-    parser.add_argument("-m",
-                        "--mime",
-                        action="store_true",
-                        dest="mime",
-                        help="Return the mime type instead of file type")
-    parser.add_argument('files', nargs="+")
+
+    parser = ArgumentParser(
+        description=(
+            "puremagic is a pure python file identification module."
+            "It looks for matching magic numbers in the file to locate the file type. "
+        )
+    )
+    parser.add_argument(
+        "-m", "--mime", action="store_true", dest="mime", help="Return the mime type instead of file type"
+    )
+    parser.add_argument("files", nargs="+")
     args = parser.parse_args(args if args else sys.argv[1:])
 
     for fn in args.files:
@@ -289,5 +295,5 @@ def command_line_entry(*args):
             print("'{0}' : could not be Identified".format(fn))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     command_line_entry()

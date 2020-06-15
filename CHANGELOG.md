@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.9
+-----------
+
+- Adding new methods for stream handling (from_stream, magic_stream) (thanks to Robbert Korving)
+
 Version 1.8
 -----------
 
@@ -13,7 +18,7 @@ Version 1.7
 - Adding support for PCAPNG files (thanks to bannsec)
 - Adding support for numerous other files updated by Gary C. Kessler
 - Adding script for parsing FTK GCK sigs
-- Changing test suites to github workflows instead of TravisCI 
+- Changing test suites to github workflows instead of TravisCI
 - Removing official support, new packages and test for python 2
 
 Version 1.6

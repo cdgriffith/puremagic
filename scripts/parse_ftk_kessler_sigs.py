@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 """
 This is a very ugly helper script to keep up to date with file types in
 Gary C. Kessler's FTK_sigs_GCK archive.
@@ -28,26 +28,38 @@ for file in os.listdir(folder):
                 sig[child.tag] = child.text
             else:
                 for grandchild in child:
-                    if grandchild.tag == 'EXT_NAME':
-                        sig[grandchild.tag] = grandchild.text.lower().split("|")
+                    if grandchild.tag == "EXT_NAME":
+                        sig[grandchild.tag] = grandchild.text.lower().split("|")  # type: ignore
                     else:
-                        sig[grandchild.tag] = grandchild.text
+                        sig[grandchild.tag] = grandchild.text  # type: ignore
         sigs.append(sig)
 
-known_sigs = {binascii.hexlify(x[0]).decode('ascii') for x in puremagic.magic_header_array}
+known_sigs = {binascii.hexlify(x[0]).decode("ascii") for x in puremagic.magic_header_array}
 
 for sig in sigs:
-    sig['SIG'] = sig['SIG'].lower().strip()
+    sig["SIG"] = sig["SIG"].lower().strip()
     try:
-        offset = int(sig.get('OFFSET', 0))
+        offset = int(sig.get("OFFSET", 0))
     except Exception:
         continue
 
-    if sig['SIG'] not in known_sigs and len(sig['EXT_NAME']) == 1 and len(sig['EXT_NAME'][0]) < 5:
-        print("\t\t{},".format(json.dumps([sig['SIG'], int(sig.get('OFFSET', 0)), ".{}".format(sig.get('EXT_NAME', '')[0]), "", sig['DESCRIPTION']])))
-    elif sig['SIG'] not in known_sigs:
-        for ext in sig['EXT_NAME']:
+    if sig["SIG"] not in known_sigs and len(sig["EXT_NAME"]) == 1 and len(sig["EXT_NAME"][0]) < 5:
+        print(
+            "\t\t{},".format(
+                json.dumps(
+                    [
+                        sig["SIG"],
+                        int(sig.get("OFFSET", 0)),
+                        ".{}".format(sig.get("EXT_NAME", "")[0]),
+                        "",
+                        sig["DESCRIPTION"],
+                    ]
+                )
+            )
+        )
+    elif sig["SIG"] not in known_sigs:
+        for ext in sig["EXT_NAME"]:
             if ext != "(none)":
-                print("\t\t{},".format(json.dumps([sig['SIG'], offset, ".{}".format(ext), "", sig['DESCRIPTION']])))
+                print("\t\t{},".format(json.dumps([sig["SIG"], offset, ".{}".format(ext), "", sig["DESCRIPTION"]])))
             else:
-                print("\t\t{},".format(json.dumps([sig['SIG'], offset, "", "", sig['DESCRIPTION']])))
+                print("\t\t{},".format(json.dumps([sig["SIG"], offset, "", "", sig["DESCRIPTION"]])))

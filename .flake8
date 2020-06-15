@@ -1,0 +1,16 @@
+[flake8]
+max-line-length = 120
+exclude = .git,.idea,__pycache__,.gitignore,venv,.github,build,dist,test
+ignore =
+    # E203 whitespace before ':'
+    # black will insert some non-E203-compliant whitespace
+    E203,
+    # W503 line break before binary operator
+    # black will inserts non-W503-compliant line breaks
+    W503,
+    # F401 imported but unused
+    # for __version__, __author__
+    F401,
+    # F403 used; unable to detect undefined names
+    # When importing start but some names undefined
+    F403
