@@ -35,7 +35,7 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 3.4+
+-  Python 3.5+
 -  Pypy
 
 Using travis-ci to run continuous integration tests on listed platforms.
