@@ -13,4 +13,5 @@ ignore =
     F401,
     # F403 used; unable to detect undefined names
     # When importing start but some names undefined
-    F403
+    F403,
+    T001
