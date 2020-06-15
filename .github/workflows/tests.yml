@@ -27,14 +27,14 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements-test.txt
-        pip install coveralls
+        pip install coveralls black flake8 setuptools wheel twine
+    - name: Verify Code with Black
+      run: |
+        black --config=.black.toml --check puremagic test
     - name: Lint with flake8
       run: |
-        pip install flake8 flake8-print
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 box --count --select=E9,F63,F7,F82,T001,T002,T003,T004 --show-source --statistics
-        # exit-zero treats all errors as warnings.
-        flake8 . --count --exit-zero --max-complexity=20 --max-line-length=120 --statistics
+        # stop the tests if there are linting errors
+        flake8 puremagic --count --show-source --statistics
     - name: Test with pytest
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
@@ -43,9 +43,8 @@ jobs:
         coveralls || true
     - name: Check distrubiton log description
       run: |
-        pip install setuptools wheel twine
         python setup.py sdist bdist_wheel
         twine check dist/*
-        PURE_MAGIC_VERSION=$(python -c "import puremagic; print(puremagic.__version__)")
-        ls -lah "dist/puremagic-${PURE_MAGIC_VERSION}-py3-none-any.whl"
-        ls -lah "dist/puremagic-${PURE_MAGIC_VERSION}.tar.gz"
+        ls -lah "dist/"
+        WHL=$(find dist -name *.whl -print -quit)
+        echo ${WHL}

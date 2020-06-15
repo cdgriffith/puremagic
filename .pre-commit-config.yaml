@@ -1,0 +1,26 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.5.0
+    hooks:
+    - id: mixed-line-ending
+      exclude: ^test/resources/
+    - id: trailing-whitespace
+      exclude: ^test/resources/
+    - id: requirements-txt-fixer
+    - id: fix-encoding-pragma
+    - id: check-byte-order-marker
+    - id: debug-statements
+    - id: check-yaml
+-   repo: https://github.com/ambv/black
+    rev: 19.10b0
+    hooks:
+    - id: black
+      args: [--config=.black.toml]
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: master
+    hooks:
+    - id: flake8
+-   repo: https://github.com/pre-commit/mirrors-mypy
+    rev: 'v0.770'
+    hooks:
+    - id: mypy
