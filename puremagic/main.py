@@ -20,8 +20,8 @@ from collections import namedtuple
 
 __author__ = "Chris Griffith"
 __version__ = "1.8"
-__all__ = ['magic_file', 'magic_string', 'from_file', 'from_string',
-           'from_stream', 'ext_from_filename', 'PureError',
+__all__ = ['magic_file', 'magic_string', 'magic_stream', 'from_file',
+           'from_string', 'from_stream', 'ext_from_filename', 'PureError',
            'magic_footer_array', 'magic_header_array']
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -241,6 +241,24 @@ def magic_string(string, filename=None):
     if not string:
         raise ValueError("Input was empty")
     head, foot = _string_details(string)
+    ext = ext_from_filename(filename) if filename else None
+    info = _identify_all(head, foot, ext)
+    info.sort(key=lambda x: x.confidence, reverse=True)
+    return info
+
+
+def magic_stream(stream, filename=None):
+    """ Returns tuple of (num_of_matches, array_of_matches)
+    arranged highest confidence match first
+    If filename is provided it will be used in the computation.
+
+    :param stream: stream representation to check
+    :param filename: original filename
+    :return: list of possible matches, highest confidence first
+    """
+    head, foot = _stream_details(stream)
+    if not head:
+        raise ValueError("Input was empty")
     ext = ext_from_filename(filename) if filename else None
     info = _identify_all(head, foot, ext)
     info.sort(key=lambda x: x.confidence, reverse=True)
