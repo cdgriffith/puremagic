@@ -79,8 +79,8 @@ def _confidence(matches, ext=None):
     """ Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
-        con = 0.8 if len(match.byte_match) > 9 else float("0.{0}".format(len(match.byte_match)))
-        if ext and ext == match.extension:
+        con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
+        if con >= 0.1 and ext and ext == match.extension:
             con = 0.9
         results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
     return sorted(results, key=lambda x: x.confidence, reverse=True)
