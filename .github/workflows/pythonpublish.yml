@@ -29,13 +29,3 @@ jobs:
       run: |
         python setup.py sdist bdist_wheel
         twine upload dist/*
-    - name: Find whl file
-      run: |
-        WHL=$(find dist -name *.whl -print -quit)
-        echo ${WHL}
-    - name: Upload to release
-      uses: JasonEtco/upload-to-release@master
-      with:
-        args: ${WHL}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
