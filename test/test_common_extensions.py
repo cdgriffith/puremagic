@@ -68,18 +68,6 @@ class TestMagic(unittest.TestCase):
         ext = puremagic.from_string(bytes(self.mp4magic))
         self.assertEqual(self.expect_ext, ext)
 
-    def test_string_with_filename_hint(self):
-        """String identification with filename hint """
-        filename = os.path.join(OFFICE_DIR, "test.xlsx")
-        with open(filename, "rb") as f:
-            data = f.read()
-        ext = puremagic.from_string(data)
-        # .docx and .xlsx have same signature
-        self.assertEqual(".docx", ext)
-        # with the hint from_string() shoud find the correct extension
-        ext = puremagic.from_string(data, filename=filename)
-        self.assertEqual(".xlsx", ext)
-
     def test_string_with_confidence(self):
         """String identification: magic_string """
         ext = puremagic.magic_string(bytes(self.mp4magic))

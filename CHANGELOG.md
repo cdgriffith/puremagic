@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.10
+------------
+
+- Fixing how confidence works (thanks to Sean Stallbaum)
+
 Version 1.9
 -----------
 
