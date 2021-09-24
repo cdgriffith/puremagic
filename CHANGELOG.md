@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 1.11
+------------
+
+- Adding #34 test files to build (thanks to James French)
+- Adding #33 install from pypi details (thanks to Sander)
+- Removing #31 unsupported Python items in setup.py (thanks to Safihre)
+
 Version 1.10
 ------------
 
