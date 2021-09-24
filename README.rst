@@ -40,8 +40,16 @@ Compatibility
 
 Using travis-ci to run continuous integration tests on listed platforms.
 
-Install
--------
+Install from pypy
+-----------------
+
+.. code:: bash
+
+        $ python3 -m pip install puremagic
+
+
+Install from source
+-------------------
 
 In either a virtualenv or globally, simply run:
 
