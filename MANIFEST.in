@@ -2,3 +2,5 @@ include puremagic/*.json
 include LICENSE
 include AUTHORS.rst
 include CHANGELOG.md
+graft test
+global-exclude *.py[cod]

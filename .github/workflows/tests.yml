@@ -15,32 +15,38 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
+
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python-version }}
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements-test.txt
-        pip install coveralls black flake8 setuptools wheel twine
+        pip install coveralls black==21.9b0 flake8 setuptools wheel twine
+
     - name: Verify Code with Black
       run: |
         black --config=.black.toml --check puremagic test
+
     - name: Lint with flake8
       run: |
         # stop the tests if there are linting errors
         flake8 puremagic --count --show-source --statistics
+
     - name: Test with pytest
       env:
         COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
       run: |
         python -m pytest --cov=puremagic test/
         coveralls || true
+
     - name: Check distrubiton log description
       run: |
         python setup.py sdist bdist_wheel

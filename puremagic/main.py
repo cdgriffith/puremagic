@@ -5,7 +5,7 @@ puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
 compatible, with no imports when used as a module.
 
-© 2013-2020 Chris Griffith - License: MIT (see LICENSE)
+© 2013-2021 Chris Griffith - License: MIT (see LICENSE)
 
 Acknowledgements
 Gary C. Kessler
@@ -19,7 +19,7 @@ from itertools import chain
 from collections import namedtuple
 
 __author__ = "Chris Griffith"
-__version__ = "1.10"
+__version__ = "1.11"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -51,7 +51,7 @@ class PureError(LookupError):
 
 
 def _magic_data(filename=os.path.join(here, "magic_data.json")):
-    """ Read the magic file"""
+    """Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
     headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
@@ -69,14 +69,14 @@ magic_header_array, magic_footer_array = _magic_data()
 
 
 def _max_lengths():
-    """ The length of the largest magic string + its offset"""
+    """The length of the largest magic string + its offset"""
     max_header_length = max([len(x.byte_match) + x.offset for x in magic_header_array])
     max_footer_length = max([len(x.byte_match) + abs(x.offset) for x in magic_footer_array])
     return max_header_length, max_footer_length
 
 
 def _confidence(matches, ext=None):
-    """ Rough confidence based on string length and file extension"""
+    """Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
         con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
@@ -87,7 +87,7 @@ def _confidence(matches, ext=None):
 
 
 def _identify_all(header, footer, ext=None):
-    """ Attempt to identify 'data' by its magic numbers"""
+    """Attempt to identify 'data' by its magic numbers"""
 
     # Capture the length of the data
     # That way we do not try to identify bytes that don't exist
@@ -111,7 +111,7 @@ def _identify_all(header, footer, ext=None):
 
 
 def _magic(header, footer, mime, ext=None):
-    """ Discover what type of file it is based on the incoming string """
+    """Discover what type of file it is based on the incoming string"""
     if not header:
         raise ValueError("Input was empty")
     info = _identify_all(header, footer, ext)[0]
@@ -121,7 +121,7 @@ def _magic(header, footer, mime, ext=None):
 
 
 def _file_details(filename):
-    """ Grab the start and end of the file"""
+    """Grab the start and end of the file"""
     max_head, max_foot = _max_lengths()
     with open(filename, "rb") as fin:
         head = fin.read(max_head)
@@ -134,13 +134,13 @@ def _file_details(filename):
 
 
 def _string_details(string):
-    """ Grab the start and end of the string"""
+    """Grab the start and end of the string"""
     max_head, max_foot = _max_lengths()
     return string[:max_head], string[-max_foot:]
 
 
 def _stream_details(stream):
-    """ Grab the start and end of the stream"""
+    """Grab the start and end of the stream"""
     max_head, max_foot = _max_lengths()
     head = stream.read(max_head)
     stream.seek(-max_foot, os.SEEK_END)
@@ -149,7 +149,7 @@ def _stream_details(stream):
 
 
 def ext_from_filename(filename):
-    """ Scan a filename for it's extension.
+    """Scan a filename for it's extension.
 
     :param filename: string of the filename
     :return: the extension off the end (empty string if it can't find one)
@@ -170,7 +170,7 @@ def ext_from_filename(filename):
 
 
 def from_file(filename, mime=False):
-    """ Opens file, attempts to identify content based
+    """Opens file, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
 
@@ -184,7 +184,7 @@ def from_file(filename, mime=False):
 
 
 def from_string(string, mime=False, filename=None):
-    """ Reads in string, attempts to identify content based
+    """Reads in string, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
     If filename is provided it will be used in the computation.
@@ -200,7 +200,7 @@ def from_string(string, mime=False, filename=None):
 
 
 def from_stream(stream, mime=False, filename=None):
-    """ Reads in stream, attempts to identify content based
+    """Reads in stream, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
     If filename is provided it will be used in the computation.
@@ -216,7 +216,7 @@ def from_stream(stream, mime=False, filename=None):
 
 
 def magic_file(filename):
-    """ Returns tuple of (num_of_matches, array_of_matches)
+    """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first.
 
     :param filename: path to file
@@ -234,7 +234,7 @@ def magic_file(filename):
 
 
 def magic_string(string, filename=None):
-    """ Returns tuple of (num_of_matches, array_of_matches)
+    """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
 
@@ -252,7 +252,7 @@ def magic_string(string, filename=None):
 
 
 def magic_stream(stream, filename=None):
-    """ Returns tuple of (num_of_matches, array_of_matches)
+    """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
 

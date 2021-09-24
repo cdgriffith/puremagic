@@ -35,13 +35,27 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 3.5+
+-  Python 3.6+
 -  Pypy
 
 Using travis-ci to run continuous integration tests on listed platforms.
 
-Install
--------
+Install from pypy
+-----------------
+
+.. code:: bash
+
+        $ pip install puremagic
+
+On linux environments, you may want to be clear you are using python3
+
+.. code:: bash
+
+        $ python3 -m pip install puremagic
+
+
+Install from source
+-------------------
 
 In either a virtualenv or globally, simply run:
 
@@ -138,7 +152,7 @@ https://cgit.freedesktop.org/xdg/shared-mime-info/
 License
 -------
 
-MIT Licenced, see LICENSE, Copyright (c) 2013-2020 Chris Griffith
+MIT Licenced, see LICENSE, Copyright (c) 2013-2021 Chris Griffith
 
 .. |CoverageStatus| image:: https://coveralls.io/repos/github/cdgriffith/puremagic/badge.svg?branch=develop
    :target: https://coveralls.io/github/cdgriffith/puremagic?branch=develop
