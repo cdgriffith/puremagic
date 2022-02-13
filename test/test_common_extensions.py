@@ -58,11 +58,7 @@ class TestMagic(unittest.TestCase):
                 )
             )
         if mime_failures:
-            raise AssertionError(
-                "The following files did not have a mime type: {}".format(
-                    ", ".join(mime_failures)
-                )
-            )
+            raise AssertionError("The following files did not have a mime type: {}".format(", ".join(mime_failures)))
 
     def test_file(self):
         """File identification"""
