@@ -14,3 +14,5 @@ A big thank you to everyone that has helped!
 - Oleksandr (msdinit)
 - Robbert Korving (robkorv)
 - Sean Stallbaum (CSBaum)
+- phithon
+- Gerhard Schmidt
