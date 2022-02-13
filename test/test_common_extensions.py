@@ -28,6 +28,7 @@ class TestMagic(unittest.TestCase):
     def group_test(self, directory):
         failures = []
         ext_failures = []
+        mime_failures = []
         for item in os.listdir(directory):
             try:
                 ext = puremagic.from_file(os.path.join(directory, item))
@@ -36,6 +37,14 @@ class TestMagic(unittest.TestCase):
             else:
                 if not item.endswith(ext):
                     ext_failures.append((item, ext))
+
+            try:
+                mime = puremagic.from_file(os.path.join(directory, item), mime=True)
+            except puremagic.PureError:
+                failures.append(item)
+            else:
+                if not mime:
+                    mime_failures.append(item)
         if failures:
             raise AssertionError(
                 "The following items could not be identified from the {} folder: {}".format(
@@ -46,6 +55,12 @@ class TestMagic(unittest.TestCase):
             raise AssertionError(
                 "The following files did not have the expected extensions: {}".format(
                     ", ".join(['"{}" expected "{}"'.format(item, ext) for item, ext in ext_failures])
+                )
+            )
+        if mime_failures:
+            raise AssertionError(
+                "The following files did not have a mime type: {}".format(
+                    ", ".join(mime_failures)
                 )
             )
 

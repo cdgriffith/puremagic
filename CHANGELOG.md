@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 1.12
+------------
+
+- Adding #38 webp mimetype (thanks to phith0n)
+- Adding #37 SVG images (thanks to Gerhard Schmidt)
+- Adding missing mimetypes for aac, vmdk, wmv and xcf
+
 Version 1.11
 ------------
 
