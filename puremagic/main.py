@@ -36,22 +36,36 @@ __all__ = [
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-MAGIC_INFO_TYPES = (
-    "byte_match",
-    "offset",
-    "extension",
-    "mime_type",
-    "name",
+PureMagic = namedtuple(
+    "PureMagic",
+    (
+        "byte_match",
+        "offset",
+        "extension",
+        "mime_type",
+        "name",
+    ),
 )
-PureMagic = namedtuple("PureMagic", MAGIC_INFO_TYPES)  # type: ignore
-PureMagicWithConfidence = namedtuple("PureMagicWithConfidence", (MAGIC_INFO_TYPES + ("confidence",)))  # type: ignore
+PureMagicWithConfidence = namedtuple(
+    "PureMagicWithConfidence",
+    (
+        "byte_match",
+        "offset",
+        "extension",
+        "mime_type",
+        "name",
+        "confidence",
+    ),
+)
 
 
 class PureError(LookupError):
     """Do not have that type of file in our databanks"""
 
 
-def _magic_data(filename=os.path.join(here, "magic_data.json")):
+def _magic_data(
+    filename: Union[os.PathLike | str] = os.path.join(here, "magic_data.json"),
+) -> Tuple[List[PureMagic], List[PureMagic]]:
     """Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
@@ -60,7 +74,7 @@ def _magic_data(filename=os.path.join(here, "magic_data.json")):
     return headers, footers
 
 
-def _create_puremagic(x):
+def _create_puremagic(x: List) -> PureMagic:
     return PureMagic(
         byte_match=binascii.unhexlify(x[0].encode("ascii")), offset=x[1], extension=x[2], mime_type=x[3], name=x[4]
     )
@@ -83,11 +97,11 @@ def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
         con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
         if con >= 0.1 and ext and ext == match.extension:
             con = 0.9
-        results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))  # type: ignore
-    return sorted(results, key=lambda x: x.confidence, reverse=True)  # type: ignore
+        results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
+    return sorted(results, key=lambda x: x.confidence, reverse=True)
 
 
-def _identify_all(header: bytes, footer: bytes, ext=None):
+def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithConfidence]:
     """Attempt to identify 'data' by its magic numbers"""
 
     # Capture the length of the data
@@ -111,7 +125,7 @@ def _identify_all(header: bytes, footer: bytes, ext=None):
     return _confidence(matches, ext)
 
 
-def _magic(header, footer, mime, ext=None):
+def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
     """Discover what type of file it is based on the incoming string"""
     if not header:
         raise ValueError("Input was empty")
@@ -149,8 +163,8 @@ def _stream_details(stream):
     return head, foot
 
 
-def ext_from_filename(filename: Union[os.PathLike | str]):
-    """Scan a filename for it's extension.
+def ext_from_filename(filename: Union[os.PathLike | str]) -> str:
+    """Scan a filename for its extension.
 
     :param filename: string of the filename
     :return: the extension off the end (empty string if it can't find one)
@@ -170,7 +184,7 @@ def ext_from_filename(filename: Union[os.PathLike | str]):
     return ext
 
 
-def from_file(filename: Union[os.PathLike | str], mime: bool = False):
+def from_file(filename: Union[os.PathLike | str], mime: bool = False) -> str:
     """Opens file, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -184,7 +198,7 @@ def from_file(filename: Union[os.PathLike | str], mime: bool = False):
     return _magic(head, foot, mime, ext_from_filename(filename))
 
 
-def from_string(string: Union[str | bytes], mime: bool = False, filename: Union[os.PathLike | str] = None):
+def from_string(string: Union[str | bytes], mime: bool = False, filename: Union[os.PathLike | str] = None) -> str:
     """Reads in string, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -202,7 +216,7 @@ def from_string(string: Union[str | bytes], mime: bool = False, filename: Union[
     return _magic(head, foot, mime, ext)
 
 
-def from_stream(stream, mime: bool = False, filename: Union[os.PathLike | str] = None):
+def from_stream(stream, mime: bool = False, filename: Union[os.PathLike | str] = None) -> str:
     """Reads in stream, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -218,8 +232,9 @@ def from_stream(stream, mime: bool = False, filename: Union[os.PathLike | str] =
     return _magic(head, foot, mime, ext)
 
 
-def magic_file(filename: Union[os.PathLike | str]):
-    """Returns tuple of (num_of_matches, array_of_matches)
+def magic_file(filename: Union[os.PathLike | str]) -> List[PureMagicWithConfidence]:
+    """
+    Returns list of (num_of_matches, array_of_matches)
     arranged highest confidence match first.
 
     :param filename: path to file
@@ -236,8 +251,9 @@ def magic_file(filename: Union[os.PathLike | str]):
     return info
 
 
-def magic_string(string, filename: Union[os.PathLike | str] = None):
-    """Returns tuple of (num_of_matches, array_of_matches)
+def magic_string(string, filename: Union[os.PathLike | str] = None) -> List[PureMagicWithConfidence]:
+    """
+    Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
 
@@ -254,7 +270,7 @@ def magic_string(string, filename: Union[os.PathLike | str] = None):
     return info
 
 
-def magic_stream(stream, filename: Union[os.PathLike | str] = None):
+def magic_stream(stream, filename: Union[os.PathLike | str] = None) -> List[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
