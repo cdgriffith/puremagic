@@ -1117,8 +1117,8 @@
 		["504d4f43434d4f43", 0, ".pmoccmoc", "", "Microsoft Windows User State Migration Tool"],
 		["fff9", 0, ".aac", "audio/aac", "MPEG-2 AAC audio"],
 		["fff1", 0, ".aac", "audio/aac", "MPEG-4 AAC audio"],
-		["6674797033677035", 4, ".mp4", "", "MPEG-4 video file"],
-		["0000001c66747970", 0, ".mp4", "", "MPEG-4 video"],
+		["6674797033677035", 4, ".mp4", "video/mp4", "MPEG-4 video file"],
+		["0000001c66747970", 0, ".mp4", "video/mp4", "MPEG-4 video"],
 		["fdffffff02", 512, ".pub", "", "MS Publisher file subheader"],
 		["53505642", 0, ".spvb", "", "MultiBit Bitcoin blockchain file"],
 		["0a166f72672e626974636f696e2e7072", 0, ".wallet", "", "MultiBit Bitcoin wallet file"],
@@ -1152,6 +1152,7 @@
 		["4d73526366", 0, ".gdb", "", "VMapSource GPS Waypoint Database"],
 		["5b564d445d", 0, ".vmd", "application/vocaltec-media-desc", "VocalTec VoIP media file"],
 		["54485000", 0, ".thp", "", "Wii-GameCube"],
+        ["69736f32617663316d7034", 20, ".mp4", "video/mp4", "MP4 Video"],
 		["434d4d4d15000000", 0, ".db", "", "Windows 7 thumbnail"],
 		["494d4d4d15000000", 0, ".db", "", "Windows 7 thumbnail"],
 		["0000000014000000", 0, ".tbi", "", "Windows Disk Image"],
@@ -1208,6 +1209,15 @@
         ["57696e646f7773205265676973747279", 0, ".reg", "application/vnd.microsoft.portable-executable", "Windows Registry File"],
         ["3c73766720", 0, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
         ["3c3f786d6c2076657273696f6e3d22312e3022207374616e64616c6f6e653d22796573223f3e0a3c73766720", 0, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
-        ["3c3f786d6c2076657273696f6e3d22312e3022207374616e64616c6f6e653d22796573223f3e3c73766720", 0, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"]
+        ["3c3f786d6c2076657273696f6e3d22312e3022207374616e64616c6f6e653d22796573223f3e3c73766720", 0, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
+        ["6674797061766966", 4, ".avif", "image/avif", "AV1 Image format"],
+        ["6674797068656963", 4, ".heif", "image/heif", "HEIF Image format"],
+        ["6674797068656978", 4, ".heic", "image/heic", "HEIC Image format (HEIX)"],
+        ["6674797068657663", 4, ".heic", "image/heic", "HEIC Animated Image format (HEVC)"],
+        ["6674797068657678", 4, ".heic", "image/heic", "HEIC Animated Image format (HEVX)"],
+        ["6674797068656973", 4, ".heic", "image/heic", "HEIC Image format (HEIS scalable)"],
+        ["667479706865696d", 4, ".heic", "image/heic", "HEIC Image format (HEIM multiview)"],
+        ["667479706865766d", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIM multiview)"],
+        ["6674797068657673", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIS scalable)"]
     ]
 }
