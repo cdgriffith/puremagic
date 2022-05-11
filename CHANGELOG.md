@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 1.13
+------------
+
+- Adding support for Path for filename
+- Adding details for mp4
+- Adding details for avif and heif images
+
 Version 1.12
 ------------
 
