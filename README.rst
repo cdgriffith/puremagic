@@ -91,6 +91,21 @@ With "magic_file" it gives each match, highest confidence first:
    however this orders it by longest header, therefore most precise,
    first)
 
+If you already have a file open, or raw byte string, you could also use:
+
+* from_string
+* from_stream
+* magic_string
+* magic_stream
+
+.. code:: python
+
+        with open(r"test\resources\video\test.mp4", "rb") as file:
+            print(puremagic.magic_stream(file))
+
+        # [PureMagicWithConfidence(byte_match=b'ftypisom', offset=4, extension='.mp4', mime_type='video/mp4', name='MPEG-4 video', confidence=0.8),
+        #  PureMagicWithConfidence(byte_match=b'iso2avc1mp4', offset=20, extension='.mp4', mime_type='video/mp4', name='MP4 Video', confidence=0.8)]
+
 Script
 ------
 

@@ -5,6 +5,7 @@ Version 1.14
 ------------
 
 - Adding generic extension mapping for common file types
+- Adding #36 details to readme about magic_stream and magic_string (thanks to Martin)
 - Fixing multiple bad extensions and mimetypes
 - Removing bad entry for 3gp5 selecting multiple things
 
