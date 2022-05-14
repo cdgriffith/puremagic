@@ -4,6 +4,8 @@ Changelog
 Version 1.14
 ------------
 
+- Adding generic extension mapping for common file types
+- Fixing multiple bad extensions and mimetypes
 - Removing bad entry for 3gp5 selecting multiple things
 
 Version 1.13

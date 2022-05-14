@@ -65,13 +65,14 @@ class PureError(LookupError):
 
 def _magic_data(
     filename: Union[os.PathLike, str] = os.path.join(here, "magic_data.json"),
-) -> Tuple[List[PureMagic], List[PureMagic]]:
+) -> Tuple[List[PureMagic], List[PureMagic], List[PureMagic]]:
     """Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
     headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
     footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
-    return headers, footers
+    extensions = [_create_puremagic(x) for x in data["extension_only"]]
+    return headers, footers, extensions
 
 
 def _create_puremagic(x: List) -> PureMagic:
@@ -80,7 +81,7 @@ def _create_puremagic(x: List) -> PureMagic:
     )
 
 
-magic_header_array, magic_footer_array = _magic_data()
+magic_header_array, magic_footer_array, extension_only_array = _magic_data()
 
 
 def _max_lengths() -> Tuple[int, int]:
@@ -98,6 +99,15 @@ def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
         if con >= 0.1 and ext and ext == match.extension:
             con = 0.9
         results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
+
+    if not results and ext:
+        for magic_row in extension_only_array:
+            if ext == magic_row.extension:
+                results.append(PureMagicWithConfidence(confidence=0.1, **magic_row._asdict()))
+
+    if not results:
+        raise PureError("Could not identify file")
+
     return sorted(results, key=lambda x: x.confidence, reverse=True)
 
 
@@ -119,8 +129,6 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
         start = magic_row.offset
         if footer[start:] == magic_row.byte_match:
             matches.append(magic_row)
-    if not matches:
-        raise PureError("Could not identify file")
 
     return _confidence(matches, ext)
 
