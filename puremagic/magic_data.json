@@ -53,7 +53,6 @@
         ["4b444d", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Split Disk file"],
         ["4b444d56", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Single Disk file"],
         ["e310000100000000", 0, ".info", "", "Amiga icon"],
-        ["0000001866747970", 0, ".3gp5", "", "MPEG-4 video files"],
         ["5468697320697320", 0, ".info", "", "GNU Info Reader file"],
         ["456c6646696c6500", 0, ".evtx", "", "Windows Vista event log"],
         ["23204469736b2044", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Disk description"],

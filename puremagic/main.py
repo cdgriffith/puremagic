@@ -20,7 +20,7 @@ from collections import namedtuple
 from typing import Union, Tuple, List
 
 __author__ = "Chris Griffith"
-__version__ = "1.13"
+__version__ = "1.14"
 __all__ = [
     "magic_file",
     "magic_string",

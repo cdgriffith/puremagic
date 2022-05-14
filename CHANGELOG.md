@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.14
+------------
+
+- Removing bad entry for 3gp5 selecting multiple things
+
 Version 1.13
 ------------
 
