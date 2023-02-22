@@ -168,6 +168,7 @@ def _stream_details(stream):
     head = stream.read(max_head)
     stream.seek(-max_foot, os.SEEK_END)
     foot = stream.read()
+    stream.seek(0)
     return head, foot
 
 
