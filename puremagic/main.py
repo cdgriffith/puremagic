@@ -5,7 +5,7 @@ puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
 compatible, with no imports when used as a module.
 
-© 2013-2022 Chris Griffith - License: MIT (see LICENSE)
+© 2013-2023 Chris Griffith - License: MIT (see LICENSE)
 
 Acknowledgements
 Gary C. Kessler
@@ -20,7 +20,7 @@ from collections import namedtuple
 from typing import Union, Tuple, List
 
 __author__ = "Chris Griffith"
-__version__ = "1.14"
+__version__ = "1.15"
 __all__ = [
     "magic_file",
     "magic_string",
