@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.15
+------------
+
+- Adding fix for resetting the stream after reading part of it (thanks to R. Singh)
+
 Version 1.14
 ------------
 
