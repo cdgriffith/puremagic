@@ -13,7 +13,6 @@
         ["", 0, ".gitconfig", "text/plain", "Git Ignore File"],
         ["", 0, ".rdp", "", "Windows Remote Desktop File"],
         ["", 0, ".ini", "text/plain", "INI Config file"],
-        ["", 0, ".epub", "", "INI Config file"],
         ["", 0, ".key", "", "Encryption Key"],
         ["", 0, ".pem", "application/x-pem-file", "X.509 Certificate"],
         ["", 0, ".ps1", "text/plain", "Powershell Script"],
