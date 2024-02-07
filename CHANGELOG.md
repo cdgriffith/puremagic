@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 1.20
+------------
+
+- Adding support for multi-part header checks (thanks to Andy)
+- Fixing matches for webp (thanks to Nicolas Wicht)
+- Fixing matches for epub (thanks to Alexander Walters)
+
 Version 1.15
 ------------
 
