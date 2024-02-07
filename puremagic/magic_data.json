@@ -13,7 +13,6 @@
         ["", 0, ".gitconfig", "text/plain", "Git Ignore File"],
         ["", 0, ".rdp", "", "Windows Remote Desktop File"],
         ["", 0, ".ini", "text/plain", "INI Config file"],
-        ["", 0, ".epub", "", "INI Config file"],
         ["", 0, ".key", "", "Encryption Key"],
         ["", 0, ".pem", "application/x-pem-file", "X.509 Certificate"],
         ["", 0, ".ps1", "text/plain", "Powershell Script"],
@@ -53,12 +52,54 @@
         ["", 0, ".pickle", "", "Python Pickle File"],
         ["", 0, ".conf", "text/plain", "Configuration File"]
     ],
+    "multi-part-headers": {
+        "464f524d": [
+            ["494c424d", 8, ".iff", "image/x-ilbm", "IFF Interleaved Bitmap Image"],
+            ["38535658", 8, ".iff", "audio/x-8svx", "IFF 8-Bit Sampled Voice"],
+            ["4143424d", 8, ".iff", "application/x-iff", "Amiga Contiguous Bitmap"],
+            ["414e424d", 8, ".iff", "application/x-iff", "IFF Animated Bitmap"],
+            ["414e494d", 8, ".iff", "application/x-iff", " IFF CEL Animation"],
+            ["46415858", 8, ".iff", "application/x-iff", "IFF Facsimile Image"],
+            ["46545854", 8, ".iff", "application/x-iff", "IFF Formatted Text"],
+            ["534d5553", 8, ".iff", "application/x-iff", "IFF Facsimile Image"],
+            ["434d5553", 8, ".iff", "application/x-iff", "IFF Formatted Text"],
+            ["5955564e", 8, ".iff", "application/x-iff", "IFF YUV Image"],
+            ["46414e54", 8, ".iff", "application/x-iff", "Amiga Fantavision Movie"],
+            ["41494646", 8, ".iff", "application/x-iff", "Audio Interchange File Format"]
+        ],
+        "52494646": [
+            ["57415645", 8, ".wav", "audio/wave", "Waveform Audio File Format"],
+            ["41564920", 8, ".avi", "video/avi", "Audio Video Interleave"],
+            ["57454250", 8, ".webp", "image/webp", "WebP graphics file format"],
+            ["41434f4e", 8, ".ani", "", "Animated cursor"],
+            ["43444441", 8, ".cda", "", "CD-DA stub file"],
+            ["514c434d", 8, ".qcp", "audio/qcelp", "Qualcomm PureVoice"],
+            ["5644524d", 8, ".vdr", "", "VirtualDub"],
+            ["54524944", 8, ".trd", "", "TrID"],
+            ["73687734", 8, ".shw", "", "Corel SHOW! 4.0"],
+            ["73687735", 8, ".shw", "", "Corel SHOW! 5.0"],
+            ["73687235", 8, ".shr", "", "Corel SHOW! 5.0 player"],
+            ["73686235", 8, ".shb", "", " Corel SHOW! 5.0 background"],
+            ["524d4d50", 8, ".mmm", "", "MacroMind Multimedia Movie or Microsoft Multimedia Movie"]
+        ],
+        "41542654464f524d": [
+            ["444a5655", 12, ".djvu", "image/vnd.djvu", "DjVu single page document or image"],
+            ["444a564d", 12, ".djvu", "image/vnd.djvu+multipage", "DjVu document multi-page document"]
+        ],
+        "52494658": [
+            ["4647444d", 8, ".dcr", "", "Adobe Shockwave"],
+            ["4d563933", 8, ".dir", "", "Macromedia Director file format"]
+        ]
+    },
     "footers": [
         ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
-        ["000001b7", -4, ".mpeg", "video/mpeg", "MPEG video file"]
+        ["000001b7", -4, ".mpeg", "video/mpeg", "MPEG video file"],
+        ["3c2f7376673e", -8, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
+        ["3c2f7376673e", -7, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
+        ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"]
     ],
     "headers": [
-        ["3c3f786d6c2076657273696f6e3d", 0, ".xml", "application/xml", "XML Document"],
+        ["3c3f786d6c", 0, ".xml", "application/xml", "XML Document"],
         ["454c46", 1, ".AppImage", "application/x-iso9660-appimage", "AppImage application bundle"],
         ["4341434845204d414e4946455354", 0, ".manifest", "text/cache-manifest", "Web application cache manifest"],
         ["425a68", 0, ".tar.bz2", "application/x-bzip2", "bzip2 compressed archive"],
@@ -110,7 +151,7 @@
         ["456c6646696c6500", 0, ".evtx", "", "Windows Vista event log"],
         ["23204469736b2044", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Disk description"],
         ["4d444d5093a7", 0, ".hdmp", "", "Windows dump file"],
-        ["464f524d00", 0, ".aiff", "audio/aiff", "Audio Interchange File"],
+        ["464f524d", 0, ".aiff", "audio/aiff", "Audio Interchange File"],
         ["4d546864", 0, ".midi", "audio/midi", "MIDI sound file"],
         ["2e524d46", 0, ".rmvb", "", "RealMedia streaming media"],
         ["504b0304", 0, ".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "MS Office Open XML Format Document"],
@@ -132,6 +173,7 @@
         ["ffd8ff", 0, ".jfif", "image/jpeg", "JPEG|EXIF|SPIFF images"],
         ["514649", 0, ".qemu", "", "Qcow Disk Image"],
         ["504b5c3030335c303034", 0, ".epub", "application/epub+zip", "electronic book document"],
+        ["6d696d65747970656170706c69636174696f6e2f657075622b7a6970", 30, ".epub", "application/epub+zip", "electronic book document"],
         ["46726f6d20", 0, ".mbox", "application/mbox", "mailbox file"],
         ["232552414d4c20", 0, ".raml", "application/raml+yaml", "RAML document"],
         ["7a1a2010", 0, ".sisx", "x-epoc/x-sisx-app", "SISX package"],
@@ -252,7 +294,6 @@
         ["ffffffff", 0, ".sys", "text/plain", "DOS system driver"],
         ["3c3f786d6c2076657273696f6e3d22312e30223f3e0d0a3c4d4d435f436f6e736f6c6546696c6520436f6e736f6c6556657273696f6e3d22", 0, ".msc", "", "MMC Snap-in Control file"],
         ["4d6963726f736f66742057696e646f7773204d6564696120506c61796572202d2d20", 84, ".wpl", "", "Windows Media Player playlist"],
-        ["3c3f786d6c2076657273696f6e3d22312e30223f3e", 0, ".xml", "application/xml", "XML Document"],
         ["4d6963726f736f66742056697375616c", 0, ".sln", "", "Visual Studio .NET file"],
         ["4d6963726f736f667420432f432b2b20", 0, ".pdb", "", "MS C++ debugging symbols file"],
         ["4d5a90000300000004000000ffff", 0, ".zap", "", "ZoneAlam data file"],
@@ -1169,6 +1210,8 @@
 		["43444441666d7420", 8, ".cda", "", "RIFF CD audio"],
 		["514c434d666d7420", 8, ".qcp", "audio/vnd.qcelp", "RIFF Qualcomm PureVoice"],
 		["57454250", 8, ".webp", "image/webp", "RIFF WebP"],
+		["524946462400000057454250", 0, ".webp", "image/webp", "RIFF WebP"],
+        ["524946462400000057454250565038", 0, ".webp", "image/webp", "RIFF WebP VP8"],
 		["524d494464617461", 8, ".rmi", "", "RIFF Windows MIDI"],
 		["484541444552205245434f52442a2a2a", 0, ".xpt", "", "SAS Transport dataset"],
 		["232153494c4b0a", 0, ".sil", "", "Skype audio compression"],
@@ -1230,7 +1273,6 @@
         ["74657874", 73, ".odt", "application/vnd.oasis.opendocument.text", "OpenDocument Text File"],
         ["70726573656e746174696f6e", 73, ".odp", "application/vnd.oasis.opendocument.presentation", "OpenDocument Presentation"],
         ["7370726561647368656574", 73, ".ods", "application/vnd.oasis.opendocument.spreadsheet", "OpenDocument Spreadsheet"],
-        ["786d6c", 2, ".xml", "application/xml", "XML File"],
         ["526172211a070100", 0, ".rar", "application/vnd.rar", "RAR Archive"],
         ["4d5a9000", 0, ".exe", "application/vnd.microsoft.portable-executable", "Windows Executable"],
         ["00010000", 0, ".ttf", "font/ttf", "TTF Font"],

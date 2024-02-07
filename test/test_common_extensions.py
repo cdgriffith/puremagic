@@ -4,6 +4,7 @@ from tempfile import NamedTemporaryFile
 import os
 from io import BytesIO
 import pytest
+from pathlib import Path
 
 import puremagic
 
@@ -176,6 +177,9 @@ class TestMagic(unittest.TestCase):
         """Test bad magic imput"""
         with pytest.raises(ValueError):
             puremagic.main._magic(None, None, None)
+
+    def test_fake_file(self):
+        assert puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file")) == []
 
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
 compatible, with no imports when used as a module.
 
-© 2013-2023 Chris Griffith - License: MIT (see LICENSE)
+© 2013-2024 Chris Griffith - License: MIT (see LICENSE)
 
 Acknowledgements
 Gary C. Kessler
@@ -17,10 +17,10 @@ import json
 import binascii
 from itertools import chain
 from collections import namedtuple
-from typing import Union, Tuple, List
+from typing import Union, Tuple, List, Dict, Optional
 
 __author__ = "Chris Griffith"
-__version__ = "1.15"
+__version__ = "1.20"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -32,6 +32,7 @@ __all__ = [
     "PureError",
     "magic_footer_array",
     "magic_header_array",
+    "multi_part_header_dict",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -65,23 +66,37 @@ class PureError(LookupError):
 
 def _magic_data(
     filename: Union[os.PathLike, str] = os.path.join(here, "magic_data.json"),
-) -> Tuple[List[PureMagic], List[PureMagic], List[PureMagic]]:
+) -> Tuple[
+    List[PureMagic],
+    List[PureMagic],
+    List[PureMagic],
+    Dict[bytes, List[PureMagic]],
+]:
     """Read the magic file"""
     with open(filename) as f:
         data = json.load(f)
     headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
     footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
     extensions = [_create_puremagic(x) for x in data["extension_only"]]
-    return headers, footers, extensions
+    multi_part_extensions = {}
+    for header_match, option_list in data["multi-part-headers"].items():
+        multi_part_extensions[binascii.unhexlify(header_match.encode("ascii"))] = [
+            _create_puremagic(x) for x in option_list
+        ]
+    return headers, footers, extensions, multi_part_extensions
 
 
 def _create_puremagic(x: List) -> PureMagic:
     return PureMagic(
-        byte_match=binascii.unhexlify(x[0].encode("ascii")), offset=x[1], extension=x[2], mime_type=x[3], name=x[4]
+        byte_match=binascii.unhexlify(x[0].encode("ascii")),
+        offset=x[1],
+        extension=x[2],
+        mime_type=x[3],
+        name=x[4],
     )
 
 
-magic_header_array, magic_footer_array, extension_only_array = _magic_data()
+magic_header_array, magic_footer_array, extension_only_array, multi_part_header_dict = _magic_data()
 
 
 def _max_lengths() -> Tuple[int, int]:
@@ -127,9 +142,31 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
 
     for magic_row in magic_footer_array:
         start = magic_row.offset
-        if footer[start:] == magic_row.byte_match:
+        end = magic_row.offset + len(magic_row.byte_match)
+        match_area = footer[start:end] if end != 0 else footer[start:]
+        if match_area == magic_row.byte_match:
             matches.append(magic_row)
 
+    new_matches = set()
+    for matched in matches:
+        if matched.byte_match in multi_part_header_dict:
+            for magic_row in multi_part_header_dict[matched.byte_match]:
+                start = magic_row.offset
+                end = magic_row.offset + len(magic_row.byte_match)
+                if end > len(header):
+                    continue
+                if header[start:end] == magic_row.byte_match:
+                    new_matches.add(
+                        PureMagic(
+                            byte_match=header[matched.offset : end],
+                            offset=magic_row.offset,
+                            extension=magic_row.extension,
+                            mime_type=magic_row.mime_type,
+                            name=magic_row.name,
+                        )
+                    )
+
+    matches.extend(list(new_matches))
     return _confidence(matches, ext)
 
 
@@ -207,7 +244,9 @@ def from_file(filename: Union[os.PathLike, str], mime: bool = False) -> str:
     return _magic(head, foot, mime, ext_from_filename(filename))
 
 
-def from_string(string: Union[str, bytes], mime: bool = False, filename: Union[os.PathLike, str] = None) -> str:
+def from_string(
+    string: Union[str, bytes], mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None
+) -> str:
     """Reads in string, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -225,7 +264,7 @@ def from_string(string: Union[str, bytes], mime: bool = False, filename: Union[o
     return _magic(head, foot, mime, ext)
 
 
-def from_stream(stream, mime: bool = False, filename: Union[os.PathLike, str] = None) -> str:
+def from_stream(stream, mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None) -> str:
     """Reads in stream, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -260,7 +299,7 @@ def magic_file(filename: Union[os.PathLike, str]) -> List[PureMagicWithConfidenc
     return info
 
 
-def magic_string(string, filename: Union[os.PathLike, str] = None) -> List[PureMagicWithConfidence]:
+def magic_string(string, filename: Optional[Union[os.PathLike, str]] = None) -> List[PureMagicWithConfidence]:
     """
     Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
@@ -279,7 +318,7 @@ def magic_string(string, filename: Union[os.PathLike, str] = None) -> List[PureM
     return info
 
 
-def magic_stream(stream, filename: Union[os.PathLike, str] = None) -> List[PureMagicWithConfidence]:
+def magic_stream(stream, filename: Optional[Union[os.PathLike, str]] = None) -> List[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
@@ -308,7 +347,11 @@ def command_line_entry(*args):
         )
     )
     parser.add_argument(
-        "-m", "--mime", action="store_true", dest="mime", help="Return the mime type instead of file type"
+        "-m",
+        "--mime",
+        action="store_true",
+        dest="mime",
+        help="Return the mime type instead of file type",
     )
     parser.add_argument("files", nargs="+")
     args = parser.parse_args(args if args else sys.argv[1:])
