@@ -99,6 +99,8 @@
         ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"]
     ],
     "headers": [
+	["ff0a", 0, ".jxl", "image/jxl", "JPEG XL image (Raw stream)"],
+	["0000000c4a584c200d0a870a", 0, ".jxl", "image/jxl", "JPEG XL image (ISOBMFF container)"],
         ["3c3f786d6c", 0, ".xml", "application/xml", "XML Document"],
         ["454c46", 1, ".AppImage", "application/x-iso9660-appimage", "AppImage application bundle"],
         ["4341434845204d414e4946455354", 0, ".manifest", "text/cache-manifest", "Web application cache manifest"],
