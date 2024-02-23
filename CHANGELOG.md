@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 1.21
+------------
+
+- Adding #50 details for  ZSoft .pcx files (thanks to Andy - NebularNerd)
+- Adding #51 details for JXL files (thanks to Andy - NebularNerd)
+- Adding #54 missing py.typed file (thanks to Raphaël Vinot)
+- Fixing #53 magic data for GIF images (thanks to Andy - NebularNerd)
+
 Version 1.20
 ------------
 
