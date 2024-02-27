@@ -50,7 +50,10 @@
         ["", 0, ".ts", "application/x-typescript", "Transport Stream File"],
         ["", 0, ".tsx", "application/x-typescript", "Typescript File"],
         ["", 0, ".pickle", "", "Python Pickle File"],
-        ["", 0, ".conf", "text/plain", "Configuration File"]
+        ["", 0, ".conf", "text/plain", "Configuration File"],
+	["", 0, ".jxsi", "image/jxsi", "JPEG XS image"],
+	["", 0, ".jxss", "image/jxss", "JPEG XS image"],
+	["", 0, ".jxsv", "video/jxsv", "JPEG XS video"]
     ],
     "multi-part-headers": {
         "464f524d": [
@@ -1330,6 +1333,8 @@
         ["6674797068656973", 4, ".heic", "image/heic", "HEIC Image format (HEIS scalable)"],
         ["667479706865696d", 4, ".heic", "image/heic", "HEIC Image format (HEIM multiview)"],
         ["667479706865766d", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIM multiview)"],
-        ["6674797068657673", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIS scalable)"]
+        ["6674797068657673", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIS scalable)"],
+	["0000000c4a5853200d0a870a", 0, ".jxs", "image/jxs", "JPEG XS image"],
+	["ff10ff50", 0, ".jxsc", "image/jxsc", "JPEG XS codestream"]
     ]
 }
