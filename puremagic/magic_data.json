@@ -89,6 +89,15 @@
         "52494658": [
             ["4647444d", 8, ".dcr", "", "Adobe Shockwave"],
             ["4d563933", 8, ".dir", "", "Macromedia Director file format"]
+        ],
+	"4352454d" : [
+		["444f4e4500000000", -8, ".ctm", "", "CreamTracker module"]				
+        ],
+	"3c747261636b206e616d653d22" : [
+		["3c2f747261636b3e0a", -9, ".pt2", "", "PicaTune 2 module"]				
+        ],
+	"3c6d6c74" : [
+		["3c2f6d6c743e0a", -7, ".mlt", "", "Shotcut project"]				
         ]
     },
     "footers": [
@@ -1330,6 +1339,9 @@
         ["6674797068656973", 4, ".heic", "image/heic", "HEIC Image format (HEIS scalable)"],
         ["667479706865696d", 4, ".heic", "image/heic", "HEIC Image format (HEIM multiview)"],
         ["667479706865766d", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIM multiview)"],
-        ["6674797068657673", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIS scalable)"]
+        ["6674797068657673", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIS scalable)"],
+	["4352454D", 44, ".ctm", "", "CreamTracker module"],
+	["3c747261636b206e616d653d22", 0, ".pt2", "", "PicaTune 2 module"], 
+	["3c6d6c74", 38, ".mlt", "", "Shotcut project"]    
     ]
 }
