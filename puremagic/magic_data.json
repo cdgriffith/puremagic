@@ -50,7 +50,8 @@
         ["", 0, ".ts", "application/x-typescript", "Transport Stream File"],
         ["", 0, ".tsx", "application/x-typescript", "Typescript File"],
         ["", 0, ".pickle", "", "Python Pickle File"],
-        ["", 0, ".conf", "text/plain", "Configuration File"]
+        ["", 0, ".conf", "text/plain", "Configuration File"],
+	["", 0, ".okta", "", "Oktalyzer tracker module (Memory dump format)"]
     ],
     "multi-part-headers": {
         "464f524d": [
