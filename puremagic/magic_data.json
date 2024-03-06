@@ -925,7 +925,6 @@
         ["66747970336767", 4, ".3ga", "video/3gpp", "3GPP multimedia file"],
         ["66747970336770", 4, ".3ga", "video/3gpp", "3GPP multimedia file"],
         ["66747970336773", 4, ".3ga", "video/3gpp", "3GPP multimedia file"],
-        ["4d41535f55547261636b5f563030", 0, ".ult", "audio/x-mod", "UltraTracker Module"],
         ["234558544d3355", 0, ".vlc", "audio/x-mpegurl", "MP3 audio (streamed)"],
         ["41534620", 0, ".wmx", "audio/x-ms-asx", "Microsoft ASX playlist"],
         ["505346", 0, ".psf", "audio/x-psf", "PSF audio"],
