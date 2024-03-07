@@ -162,7 +162,8 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
                                 offset=magic_row.offset,
                                 extension=magic_row.extension,
                                 mime_type=magic_row.mime_type,
-                                name=magic_row.name, )
+                                name=magic_row.name,
+                            )
                     )   
                 else:           
                     start = magic_row.offset
