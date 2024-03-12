@@ -151,9 +151,7 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
     for matched in matches:
         if matched.byte_match in multi_part_header_dict:
             for magic_row in multi_part_header_dict[matched.byte_match]:
-                if "-" in str(magic_row.offset):
-                    start = magic_row.offset
-                    end = magic_row.offset + len(magic_row.byte_match)
+            if magic_row.offset < 0:
                     match_area = footer[start:end] if end != 0 else footer[start:]
                     if match_area == magic_row.byte_match:
                         new_matches.add(
@@ -166,8 +164,6 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
                             )
                         )
                 else:
-                    start = magic_row.offset
-                    end = magic_row.offset + len(magic_row.byte_match)
                     if end > len(header):
                         continue
                     if header[start:end] == magic_row.byte_match:
