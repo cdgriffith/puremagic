@@ -73,7 +73,7 @@ def _magic_data(
     Dict[bytes, List[PureMagic]],
 ]:
     """Read the magic file"""
-    with open(filename) as f:
+    with open(filename, encoding="utf-8") as f:
         data = json.load(f)
     headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
     footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
