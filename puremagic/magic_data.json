@@ -93,38 +93,48 @@
         "52494658": [
             ["4647444d", 8, ".dcr", "", "Adobe Shockwave"],
             ["4d563933", 8, ".dir", "", "Macromedia Director file format"]
-        ],	
-	"4efa" : [
-		["4efa", 12, ".fred", "", "FRED Editor module"]				
+
         ],
-	"5354312e" : [
-		["4d6f64756c65494e464f", 6, ".nt", "", "StarTrekker FM Synth Pattern file"]				
+	      "4352454d" : [
+		        ["444f4e4500000000", -8, ".ctm", "", "CreamTracker module"]				
         ],
-	"52494646" : [
-		["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"]				
+	      "3c747261636b206e616d653d22" : [
+		        ["3c2f747261636b3e0a", -9, ".pt2", "", "PicaTune 2 module"]				
+        ],
+	      "3c6d6c74" : [
+		        ["3c2f6d6c743e0a", -7, ".mlt", "", "Shotcut project"]				
         ],	
-	"494d504d" : [
-		["0300", 41, ".mptm", "", "OpenMPT 1.17.02.20 to OpenMPT 1.17.02.25 module"],		
-		["0888", 41, ".mptm", "", "OpenMPT 1.17.02.26 to OpenMPT 1.18 module"],
-		["14021402", 40, ".it", "audio/x-it", "UNMO3 Impulse Tracker module"],	
-		["04020002", 40, ".it", "audio/x-it", "Unknown XM to IT converter module"],
-		["14020002", 40, ".it", "audio/x-it", "OpenSPC Impulse Tracker module"],
-		["02020002", 40, ".mptm", "", "ModPlug Tracker 1.0 pre-alpha module"],
-		["14020002", 40, ".mptm", "", "ModPlug Tracker 1.0 alpha module"],
-		["14020202", 40, ".mptm", "", "ModPlug Tracker 1.0 beta module"],	
-		["17020002", 40, ".mptm", "", "ModPlug Tracker / OpenMPT 1.17 module"],	
-		["14021402", 40, ".ct", "", "CheeseTracker module"],
-		["43484249", 60, ".ct", "", "ChibiTracker module"],
-		["2551", 40, ".mptm", "", "OpenMPT 1.22 module"],
-		["2551", 40, ".mptm", "", "OpenMPT 1.25 module"],
-		["2651", 40, ".mptm", "", "OpenMPT 1.26 module"],
-		["2851", 40, ".mptm", "", "OpenMPT 1.28+ module"],
-		["1402", 40, ".it", "audio/x-it", "Impulse Tracker 2.14 module"],
-		["1702", 40, ".it", "audio/x-it", "Impulse Tracker 2.14a3 module"],
-		["6000", 40, ".it", "", "BeRo Tracker module"],	
-		["17020002", 40, ".it", "", "BeRo Tracker (old) module"],
-		["17021402", 40, ".it", "", "BeRo Tracker (old) module"]			
-	]
+	      "4efa" : [
+		        ["4efa", 12, ".fred", "", "FRED Editor module"]				
+        ],
+	      "5354312e" : [
+		        ["4d6f64756c65494e464f", 6, ".nt", "", "StarTrekker FM Synth Pattern file"]				
+        ],
+	      "52494646" : [
+		        ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"]				
+        ],	
+	      "494d504d" : [
+		        ["0300", 41, ".mptm", "", "OpenMPT 1.17.02.20 to OpenMPT 1.17.02.25 module"],		
+		        ["0888", 41, ".mptm", "", "OpenMPT 1.17.02.26 to OpenMPT 1.18 module"],
+		        ["14021402", 40, ".it", "audio/x-it", "UNMO3 Impulse Tracker module"],	
+		        ["04020002", 40, ".it", "audio/x-it", "Unknown XM to IT converter module"],
+		        ["14020002", 40, ".it", "audio/x-it", "OpenSPC Impulse Tracker module"],
+		        ["02020002", 40, ".mptm", "", "ModPlug Tracker 1.0 pre-alpha module"],
+		        ["14020002", 40, ".mptm", "", "ModPlug Tracker 1.0 alpha module"],
+		        ["14020202", 40, ".mptm", "", "ModPlug Tracker 1.0 beta module"],	
+		        ["17020002", 40, ".mptm", "", "ModPlug Tracker / OpenMPT 1.17 module"],	
+		        ["14021402", 40, ".ct", "", "CheeseTracker module"],
+		        ["43484249", 60, ".ct", "", "ChibiTracker module"],
+		        ["2551", 40, ".mptm", "", "OpenMPT 1.22 module"],
+		        ["2551", 40, ".mptm", "", "OpenMPT 1.25 module"],
+		        ["2651", 40, ".mptm", "", "OpenMPT 1.26 module"],
+		        ["2851", 40, ".mptm", "", "OpenMPT 1.28+ module"],
+		        ["1402", 40, ".it", "audio/x-it", "Impulse Tracker 2.14 module"],
+		        ["1702", 40, ".it", "audio/x-it", "Impulse Tracker 2.14a3 module"],
+		        ["6000", 40, ".it", "", "BeRo Tracker module"],	
+		        ["17020002", 40, ".it", "", "BeRo Tracker (old) module"],
+		        ["17021402", 40, ".it", "", "BeRo Tracker (old) module"]			
+	      ]
     },
     "footers": [
         ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -1359,6 +1369,9 @@
         ["667479706865696d", 4, ".heic", "image/heic", "HEIC Image format (HEIM multiview)"],
         ["667479706865766d", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIM multiview)"],
         ["6674797068657673", 4, ".heic", "image/heic", "HEIC Animated Image format (HEIS scalable)"],
+	      ["4352454D", 44, ".ctm", "", "CreamTracker module"],
+	      ["3c747261636b206e616d653d22", 0, ".pt2", "", "PicaTune 2 module"], 
+	      ["3c6d6c74", 38, ".mlt", "", "Shotcut project"],
         ["50503230", 0, ".pp", "", "PowerPacker compressed file (PP20)"],
         ["50503131", 0, ".pp", "", "PowerPacker compressed file (PP11)"],
         ["50583230", 0, ".pp", "", "PowerPacker encrypted compressed file (PX20)"],

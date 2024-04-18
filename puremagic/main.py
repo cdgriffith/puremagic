@@ -153,18 +153,31 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
             for magic_row in multi_part_header_dict[matched.byte_match]:
                 start = magic_row.offset
                 end = magic_row.offset + len(magic_row.byte_match)
-                if end > len(header):
-                    continue
-                if header[start:end] == magic_row.byte_match:
-                    new_matches.add(
-                        PureMagic(
-                            byte_match=header[matched.offset : end],
-                            offset=magic_row.offset,
-                            extension=magic_row.extension,
-                            mime_type=magic_row.mime_type,
-                            name=magic_row.name,
+                if magic_row.offset < 0:
+                    match_area = footer[start:end] if end != 0 else footer[start:]
+                    if match_area == magic_row.byte_match:
+                        new_matches.add(
+                            PureMagic(
+                                byte_match=matched.byte_match + magic_row.byte_match,
+                                offset=magic_row.offset,
+                                extension=magic_row.extension,
+                                mime_type=magic_row.mime_type,
+                                name=magic_row.name,
+                            )
                         )
-                    )
+                else:
+                    if end > len(header):
+                        continue
+                    if header[start:end] == magic_row.byte_match:
+                        new_matches.add(
+                            PureMagic(
+                                byte_match=header[matched.offset : end],
+                                offset=magic_row.offset,
+                                extension=magic_row.extension,
+                                mime_type=magic_row.mime_type,
+                                name=magic_row.name,
+                            )
+                        )
 
     matches.extend(list(new_matches))
     return _confidence(matches, ext)
