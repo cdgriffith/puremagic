@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 1.22
+------------
+
+- Adding #52 magic data for JPEG XS (thanks to Andy - NebularNerd)
+- Adding #57 Multi-part checks with negative offsets (thanks to Andy - NebularNerd)
+- Fixing #60 encoding warning (thanks to Andy - NebularNerd and Jason R. Coombs)
+
 Version 1.21
 ------------
 
