@@ -20,7 +20,7 @@ from collections import namedtuple
 from typing import Union, Tuple, List, Dict, Optional
 
 __author__ = "Chris Griffith"
-__version__ = "1.21"
+__version__ = "1.22"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -32,7 +32,7 @@ __all__ = [
     "PureError",
     "magic_footer_array",
     "magic_header_array",
-    "multi_part_header_dict",
+    "multi_part_dict",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -79,8 +79,8 @@ def _magic_data(
     footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
     extensions = [_create_puremagic(x) for x in data["extension_only"]]
     multi_part_extensions = {}
-    for header_match, option_list in data["multi-part-headers"].items():
-        multi_part_extensions[binascii.unhexlify(header_match.encode("ascii"))] = [
+    for file_match, option_list in data["multi-part"].items():
+        multi_part_extensions[binascii.unhexlify(file_match.encode("ascii"))] = [
             _create_puremagic(x) for x in option_list
         ]
     return headers, footers, extensions, multi_part_extensions
@@ -96,13 +96,21 @@ def _create_puremagic(x: List) -> PureMagic:
     )
 
 
-magic_header_array, magic_footer_array, extension_only_array, multi_part_header_dict = _magic_data()
+magic_header_array, magic_footer_array, extension_only_array, multi_part_dict = _magic_data()
 
 
 def _max_lengths() -> Tuple[int, int]:
     """The length of the largest magic string + its offset"""
     max_header_length = max([len(x.byte_match) + x.offset for x in magic_header_array])
     max_footer_length = max([len(x.byte_match) + abs(x.offset) for x in magic_footer_array])
+
+    for options in multi_part_dict.values():
+        for option in options:
+            if option.offset < 0:
+                max_footer_length = max(max_footer_length, len(option.byte_match) + abs(option.offset))
+            else:
+                max_header_length = max(max_header_length, len(option.byte_match) + option.offset)
+
     return max_header_length, max_footer_length
 
 
@@ -149,8 +157,8 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
 
     new_matches = set()
     for matched in matches:
-        if matched.byte_match in multi_part_header_dict:
-            for magic_row in multi_part_header_dict[matched.byte_match]:
+        if matched.byte_match in multi_part_dict:
+            for magic_row in multi_part_dict[matched.byte_match]:
                 start = magic_row.offset
                 end = magic_row.offset + len(magic_row.byte_match)
                 if magic_row.offset < 0:

@@ -10,7 +10,7 @@ repos:
     # git checks
     - id: check-merge-conflict
     - id: check-added-large-files
-      exclude: ^test/data/.+
+      exclude: ^test/resources/.+
     - id: detect-private-key
     - id: check-case-conflict
     # Python checks
@@ -28,7 +28,7 @@ repos:
       exclude: ^test/resources/
     - id: check-executables-have-shebangs
     - id: end-of-file-fixer
-      exclude: ^test/data/.+
+      exclude: ^test/resources/.+
 -   repo: https://github.com/ambv/black
     rev: 24.1.1
     hooks:
