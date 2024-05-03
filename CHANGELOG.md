@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.23
+------------
+
+- Fixing #32 MP3 Detection improvements (thanks to Andy - NebularNerd and Sander)
+
 Version 1.22
 ------------
 
