@@ -183,10 +183,8 @@ def _identify_all(
                     import re
 
                     if not magic_row.offset == 0:
-                        # We use .offset as amount of bytes from 0 to scan, saves opening whole file
                         scan_bytes = header[0 : magic_row.offset]
                     else:
-                        # We have no way to know where it will be in the file
                         scan_bytes = header
                     if re.search(magic_row.byte_match, scan_bytes):
                         new_matches.add(
@@ -198,7 +196,6 @@ def _identify_all(
                                 name=magic_row.name.split("###REGEX### ")[1],
                             )
                         )
-
                 else:
                     start = magic_row.offset
                     end = magic_row.offset + len(magic_row.byte_match)
