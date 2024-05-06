@@ -75,8 +75,12 @@ def _magic_data(
     """Read the magic file"""
     with open(filename, encoding="utf-8") as f:
         data = json.load(f)
-    headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
-    footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
+    headers = sorted(
+        (_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match
+    )
+    footers = sorted(
+        (_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match
+    )
     extensions = [_create_puremagic(x) for x in data["extension_only"]]
     multi_part_extensions = {}
     for file_match, option_list in data["multi-part"].items():
@@ -96,20 +100,28 @@ def _create_puremagic(x: List) -> PureMagic:
     )
 
 
-magic_header_array, magic_footer_array, extension_only_array, multi_part_dict = _magic_data()
+magic_header_array, magic_footer_array, extension_only_array, multi_part_dict = (
+    _magic_data()
+)
 
 
 def _max_lengths() -> Tuple[int, int]:
     """The length of the largest magic string + its offset"""
     max_header_length = max([len(x.byte_match) + x.offset for x in magic_header_array])
-    max_footer_length = max([len(x.byte_match) + abs(x.offset) for x in magic_footer_array])
+    max_footer_length = max(
+        [len(x.byte_match) + abs(x.offset) for x in magic_footer_array]
+    )
 
     for options in multi_part_dict.values():
         for option in options:
             if option.offset < 0:
-                max_footer_length = max(max_footer_length, len(option.byte_match) + abs(option.offset))
+                max_footer_length = max(
+                    max_footer_length, len(option.byte_match) + abs(option.offset)
+                )
             else:
-                max_header_length = max(max_header_length, len(option.byte_match) + option.offset)
+                max_header_length = max(
+                    max_header_length, len(option.byte_match) + option.offset
+                )
 
     return max_header_length, max_footer_length
 
@@ -118,7 +130,11 @@ def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
     """Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
-        con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
+        con = (
+            0.8
+            if len(match.byte_match) >= 9
+            else float("0.{0}".format(len(match.byte_match)))
+        )
         if con >= 0.1 and ext and ext == match.extension:
             con = 0.9
         results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
@@ -126,7 +142,9 @@ def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
     if not results and ext:
         for magic_row in extension_only_array:
             if ext == magic_row.extension:
-                results.append(PureMagicWithConfidence(confidence=0.1, **magic_row._asdict()))
+                results.append(
+                    PureMagicWithConfidence(confidence=0.1, **magic_row._asdict())
+                )
 
     if not results:
         raise PureError("Could not identify file")
@@ -134,7 +152,9 @@ def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
     return sorted(results, key=lambda x: x.confidence, reverse=True)
 
 
-def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithConfidence]:
+def _identify_all(
+    header: bytes, footer: bytes, ext=None
+) -> List[PureMagicWithConfidence]:
     """Attempt to identify 'data' by its magic numbers"""
 
     # Capture the length of the data
@@ -288,7 +308,9 @@ def from_file(filename: Union[os.PathLike, str], mime: bool = False) -> str:
 
 
 def from_string(
-    string: Union[str, bytes], mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None
+    string: Union[str, bytes],
+    mime: bool = False,
+    filename: Optional[Union[os.PathLike, str]] = None,
 ) -> str:
     """Reads in string, attempts to identify content based
     off magic number and will return the file extension.
@@ -307,7 +329,9 @@ def from_string(
     return _magic(head, foot, mime, ext)
 
 
-def from_stream(stream, mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None) -> str:
+def from_stream(
+    stream, mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None
+) -> str:
     """Reads in stream, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -342,7 +366,9 @@ def magic_file(filename: Union[os.PathLike, str]) -> List[PureMagicWithConfidenc
     return info
 
 
-def magic_string(string, filename: Optional[Union[os.PathLike, str]] = None) -> List[PureMagicWithConfidence]:
+def magic_string(
+    string, filename: Optional[Union[os.PathLike, str]] = None
+) -> List[PureMagicWithConfidence]:
     """
     Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
@@ -361,7 +387,9 @@ def magic_string(string, filename: Optional[Union[os.PathLike, str]] = None) -> 
     return info
 
 
-def magic_stream(stream, filename: Optional[Union[os.PathLike, str]] = None) -> List[PureMagicWithConfidence]:
+def magic_stream(
+    stream, filename: Optional[Union[os.PathLike, str]] = None
+) -> List[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
