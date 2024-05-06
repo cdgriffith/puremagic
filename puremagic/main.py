@@ -159,33 +159,57 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
     for matched in matches:
         if matched.byte_match in multi_part_dict:
             for magic_row in multi_part_dict[matched.byte_match]:
-                start = magic_row.offset
-                end = magic_row.offset + len(magic_row.byte_match)
-                if magic_row.offset < 0:
-                    match_area = footer[start:end] if end != 0 else footer[start:]
-                    if match_area == magic_row.byte_match:
+                if "###REGEX###" in magic_row.name:
+                    import re
+
+                    if not magic_row.offset == 0:
+                        scan_bytes = header[
+                            0 : magic_row.offset
+                        ]  # We use .offset as amount of bytes from 0 to scan, saves opening whole file
+                    else:
+                        scan_bytes = header  # We have no way to know where it will be in the file
+                    if re.search(magic_row.byte_match, scan_bytes):
                         new_matches.add(
                             PureMagic(
                                 byte_match=matched.byte_match + magic_row.byte_match,
                                 offset=magic_row.offset,
                                 extension=magic_row.extension,
                                 mime_type=magic_row.mime_type,
-                                name=magic_row.name,
+                                name=magic_row.name.split("###REGEX### ")[
+                                    1
+                                ],  # Strips ###REGEX### trigger from name
                             )
                         )
+
                 else:
-                    if end > len(header):
-                        continue
-                    if header[start:end] == magic_row.byte_match:
-                        new_matches.add(
-                            PureMagic(
-                                byte_match=header[matched.offset : end],
-                                offset=magic_row.offset,
-                                extension=magic_row.extension,
-                                mime_type=magic_row.mime_type,
-                                name=magic_row.name,
+                    start = magic_row.offset
+                    end = magic_row.offset + len(magic_row.byte_match)
+                    if magic_row.offset < 0:
+                        match_area = footer[start:end] if end != 0 else footer[start:]
+                        if match_area == magic_row.byte_match:
+                            new_matches.add(
+                                PureMagic(
+                                    byte_match=matched.byte_match
+                                    + magic_row.byte_match,
+                                    offset=magic_row.offset,
+                                    extension=magic_row.extension,
+                                    mime_type=magic_row.mime_type,
+                                    name=magic_row.name,
+                                )
                             )
-                        )
+                    else:
+                        if end > len(header):
+                            continue
+                        if header[start:end] == magic_row.byte_match:
+                            new_matches.add(
+                                PureMagic(
+                                    byte_match=header[matched.offset : end],
+                                    offset=magic_row.offset,
+                                    extension=magic_row.extension,
+                                    mime_type=magic_row.mime_type,
+                                    name=magic_row.name,
+                                )
+                            )
 
     matches.extend(list(new_matches))
     return _confidence(matches, ext)
