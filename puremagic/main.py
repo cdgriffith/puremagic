@@ -163,9 +163,7 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
                     import re
 
                     if not magic_row.offset == 0:
-                        scan_bytes = header[
-                            0 : magic_row.offset
-                        ]  # We use .offset as amount of bytes from 0 to scan, saves opening whole file
+                        scan_bytes = header[0 : magic_row.offset]  # We use .offset as amount of bytes from 0 to scan, saves opening whole file
                     else:
                         scan_bytes = header  # We have no way to know where it will be in the file
                     if re.search(magic_row.byte_match, scan_bytes):
@@ -175,9 +173,7 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithC
                                 offset=magic_row.offset,
                                 extension=magic_row.extension,
                                 mime_type=magic_row.mime_type,
-                                name=magic_row.name.split("###REGEX### ")[
-                                    1
-                                ],  # Strips ###REGEX### trigger from name
+                                name=magic_row.name.split("###REGEX### ")[1],  # Strips ###REGEX### trigger from name
                             )
                         )
 
