@@ -131,7 +131,7 @@ def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
     if not results:
         raise PureError("Could not identify file")
 
-    return sorted(results, key=lambda x: x.confidence, reverse=True)
+    return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=True)
 
 
 def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithConfidence]:
