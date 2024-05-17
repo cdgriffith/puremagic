@@ -387,7 +387,30 @@
 	  ["01010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, Multiple 2D Images)"],
 	  ["00020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, Multiple 2D Images)"],
 	  ["01020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"]
-	]	  
+	],
+	"59a66a95" : [ 
+	  ["00000000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, No color map)"],
+	  ["00010000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, No color map)"],
+	  ["00020000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, No color map)"],
+	  ["00030000", 22, ".sun", "image/x-sun-raster", "Sun raster image (RGB format, No color map)"],
+	  ["00040000", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, No color map)"],
+	  ["00050000", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, No color map)"],
+	  ["FFFF0000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, No color map)"],
+	  ["00000001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, RGB color map)"],
+	  ["00010001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, RGB color map)"],
+	  ["00020001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, RGB color map)"],
+	  ["00030001", 22, ".sun", "image/x-sun-raster", "Sun raster image (RGB format, RGB color map)"],
+	  ["00040001", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, RGB color map)"],
+	  ["00050001", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RGB color map)"],
+	  ["FFFF0001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RGB color map)"],
+	  ["00000002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, RAW color map)"],
+	  ["00010002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, RAW color map)"],
+	  ["00020002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, RAW color map)"],
+	  ["00030002", 22, ".sun", "image/x-sun-raster", "Sun raster image (RGB format, RAW color map)"],
+	  ["00040002", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, RAW color map)"],
+	  ["00050002", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RAW color map)"],
+	  ["FFFF0002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RAW color map)"]
+	],  
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
