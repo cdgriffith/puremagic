@@ -373,7 +373,21 @@
   		["57505542", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["57585858", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["544147", -128, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"]
-  	]
+  	],
+	"01da" : [
+	  ["00010001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, single row)"],
+	  ["01010001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, single row)"],
+	  ["00020001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, single row)"],
+	  ["01020001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, single row)"],
+	  ["00010002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, 2D Image)"],
+	  ["01010002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, 2D Image)"],
+	  ["00020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, 2D Image)"],
+	  ["01020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"],	
+	  ["00010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, Multiple 2D Images)"],
+	  ["01010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, Multiple 2D Images)"],
+	  ["00020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, Multiple 2D Images)"],
+	  ["01020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"]
+	]	  
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -787,7 +801,7 @@
     ["5f434153455f", 0, ".cas", "", "EnCase case file"],
     ["5f434153455f", 0, ".cbk", "", "EnCase case file"],
     ["4e45534d1a01", 0, ".nsf", "", "NES Sound file"],
-    ["01da01010003", 0, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap"],
+    ["01da", 0, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap"],
     ["0000ffffffff", 7, ".hlp", "application/x-helpfile", "Windows Help file"],
     ["4d4d4d440000", 0, ".mmf", "", "Yamaha Synthetic music Mobile Application Format"],
     ["504943540008", 0, ".img", "", "ChromaGraph Graphics Card Bitmap"],
