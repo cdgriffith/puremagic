@@ -1872,6 +1872,7 @@
     ["504b0304", 0, ".apk", "", "Android Application Package"],
     ["0000000c4a5853200d0a870a", 0, ".jxs", "image/jxs", "JPEG XS image"],
     ["ff10ff50", 0, ".jxsc", "image/jxsc", "JPEG XS codestream"],
-    ["ff10ff50", 0, ".jxsv", "video/jxsv", "JPEG XS video"]
+    ["ff10ff50", 0, ".jxsv", "video/jxsv", "JPEG XS video"],
+    ["23646566696e6520", 0, ".xbm", "image/x-xbitmap", "X BitMap image"]
   ]
 }
