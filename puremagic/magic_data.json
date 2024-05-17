@@ -411,6 +411,12 @@
 	  ["00050002", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RAW color map)"],
 	  ["FFFF0002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RAW color map)"]
 	],  
+  	"52494646" : [
+ 	  ["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
+          ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
+          ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
+          ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
+        ],
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -1696,9 +1702,7 @@
     ["6674797071742020", 4, ".mov", "video/quicktime", "QuickTime movie"],
     ["43444441666d7420", 8, ".cda", "", "RIFF CD audio"],
     ["514c434d666d7420", 8, ".qcp", "audio/vnd.qcelp", "RIFF Qualcomm PureVoice"],
-    ["57454250", 8, ".webp", "image/webp", "RIFF WebP"],
-    ["524946462400000057454250", 0, ".webp", "image/webp", "RIFF WebP"],
-    ["524946462400000057454250565038", 0, ".webp", "image/webp", "RIFF WebP VP8"],
+    ["52494646", 0, ".webp", "image/webp", "RIFF WebP"],
     ["524d494464617461", 8, ".rmi", "", "RIFF Windows MIDI"],
     ["484541444552205245434f52442a2a2a", 0, ".xpt", "", "SAS Transport dataset"],
     ["232153494c4b0a", 0, ".sil", "", "Skype audio compression"],
