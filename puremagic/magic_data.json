@@ -69,7 +69,8 @@
       ["434d5553", 8, ".iff", "application/x-iff", "IFF Formatted Text"],
       ["5955564e", 8, ".iff", "application/x-iff", "IFF YUV Image"],
       ["46414e54", 8, ".iff", "application/x-iff", "Amiga Fantavision Movie"],
-      ["41494646", 8, ".iff", "application/x-iff", "Audio Interchange File Format"]
+      ["41494646", 8, ".iff", "application/x-iff", "Audio Interchange File Format"],
+      ["53434448", 8, ".sc2", "", "SimCity 2000 Map File"]
     ],
     "52494646": [
       ["57415645", 8, ".wav", "audio/wave", "Waveform Audio File Format"],
@@ -417,6 +418,12 @@
           ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
           ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
         ],
+	"716f6966" : [
+	 ["0300", 12, ".qoi", "", "Quite OK image (RGB, sRGB with linear alpha)"],
+	 ["0301", 12, ".qoi", "", "Quite OK image (RGB, All channels alpha)"],
+	 ["0400", 12, ".qoi", "", "Quite OK image (RGBA, sRGB with linear alpha)"],
+	 ["0401", 12, ".qoi", "", "Quite OK image (RGBA, All channels alpha)"]
+	]
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -1693,7 +1700,7 @@
     ["0a166f72672e626974636f696e2e7072", 0, ".wallet", "", "MultiBit Bitcoin wallet file"],
     ["6d756c74694269742e696e666f", 0, ".info", "", "MultiBit Bitcoin wallet information"],
     ["504b03040a000200", 0, ".epub", "", "Open Publication Structure eBook"],
-    ["762f3101", 0, ".exr", "", "OpenEXR bitmap image"],
+    ["762f3101", 0, ".exr", "image/x-exr", "OpenEXR bitmap image"],
     ["bebafeca0f50616c6d53472044617461", 0, ".dat", "", "Palm Desktop DateBook"],
     ["3203100000000000000080000000ff00", 0, ".pcs", "", "Pfaff Home Embroidery"],
     ["426567696e20507566666572", 0, ".apuf", "", "Puffer ASCII encrypted archive"],
@@ -1882,6 +1889,10 @@
     ["0000000c4a5853200d0a870a", 0, ".jxs", "image/jxs", "JPEG XS image"],
     ["ff10ff50", 0, ".jxsc", "image/jxsc", "JPEG XS codestream"],
     ["ff10ff50", 0, ".jxsv", "video/jxsv", "JPEG XS video"],
-    ["23646566696e6520", 0, ".xbm", "image/x-xbitmap", "X BitMap image"]
+    ["23646566696e6520", 0, ".xbm", "image/x-xbitmap", "X BitMap image"],
+    ["716f6966", 0, ".qoi", "", "Quite OK image"],
+    ["716f6166", 0, ".qoa", "", "Quite OK audio"],
+    ["464f524d", 0, ".sc2", "", "SimCity 2000 Map File"],
+    ["5a585461706521", 0, ".tzx", "", "TZX Cassette Tape File"]
   ]
 }
