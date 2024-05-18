@@ -85,9 +85,13 @@
       ["73687735", 8, ".shw", "", "Corel SHOW! 5.0"],
       ["73687235", 8, ".shr", "", "Corel SHOW! 5.0 player"],
       ["73686235", 8, ".shb", "", " Corel SHOW! 5.0 background"],
-      ["5250", 8, ".mmm", "", "MacroMind Multimedia Movie or Microsoft Multimedia Movie"],
-      ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"]
-    ],
+      ["524d4d50", 8, ".mmm", "", "MacroMind Multimedia Movie or Microsoft Multimedia Movie"],
+      ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"],
+	["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
+        ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
+        ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
+        ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
+        ],
     "41542654464f524d": [
       ["444a5655", 12, ".djvu", "image/vnd.djvu", "DjVu single page document or image"],
       ["444a564d", 12, ".djvu", "image/vnd.djvu+multipage", "DjVu document multi-page document"]
@@ -207,7 +211,7 @@
   		["41454E43", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
   		["41504943", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
   		["41535049", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
-  		["434F", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
+  		["434F4D4D", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
   		["434F4D52", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
   		["454E4352", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
   		["45515532", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.3.0 audio file"],
@@ -293,7 +297,7 @@
   		["41454E43", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["41504943", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["41535049", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
-  		["434F", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
+  		["434F4D4D", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["434F4D52", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["454E4352", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["45515532", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
@@ -412,12 +416,6 @@
 	  ["00050002", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RAW color map)"],
 	  ["FFFF0002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RAW color map)"]
 	],  
-  	"52494646" : [
- 	  ["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
-          ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
-          ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
-          ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
-        ],
 	"716f6966" : [
 	 ["0300", 12, ".qoi", "", "Quite OK image (RGB, sRGB with linear alpha)"],
 	 ["0301", 12, ".qoi", "", "Quite OK image (RGB, All channels alpha)"],
