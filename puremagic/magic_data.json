@@ -495,12 +495,12 @@
 		["0d", 3, ".pfm", "", "Augmented Portable Float Map"]	
 	],	
 	"5037" : [
-		["0a", 2, ".pam", "", "Augmented Portable Float Map"],
-		["0d", 2, ".pam", "", "Augmented Portable Float Map"],
-		["0a5749445448", 2, ".pam", "", "Augmented Portable Float Map"],
-		["0d5749445448", 2, ".pam", "", "Augmented Portable Float Map"],
-		["0a484549474854", 2, ".pam", "", "Augmented Portable Float Map"],
-		["0d484549474854", 2, ".pam", "", "Augmented Portable Float Map"]		
+		["0a", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0d", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0a5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0d5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0a484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0d484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]		
 	]	
   },
   "footers": [
