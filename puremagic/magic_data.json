@@ -1950,6 +1950,9 @@
     ["716f6966", 0, ".qoi", "", "Quite OK image"],
     ["716f6166", 0, ".qoa", "", "Quite OK audio"],
     ["464f524d", 0, ".sc2", "", "SimCity 2000 Map File"],
-    ["5a585461706521", 0, ".tzx", "", "TZX Cassette Tape File"]
+    ["5a585461706521", 0, ".tzx", "", "TZX Cassette Tape File"],
+    ["50460a", 0, ".pfm", "", "Portable Float Map (Colour)"],
+    ["50660a", 0, ".pfm", "", "Portable Float Map (Greyscale)"],
+    ["504634", 0, ".pfm", "", "Augmented Portable Float Map"]
   ]
 }
