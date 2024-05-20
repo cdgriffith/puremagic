@@ -421,6 +421,66 @@
 	 ["0301", 12, ".qoi", "", "Quite OK image (RGB, All channels alpha)"],
 	 ["0400", 12, ".qoi", "", "Quite OK image (RGBA, sRGB with linear alpha)"],
 	 ["0401", 12, ".qoi", "", "Quite OK image (RGBA, All channels alpha)"]
+	],
+	"5031" : [
+		["20", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0a", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0d", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["09", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["2023", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0a23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0d23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0923", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"]
+	],	
+	"5034" : [
+		["20", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0a", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0d", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["09", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["2023", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0a23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0d23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0923", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"]
+	],	
+	"5032" : [
+		["20", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["0a", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["0d", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["09", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["2023", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["0a23", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["0d23", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"],
+		["0923", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Ascii)"]
+	],	
+	"5035" : [
+		["20", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["0a", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["0d", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["09", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["2023", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["0a23", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["0d23", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"],
+		["0923", 2, ".pgm", "image/x-portable-bitmap", "PGM image (Binary)"]
+	],
+	"5033" : [
+		["20", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["0a", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["0d", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["09", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["2023", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["0a23", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["0d23", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"],
+		["0923", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Ascii)"]
+	],	
+	"5036" : [
+		["20", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["0a", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["0d", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["09", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["2023", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["0a23", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["0d23", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"],
+		["0923", 2, ".ppm", "image/x-portable-bitmap", "PPM image (Binary)"]
 	]
   },
   "footers": [
