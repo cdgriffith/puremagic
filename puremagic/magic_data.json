@@ -1761,7 +1761,7 @@
     ["5dfcc800", 0, ".hus", "", "Husqvarna Designer"],
     ["496e7465724063746976652050616765", 0, ".ipd", "", "Inter@ctive Pager Backup (BlackBerry file"],
     ["cececece", 0, ".jceks", "", "Java Cryptography Extension keystore"],
-    ["974a42320d0a1a0a", 0, ".jb2", "", "JBOG2 image file"],
+    ["974a42320d0a1a0a", 0, ".jb2", "", "JBIG2 image file"],
     ["802a5fd7", 0, ".cin", "", "Kodak Cineon image"],
     ["7801730d626260", 0, ".dmg", "application/octet-stream", "MacOS X image file"],
     ["5a5753", 0, ".swf", "application/x-shockwave-flash", "Macromedia Shockwave Flash"],
