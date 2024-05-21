@@ -14,9 +14,7 @@ try:  # imghdr was removed from the standard library in Python 3.13
 except ModuleNotFoundError:
     imghdr_what = None  # type: ignore[assignment]
 
-# file_tests = sorted(test_func.__name__[5:] for test_func in imghdr.tests)
-# file_tests = "bmp exr gif jpg pbm pgm png ppm ras rgb tif webp xbm".split()
-file_tests = "bmp gif jpg png tif webp".split()  # TODO: (cclauss) Add the remaining files
+file_tests = "bmp gif jpg png tif webp".split()
 
 
 @pytest.mark.skipif(imghdr_what is None, reason="imghdr was removed from the standard library in Python 3.13")
@@ -97,8 +95,6 @@ def test_what_from_string(expected, h):
 @pytest.mark.parametrize(
     "expected, h",
     [
-        # ("jpeg", "ffd8"),
-        # ("jpeg", "ffd8ff"),
         ("jpeg", "ffd8ffdb"),
         ("jpeg", b"\xff\xd8\xff\xdb"),
     ],
@@ -106,7 +102,6 @@ def test_what_from_string(expected, h):
 def test_what_from_string_py311(expected, h):
     """
     These tests fail with imghdr on Python < 3.11.
-    TODO: (cclauss) Document these imghdr fails on Python < 3.11
     """
     if isinstance(h, str):  # In imgdir.what() h must be bytes, not str.
         h = unhexlify(h)  # bytes.fromhex(h)
@@ -131,7 +126,6 @@ def test_what_from_string_py311(expected, h):
 def test_what_from_string_todo(expected, h):
     """
     These tests pass with imghdr but fail with puremagic.
-    TODO: (cclauss) Fix these puremagic fails
     """
     assert imghdr_what(None, h) == expected
     assert what(None, h) is None

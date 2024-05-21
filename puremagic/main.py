@@ -414,8 +414,6 @@ def what(file: Union[os.PathLike, str, None], h: Union[str, bytes, None]) -> Opt
     try:
         ext = (from_string(h) if h else from_file(file or "")).lstrip(".")
     except PureError:
-        # if h:
-        #    return from_string(binascii.hexlify(h)).lstrip(".")
         return None  # imghdr.what() returns None if it cannot find a match.
     return imghdr_exts.get(ext, ext)
 
