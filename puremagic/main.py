@@ -37,6 +37,9 @@ __all__ = [
     "multi_part_dict",
 ]
 
+# Convert puremagic extensions to imghdr extensions
+imghdr_exts = {"dib": "bmp", "jfif": "jpeg", "jpg": "jpeg", "rst": "rast", "sun": "rast", "tif": "tiff"}
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 PureMagic = namedtuple(
@@ -385,6 +388,34 @@ def command_line_entry(*args):
             print("'{0}' : {1}".format(fn, from_file(fn, args.mime)))
         except PureError:
             print("'{0}' : could not be Identified".format(fn))
+
+
+def what(file: Union[os.PathLike, str, None], h: Union[str, bytes, None]) -> Optional[str]:
+    """A drop-in replacement for `imghdr.what()` which was removed from the standard
+    library in Python 3.13.
+
+    Usage:
+    ```python
+    # Replace...
+    from imghdr import what
+    # with...
+    from puremagic import what
+    # ---
+    # Or replace...
+    import imghdr
+    ext = imghdr.what(...)
+    # with...
+    import puremagic
+    ext = puremagic.what(...)
+    ```
+    imghdr documentation: https://docs.python.org/3.12/library/imghdr.html
+    imghdr source code: https://github.com/python/cpython/blob/3.12/Lib/imghdr.py
+    """
+    try:
+        ext = (from_string(h) if h else from_file(file or "")).lstrip(".")
+    except PureError:
+        return None  # imghdr.what() returns None if it cannot find a match.
+    return imghdr_exts.get(ext, ext)
 
 
 if __name__ == "__main__":
