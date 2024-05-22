@@ -69,10 +69,10 @@ class PureError(LookupError):
 
 
 def _magic_data(
-    filename: os.PathLike | str = os.path.join(here, "magic_data.json"),
+    filename: os.PathLike | str | None = None,
 ) -> tuple[list[PureMagic], list[PureMagic], list[PureMagic], dict[bytes, list[PureMagic]]]:
     """Read the magic file"""
-    with open(filename, encoding="utf-8") as f:
+    with open(filename or os.path.join(here, "magic_data.json"), encoding="utf-8") as f:
         data = json.load(f)
     headers = sorted((_create_puremagic(x) for x in data["headers"]), key=lambda x: x.byte_match)
     footers = sorted((_create_puremagic(x) for x in data["footers"]), key=lambda x: x.byte_match)
