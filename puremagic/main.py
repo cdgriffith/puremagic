@@ -16,7 +16,6 @@ from __future__ import annotations
 
 import json
 import os
-from binascii import unhexlify
 from collections import namedtuple
 from itertools import chain
 
@@ -79,18 +78,13 @@ def _magic_data(
     extensions = [_create_puremagic(x) for x in data["extension_only"]]
     multi_part_extensions = {}
     for file_match, option_list in data["multi-part"].items():
-        multi_part_extensions[unhexlify(file_match.encode("ascii"))] = [_create_puremagic(x) for x in option_list]
+        multi_part_extensions[bytes.fromhex(file_match)] = [_create_puremagic(x) for x in option_list]
     return headers, footers, extensions, multi_part_extensions
 
 
 def _create_puremagic(x: list) -> PureMagic:
-    return PureMagic(
-        byte_match=unhexlify(x[0].encode("ascii")),
-        offset=x[1],
-        extension=x[2],
-        mime_type=x[3],
-        name=x[4],
-    )
+    x[0] = bytes.fromhex(x[0])
+    return PureMagic(*x)
 
 
 magic_header_array, magic_footer_array, extension_only_array, multi_part_dict = _magic_data()
@@ -111,14 +105,17 @@ def _max_lengths() -> tuple[int, int]:
     return max_header_length, max_footer_length
 
 
+def _match_confidence(match, ext=None) -> PureMagicWithConfidence:
+    """Rough confidence based on string length and file extension"""
+    con = 0.8 if len(match.byte_match) >= 9 else float(f"0.{len(match.byte_match)}")
+    if con >= 0.1 and ext and ext == match.extension:
+        con = 0.9
+    return PureMagicWithConfidence(confidence=con, **match._asdict())
+
+
 def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     """Rough confidence based on string length and file extension"""
-    results = []
-    for match in matches:
-        con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
-        if con >= 0.1 and ext and ext == match.extension:
-            con = 0.9
-        results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
+    results = [_match_confidence(match, ext) for match in matches]
 
     if not results and ext:
         for magic_row in extension_only_array:
