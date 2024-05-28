@@ -14,12 +14,11 @@ Gary C. Kessler
 """
 from __future__ import annotations
 
-import os
 import json
-import binascii
-from itertools import chain
+import os
+from binascii import unhexlify
 from collections import namedtuple
-from typing import Union, Tuple, List, Dict, Optional
+from itertools import chain
 
 __author__ = "Chris Griffith"
 __version__ = "1.23"
@@ -71,12 +70,7 @@ class PureError(LookupError):
 
 def _magic_data(
     filename: os.PathLike | str = os.path.join(here, "magic_data.json"),
-) -> tuple[
-    list[PureMagic],
-    list[PureMagic],
-    list[PureMagic],
-    dict[bytes, list[PureMagic]],
-]:
+) -> tuple[list[PureMagic], list[PureMagic], list[PureMagic], dict[bytes, list[PureMagic]]]:
     """Read the magic file"""
     with open(filename, encoding="utf-8") as f:
         data = json.load(f)
@@ -85,15 +79,13 @@ def _magic_data(
     extensions = [_create_puremagic(x) for x in data["extension_only"]]
     multi_part_extensions = {}
     for file_match, option_list in data["multi-part"].items():
-        multi_part_extensions[binascii.unhexlify(file_match.encode("ascii"))] = [
-            _create_puremagic(x) for x in option_list
-        ]
+        multi_part_extensions[unhexlify(file_match.encode("ascii"))] = [_create_puremagic(x) for x in option_list]
     return headers, footers, extensions, multi_part_extensions
 
 
 def _create_puremagic(x: list) -> PureMagic:
     return PureMagic(
-        byte_match=binascii.unhexlify(x[0].encode("ascii")),
+        byte_match=unhexlify(x[0].encode("ascii")),
         offset=x[1],
         extension=x[2],
         mime_type=x[3],
@@ -390,7 +382,17 @@ def command_line_entry(*args):
             print("'{0}' : could not be Identified".format(fn))
 
 
-def what(file: Union[os.PathLike, str, None], h: Union[str, bytes, None]) -> Optional[str]:
+imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
+    b"______Exif": "jpeg",
+    b"______JFIF": "jpeg",
+    b"II": "tiff",
+    b"II\\x2a\\x00": "tiff",
+    b"MM": "tiff",
+    b"MM\\x00\\x2a": "tiff",
+}
+
+
+def what(file: os.PathLike | str | None, h: bytes | None, imghdr_strict: bool = True) -> str | None:
     """A drop-in replacement for `imghdr.what()` which was removed from the standard
     library in Python 3.13.
 
@@ -410,7 +412,24 @@ def what(file: Union[os.PathLike, str, None], h: Union[str, bytes, None]) -> Opt
     ```
     imghdr documentation: https://docs.python.org/3.12/library/imghdr.html
     imghdr source code: https://github.com/python/cpython/blob/3.12/Lib/imghdr.py
+
+    imghdr_strict enables bug-for-bug compatibility between imghdr.what() and puremagic.what() when the imghdr returns
+    a match but puremagic returns None.  We believe that imghdr is delivering a "false positive" in each of these
+    scenerios but we want puremagic.what()'s default behavior to match imghdr.what()'s false positives so we do not
+    break existing applications.
+
+    If imghdr_strict is True (the default) then a lookup will be done to deliver a matching result on all known false
+    positives.  If imghdr_strict is False then puremagic's algorithms will determine the image type.  True is more
+    compatible while False is more correct.
+
+    NOTE: This compatibility effort only deals false positives and we are not interested to track the opposite
+    situation where puremagic's deliver a match while imghdr would have returned None.  Also, puremagic.what() can
+    recognize many more file types than the twelve image file types that imghdr focused on.
     """
+    if isinstance(h, str):
+        raise TypeError("h must be bytes, not str.  Consider using bytes.fromhex(h)")
+    if h and imghdr_strict and (ext := imghdr_bug_for_bug.get(h)):
+        return ext
     try:
         ext = (from_string(h) if h else from_file(file or "")).lstrip(".")
     except PureError:

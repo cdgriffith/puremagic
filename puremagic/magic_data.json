@@ -387,13 +387,13 @@
 	  ["00010002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, 2D Image)"],
 	  ["01010002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, 2D Image)"],
 	  ["00020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, 2D Image)"],
-	  ["01020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"],	
+	  ["01020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"],
 	  ["00010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, Multiple 2D Images)"],
 	  ["01010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, Multiple 2D Images)"],
 	  ["00020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, Multiple 2D Images)"],
 	  ["01020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"]
 	],
-	"59a66a95" : [ 
+	"59a66a95" : [
 	  ["00000000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, No color map)"],
 	  ["00010000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, No color map)"],
 	  ["00020000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, No color map)"],
@@ -415,7 +415,7 @@
 	  ["00040002", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, RAW color map)"],
 	  ["00050002", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RAW color map)"],
 	  ["FFFF0002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RAW color map)"]
-	],  
+	],
 	"716f6966" : [
 	 ["0300", 12, ".qoi", "", "Quite OK image (RGB, sRGB with linear alpha)"],
 	 ["0301", 12, ".qoi", "", "Quite OK image (RGB, All channels alpha)"],
@@ -431,7 +431,7 @@
 		["0a23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
 		["0d23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
 		["0923", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"]
-	],	
+	],
 	"5034" : [
 		["20", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
 		["0a", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
@@ -441,7 +441,7 @@
 		["0a23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
 		["0d23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
 		["0923", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"]
-	],	
+	],
 	"5032" : [
 		["20", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
 		["0a", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
@@ -451,7 +451,7 @@
 		["0a23", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
 		["0d23", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
 		["0923", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"]
-	],	
+	],
 	"5035" : [
 		["20", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
 		["0a", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
@@ -471,7 +471,7 @@
 		["0a23", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
 		["0d23", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
 		["0923", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"]
-	],	
+	],
 	"5036" : [
 		["20", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
 		["0a", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
@@ -484,24 +484,24 @@
 	],
 	"5046" : [
 		["0a", 2, ".pfm", "", "Portable Float Map (Colour)"],
-		["0d", 2, ".pbm", "", "Portable Float Map (Colour)"]	
+		["0d", 2, ".pbm", "", "Portable Float Map (Colour)"]
 	],
 	"5066" : [
 		["0a", 2, ".pfm", "", "Portable Float Map (Greyscale)"],
-		["0d", 2, ".pfm", "", "Portable Float Map (Greyscale)"]	
-	],	
+		["0d", 2, ".pfm", "", "Portable Float Map (Greyscale)"]
+	],
 	"504634" : [
 		["0a", 3, ".pfm", "", "Augmented Portable Float Map"],
-		["0d", 3, ".pfm", "", "Augmented Portable Float Map"]	
-	],	
+		["0d", 3, ".pfm", "", "Augmented Portable Float Map"]
+	],
 	"5037" : [
 		["0a", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0d", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0a5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0d5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0a484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
-		["0d484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]		
-	]	
+		["0d484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]
+	]
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],

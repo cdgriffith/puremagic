@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from binascii import unhexlify
 from pathlib import Path
 from sys import version_info
 from warnings import filterwarnings
@@ -34,13 +33,25 @@ def test_what_from_file_none(file="test/resources/fake_file", h=None):
     assert what(file, h) == imghdr_what(file, h) is None
 
 
+@pytest.mark.skipif(imghdr_what is None, reason="imghdr was removed from the standard library in Python 3.13")
+def test_what_from_string_no_str(h="string"):
+    """what() should raise a TypeError if h is a string."""
+    with pytest.raises(TypeError):
+        imghdr_what(None, h)
+    with pytest.raises(TypeError) as excinfo:
+        what(None, h)
+    assert str(excinfo.value) == "h must be bytes, not str.  Consider using bytes.fromhex(h)"
+
+
 string_tests = [
     ("bmp", "424d"),
     ("bmp", "424d787878785c3030305c303030"),
     ("bmp", b"BM"),
     ("exr", "762f3101"),
     ("exr", b"\x76\x2f\x31\x01"),
+    ("exr", b"v/1\x01"),
     ("gif", "474946383761"),
+    ("gif", "474946383961"),
     ("gif", b"GIF87a"),
     ("gif", b"GIF89a"),
     ("pbm", b"P1 "),
@@ -61,6 +72,7 @@ string_tests = [
     ("pgm", b"P5\t"),
     ("png", "89504e470d0a1a0a"),
     ("png", b"\211PNG\r\n\032\n"),
+    ("png", b"\x89PNG\r\n\x1a\n"),
     ("ppm", b"P3 "),
     ("ppm", b"P3\n"),
     ("ppm", b"P3\r"),
@@ -69,15 +81,18 @@ string_tests = [
     ("ppm", b"P6\n"),
     ("ppm", b"P6\r"),
     ("ppm", b"P6\t"),
+    ("rast", "59A66A95"),
     ("rast", b"\x59\xA6\x6A\x95"),
-    # ("tiff", b"II"),  # unhexlify(b'4949')
-    # ("tiff", b"I I"),  # unhexlify(b'492049')
-    ("tiff", b"II*\x00"),  # unhexlify(b'49492a00')
-    ("tiff", b"II\\x2a\\x00"),  # unhexlify(b'49495c7832615c783030')
-    ("tiff", b"MM\x00*"),  # unhexlify(b'4d4d002a')
-    ("tiff", b"MM\x00+"),  # unhexlify(b'4d4d002b')
-    ("tiff", b"MM\\x00\\x2a"),  # unhexlify(b'4d4d5c7830305c783261')
+    ("rgb", "01da"),
+    ("rgb", b"\x01\xda"),
+    ("tiff", "49492a00"),
+    ("tiff", "4d4d002a"),
+    ("tiff", "4d4d002b"),
+    ("tiff", b"II*\x00"),  # bytes.fromhex('49492a00')
+    ("tiff", b"MM\x00*"),  # bytes.fromhex('4d4d002a')
+    ("tiff", b"MM\x00+"),  # bytes.fromhex('4d4d002b')
     ("webp", b"RIFF____WEBP"),
+    ("xbm", b"#define "),
     (None, "decafbad"),
     (None, b"decafbad"),
 ]
@@ -87,7 +102,7 @@ string_tests = [
 @pytest.mark.parametrize("expected, h", string_tests)
 def test_what_from_string(expected, h):
     if isinstance(h, str):  # In imgdir.what() h must be bytes, not str.
-        h = bytes.fromhex(h)
+        h = bytes.fromhex(h)  # ex. "474946383761" --> b"GIF87a"
     assert imghdr_what(None, h) == what(None, h) == expected
 
 
@@ -104,7 +119,7 @@ def test_what_from_string_py311(expected, h):
     These tests fail with imghdr on Python < 3.11.
     """
     if isinstance(h, str):  # In imgdir.what() h must be bytes, not str.
-        h = unhexlify(h)  # bytes.fromhex(h)
+        h = bytes.fromhex(h)
     assert what(None, h) == expected
     if version_info < (3, 11):  # TODO: Document these imghdr fails
         expected = None
@@ -115,17 +130,26 @@ def test_what_from_string_py311(expected, h):
 @pytest.mark.parametrize(
     "expected, h",
     [
-        ("jpeg", b"______JFIF"),
         ("jpeg", b"______Exif"),
-        ("rgb", b"\001\332"),
-        ("tiff", b"II"),
-        ("tiff", b"MM"),
-        ("xbm", b"#define "),
+        ("jpeg", b"______Exif"),
+        ("jpeg", b"______JFIF"),
+        ("jpeg", b"______JFIF"),
+        ("tiff", "4949"),
+        ("tiff", "49495c7832615c783030"),
+        ("tiff", "4d4d"),
+        ("tiff", "4d4d5c7830305c783261"),
+        ("tiff", b"II"),  # bytes.fromhex('4949')
+        ("tiff", b"II\\x2a\\x00"),  # bytes.fromhex('49495c7832615c783030')
+        ("tiff", b"MM"),  # bytes.fromhex('4d4d')
+        ("tiff", b"MM\\x00\\x2a"),  # bytes.fromhex('4d4d5c7830305c783261')
     ],
 )
-def test_what_from_string_todo(expected, h):
+@pytest.mark.parametrize("imghdr_strict", [True, False])
+def test_what_from_string_imghdr_strict(expected, h, imghdr_strict):
     """
     These tests pass with imghdr but fail with puremagic.
     """
+    if isinstance(h, str):  # In imgdir.what() h must be bytes, not str.
+        h = bytes.fromhex(h)
     assert imghdr_what(None, h) == expected
-    assert what(None, h) is None
+    assert what(None, h, imghdr_strict) == (expected if imghdr_strict else None)

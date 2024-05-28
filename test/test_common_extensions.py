@@ -174,7 +174,7 @@ class TestMagic(unittest.TestCase):
         command_line_entry(__file__, "test.py")
 
     def test_bad_magic_input(self):
-        """Test bad magic imput"""
+        """Test bad magic input"""
         with pytest.raises(ValueError):
             puremagic.main._magic(None, None, None)
 
