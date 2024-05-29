@@ -1,9 +1,10 @@
-import unittest
-from tempfile import NamedTemporaryFile
 import os
+import unittest
 from io import BytesIO
-import pytest
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+import pytest
 
 import puremagic
 
