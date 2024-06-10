@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import unittest
 from tempfile import NamedTemporaryFile
 import os
@@ -55,7 +54,7 @@ class TestMagic(unittest.TestCase):
         if ext_failures:
             raise AssertionError(
                 "The following files did not have the expected extensions: {}".format(
-                    ", ".join(['"{}" expected "{}"'.format(item, ext) for item, ext in ext_failures])
+                    ", ".join([f'"{item}" expected "{ext}"' for item, ext in ext_failures])
                 )
             )
         if mime_failures:

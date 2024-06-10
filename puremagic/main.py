@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
@@ -115,15 +114,17 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     """Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
-        con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
+        con = 0.8 if len(match.byte_match) >= 9 else float(f"0.{len(match.byte_match)}")
         if con >= 0.1 and ext and ext == match.extension:
             con = 0.9
         results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
 
     if not results and ext:
-        for magic_row in extension_only_array:
-            if ext == magic_row.extension:
-                results.append(PureMagicWithConfidence(confidence=0.1, **magic_row._asdict()))
+        results = [
+            PureMagicWithConfidence(confidence=0.1, **magic_row._asdict())
+            for magic_row in extension_only_array
+            if ext == magic_row.extension
+        ]
 
     if not results:
         raise PureError("Could not identify file")
@@ -136,7 +137,7 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithC
 
     # Capture the length of the data
     # That way we do not try to identify bytes that don't exist
-    matches = list()
+    matches = []
     for magic_row in magic_header_array:
         start = magic_row.offset
         end = magic_row.offset + len(magic_row.byte_match)
@@ -205,7 +206,7 @@ def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
         head = fin.read(max_head)
         try:
             fin.seek(-max_foot, os.SEEK_END)
-        except IOError:
+        except OSError:
             fin.seek(0)
         foot = fin.read()
     return head, foot
@@ -237,7 +238,7 @@ def ext_from_filename(filename: os.PathLike | str) -> str:
         base, ext = str(filename).lower().rsplit(".", 1)
     except ValueError:
         return ""
-    ext = ".{0}".format(ext)
+    ext = f".{ext}"
     all_exts = [x.extension for x in chain(magic_header_array, magic_footer_array)]
 
     if base[-4:].startswith("."):
@@ -374,12 +375,12 @@ def command_line_entry(*args):
 
     for fn in args.files:
         if not os.path.exists(fn):
-            print("File '{0}' does not exist!".format(fn))
+            print(f"File '{fn}' does not exist!")
             continue
         try:
-            print("'{0}' : {1}".format(fn, from_file(fn, args.mime)))
+            print(f"'{fn}' : {from_file(fn, args.mime)}")
         except PureError:
-            print("'{0}' : could not be Identified".format(fn))
+            print(f"'{fn}' : could not be Identified")
 
 
 imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
