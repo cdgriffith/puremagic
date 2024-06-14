@@ -354,8 +354,8 @@ def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[Pure
 
 
 def command_line_entry(*args):
-    from argparse import ArgumentParser
     import sys
+    from argparse import ArgumentParser
 
     parser = ArgumentParser(
         description=(

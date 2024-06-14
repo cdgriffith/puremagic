@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from setuptools import setup
 import os
 import re
 
+from setuptools import setup
 
 root = os.path.abspath(os.path.dirname(__file__))
 

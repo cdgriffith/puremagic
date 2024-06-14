@@ -6,10 +6,10 @@ Gary C. Kessler's FTK_sigs_GCK archive.
 """
 
 
-import os
-import xml.etree.ElementTree as ET
 import binascii
 import json
+import os
+import xml.etree.ElementTree as ET
 
 import puremagic
 

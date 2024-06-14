@@ -30,18 +30,26 @@ repos:
       exclude: ^test/resources/.+
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.5
+    rev: v0.4.6
     hooks:
       - id: ruff
-        args: [--extend-ignore, "F401,F403"]
 
 -   repo: https://github.com/ambv/black
     rev: 24.4.2
     hooks:
     - id: black
-      args: [--config=.black.toml]
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v1.10.0'
     hooks:
     - id: mypy
+
+-   repo: https://github.com/tox-dev/pyproject-fmt
+    rev: 2.1.3
+    hooks:
+      - id: pyproject-fmt
+
+-   repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.18
+    hooks:
+      - id: validate-pyproject
