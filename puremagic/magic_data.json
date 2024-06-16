@@ -1494,8 +1494,8 @@
     ["3c212d2d", 0, ".html", "text/html", "HTML document"],
     ["3c6831", 0, ".html", "text/html", "HTML document"],
     ["3c4831", 0, ".html", "text/html", "HTML document"],
-    ["3c21646f63747970652048544d4c", 0, ".htm", "text/html", "HTML document"],
-    ["3c21444f43545950452068746d6c", 0, ".htm", "text/html", "HTML document"],
+    ["3c21646f63747970652048544d4c", 0, ".html", "text/html", "HTML document"],
+    ["3c21444f43545950452068746d6c", 0, ".html", "text/html", "HTML document"],
     [
       "232e646f776e6c6f61642e7468652e667265652e476f6f676c652e566964656f2e506c61796572", 0, ".gvp",
       "text/x-google-video-pointer", "Google Video Pointer"
