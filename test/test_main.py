@@ -13,24 +13,27 @@ try:  # imghdr was removed from the standard library in Python 3.13
 except ModuleNotFoundError:
     imghdr_what = None  # type: ignore[assignment]
 
-file_tests = "bmp gif jpg png tif webp".split()
+file_tests = ["bmp", "gif", "jpg", "png", "tif", "webp"]
+
+here = Path(__file__).resolve().parent
 
 
 @pytest.mark.skipif(imghdr_what is None, reason="imghdr was removed from the standard library in Python 3.13")
 @pytest.mark.parametrize("file", file_tests)
 def test_what_from_file(file, h=None):
     """Run each test with a path string and a pathlib.Path."""
-    file = f"test/resources/images/test.{file}"
+    file = str(here / f"resources/images/test.{file}")
     assert what(file, h) == imghdr_what(file, h)
     file = Path(file).resolve()
     assert what(file, h) == imghdr_what(file, h)
 
 
 @pytest.mark.skipif(imghdr_what is None, reason="imghdr was removed from the standard library in Python 3.13")
-def test_what_from_file_none(file="test/resources/fake_file", h=None):
-    assert what(file, h) == imghdr_what(file, h) is None
+def test_what_from_file_none():
+    file = str(here / "resources/fake_file")
+    assert what(file) == imghdr_what(file) is None
     file = Path(file).resolve()
-    assert what(file, h) == imghdr_what(file, h) is None
+    assert what(file, None) == imghdr_what(file, None) is None
 
 
 @pytest.mark.skipif(imghdr_what is None, reason="imghdr was removed from the standard library in Python 3.13")
@@ -82,7 +85,7 @@ string_tests = [
     ("ppm", b"P6\r"),
     ("ppm", b"P6\t"),
     ("rast", "59A66A95"),
-    ("rast", b"\x59\xA6\x6A\x95"),
+    ("rast", b"\x59\xa6\x6a\x95"),
     ("rgb", "01da"),
     ("rgb", b"\x01\xda"),
     ("tiff", "49492a00"),

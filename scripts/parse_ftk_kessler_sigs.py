@@ -5,7 +5,6 @@ Gary C. Kessler's FTK_sigs_GCK archive.
 
 """
 
-
 import binascii
 import json
 import os

@@ -11,6 +11,7 @@ Gary C. Kessler
     For use of his File Signature Tables, available at:
     http://www.garykessler.net/library/file_sigs.html
 """
+
 from __future__ import annotations
 
 import json
@@ -20,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.23"
+__version__ = "1.24"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -33,6 +34,9 @@ __all__ = [
     "magic_footer_array",
     "magic_header_array",
     "multi_part_dict",
+    "what",
+    "PureMagic",
+    "PureMagicWithConfidence",
 ]
 
 # Convert puremagic extensions to imghdr extensions
@@ -393,7 +397,7 @@ imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
 }
 
 
-def what(file: os.PathLike | str | None, h: bytes | None, imghdr_strict: bool = True) -> str | None:
+def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: bool = True) -> str | None:
     """A drop-in replacement for `imghdr.what()` which was removed from the standard
     library in Python 3.13.
 

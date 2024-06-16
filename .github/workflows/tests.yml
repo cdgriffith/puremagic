@@ -40,7 +40,7 @@ jobs:
 
     - name: Verify Code with Black
       run: |
-        black --config=.black.toml --check puremagic test
+        black --check puremagic test
 
     - name: Lint with flake8
       run: |

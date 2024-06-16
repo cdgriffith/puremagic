@@ -125,6 +125,20 @@ Script
         'test/resources/images/test.gif' : image/gif
         'test/resources/audio/test.mp3' : audio/mpeg
 
+imghdr replacement
+------------------
+
+If you are looking for a replacement for the standard library's depreciated imghdr, you can use `puremagic.what()`
+
+.. code:: python
+
+        import puremagic
+
+        filename = "test/resources/images/test.gif"
+
+        ext = puremagic.what(filename)
+        # 'gif'
+
 FAQ
 ---
 
