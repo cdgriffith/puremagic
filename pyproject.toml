@@ -1,0 +1,68 @@
+[tool.black]
+line-length = 120
+target-version = [
+  'py38',
+  'py39',
+  'py310',
+  'py311',
+  'py312',
+  'py313',
+]
+exclude = '''
+/(
+    \.eggs
+  | \.git
+  | \.idea
+  | \.pytest_cache
+  | \.github
+  | _build
+  | build
+  | dist
+  | venv
+  | test/resources
+)/
+'''
+
+[tool.ruff]
+line-length = 120
+
+lint.select = [
+  "ALL",
+]
+lint.extend-ignore = [
+  "ANN",
+  "B008",
+  "BLE001",
+  "C408",
+  "COM812",
+  "D",
+  "EM101",
+  "EM103",
+  "EXE001",
+  "F401",
+  "F403",
+  "FBT",
+  "FIX002",
+  "N817",
+  "PERF401",
+  "PGH003",
+  "PT",
+  "PTH",
+  "PYI024",
+  "S101",
+  "S112",
+  "S314",
+  "SLF001",
+  "T201",
+  "TD002",
+  "TD003",
+  "TRY003",
+  "UP",
+]
+lint.mccabe.max-complexity = 13
+lint.pylint.allow-magic-value-types = [
+  "float",
+  "int",
+  "str",
+]
+lint.pylint.max-branches = 13

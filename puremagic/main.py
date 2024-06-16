@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
@@ -12,15 +11,17 @@ Gary C. Kessler
     For use of his File Signature Tables, available at:
     http://www.garykessler.net/library/file_sigs.html
 """
-import os
+
+from __future__ import annotations
+
 import json
-import binascii
-from itertools import chain
+import os
+from binascii import unhexlify
 from collections import namedtuple
-from typing import Union, Tuple, List, Dict, Optional
+from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.23"
+__version__ = "1.24"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -33,7 +34,13 @@ __all__ = [
     "magic_footer_array",
     "magic_header_array",
     "multi_part_dict",
+    "what",
+    "PureMagic",
+    "PureMagicWithConfidence",
 ]
+
+# Convert puremagic extensions to imghdr extensions
+imghdr_exts = {"dib": "bmp", "jfif": "jpeg", "jpg": "jpeg", "rst": "rast", "sun": "rast", "tif": "tiff"}
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -65,13 +72,8 @@ class PureError(LookupError):
 
 
 def _magic_data(
-    filename: Union[os.PathLike, str] = os.path.join(here, "magic_data.json"),
-) -> Tuple[
-    List[PureMagic],
-    List[PureMagic],
-    List[PureMagic],
-    Dict[bytes, List[PureMagic]],
-]:
+    filename: os.PathLike | str = os.path.join(here, "magic_data.json"),
+) -> tuple[list[PureMagic], list[PureMagic], list[PureMagic], dict[bytes, list[PureMagic]]]:
     """Read the magic file"""
     with open(filename, encoding="utf-8") as f:
         data = json.load(f)
@@ -80,15 +82,13 @@ def _magic_data(
     extensions = [_create_puremagic(x) for x in data["extension_only"]]
     multi_part_extensions = {}
     for file_match, option_list in data["multi-part"].items():
-        multi_part_extensions[binascii.unhexlify(file_match.encode("ascii"))] = [
-            _create_puremagic(x) for x in option_list
-        ]
+        multi_part_extensions[unhexlify(file_match.encode("ascii"))] = [_create_puremagic(x) for x in option_list]
     return headers, footers, extensions, multi_part_extensions
 
 
-def _create_puremagic(x: List) -> PureMagic:
+def _create_puremagic(x: list) -> PureMagic:
     return PureMagic(
-        byte_match=binascii.unhexlify(x[0].encode("ascii")),
+        byte_match=unhexlify(x[0].encode("ascii")),
         offset=x[1],
         extension=x[2],
         mime_type=x[3],
@@ -99,7 +99,7 @@ def _create_puremagic(x: List) -> PureMagic:
 magic_header_array, magic_footer_array, extension_only_array, multi_part_dict = _magic_data()
 
 
-def _max_lengths() -> Tuple[int, int]:
+def _max_lengths() -> tuple[int, int]:
     """The length of the largest magic string + its offset"""
     max_header_length = max([len(x.byte_match) + x.offset for x in magic_header_array])
     max_footer_length = max([len(x.byte_match) + abs(x.offset) for x in magic_footer_array])
@@ -114,32 +114,34 @@ def _max_lengths() -> Tuple[int, int]:
     return max_header_length, max_footer_length
 
 
-def _confidence(matches, ext=None) -> List[PureMagicWithConfidence]:
+def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     """Rough confidence based on string length and file extension"""
     results = []
     for match in matches:
-        con = 0.8 if len(match.byte_match) >= 9 else float("0.{0}".format(len(match.byte_match)))
+        con = 0.8 if len(match.byte_match) >= 9 else float(f"0.{len(match.byte_match)}")
         if con >= 0.1 and ext and ext == match.extension:
             con = 0.9
         results.append(PureMagicWithConfidence(confidence=con, **match._asdict()))
 
     if not results and ext:
-        for magic_row in extension_only_array:
-            if ext == magic_row.extension:
-                results.append(PureMagicWithConfidence(confidence=0.1, **magic_row._asdict()))
+        results = [
+            PureMagicWithConfidence(confidence=0.1, **magic_row._asdict())
+            for magic_row in extension_only_array
+            if ext == magic_row.extension
+        ]
 
     if not results:
         raise PureError("Could not identify file")
 
-    return sorted(results, key=lambda x: x.confidence, reverse=True)
+    return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=True)
 
 
-def _identify_all(header: bytes, footer: bytes, ext=None) -> List[PureMagicWithConfidence]:
+def _identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithConfidence]:
     """Attempt to identify 'data' by its magic numbers"""
 
     # Capture the length of the data
     # That way we do not try to identify bytes that don't exist
-    matches = list()
+    matches = []
     for magic_row in magic_header_array:
         start = magic_row.offset
         end = magic_row.offset + len(magic_row.byte_match)
@@ -201,14 +203,14 @@ def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
     return info.extension if not isinstance(info.extension, list) else info[0].extension
 
 
-def _file_details(filename: Union[os.PathLike, str]) -> Tuple[bytes, bytes]:
+def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
     """Grab the start and end of the file"""
     max_head, max_foot = _max_lengths()
     with open(filename, "rb") as fin:
         head = fin.read(max_head)
         try:
             fin.seek(-max_foot, os.SEEK_END)
-        except IOError:
+        except OSError:
             fin.seek(0)
         foot = fin.read()
     return head, foot
@@ -230,7 +232,7 @@ def _stream_details(stream):
     return head, foot
 
 
-def ext_from_filename(filename: Union[os.PathLike, str]) -> str:
+def ext_from_filename(filename: os.PathLike | str) -> str:
     """Scan a filename for its extension.
 
     :param filename: string of the filename
@@ -240,7 +242,7 @@ def ext_from_filename(filename: Union[os.PathLike, str]) -> str:
         base, ext = str(filename).lower().rsplit(".", 1)
     except ValueError:
         return ""
-    ext = ".{0}".format(ext)
+    ext = f".{ext}"
     all_exts = [x.extension for x in chain(magic_header_array, magic_footer_array)]
 
     if base[-4:].startswith("."):
@@ -251,7 +253,7 @@ def ext_from_filename(filename: Union[os.PathLike, str]) -> str:
     return ext
 
 
-def from_file(filename: Union[os.PathLike, str], mime: bool = False) -> str:
+def from_file(filename: os.PathLike | str, mime: bool = False) -> str:
     """Opens file, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -265,9 +267,7 @@ def from_file(filename: Union[os.PathLike, str], mime: bool = False) -> str:
     return _magic(head, foot, mime, ext_from_filename(filename))
 
 
-def from_string(
-    string: Union[str, bytes], mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None
-) -> str:
+def from_string(string: str | bytes, mime: bool = False, filename: os.PathLike | str | None = None) -> str:
     """Reads in string, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -285,7 +285,7 @@ def from_string(
     return _magic(head, foot, mime, ext)
 
 
-def from_stream(stream, mime: bool = False, filename: Optional[Union[os.PathLike, str]] = None) -> str:
+def from_stream(stream, mime: bool = False, filename: os.PathLike | str | None = None) -> str:
     """Reads in stream, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -301,7 +301,7 @@ def from_stream(stream, mime: bool = False, filename: Optional[Union[os.PathLike
     return _magic(head, foot, mime, ext)
 
 
-def magic_file(filename: Union[os.PathLike, str]) -> List[PureMagicWithConfidence]:
+def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
     """
     Returns list of (num_of_matches, array_of_matches)
     arranged highest confidence match first.
@@ -320,7 +320,7 @@ def magic_file(filename: Union[os.PathLike, str]) -> List[PureMagicWithConfidenc
     return info
 
 
-def magic_string(string, filename: Optional[Union[os.PathLike, str]] = None) -> List[PureMagicWithConfidence]:
+def magic_string(string, filename: os.PathLike | str | None = None) -> list[PureMagicWithConfidence]:
     """
     Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
@@ -339,7 +339,7 @@ def magic_string(string, filename: Optional[Union[os.PathLike, str]] = None) -> 
     return info
 
 
-def magic_stream(stream, filename: Optional[Union[os.PathLike, str]] = None) -> List[PureMagicWithConfidence]:
+def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
@@ -358,8 +358,8 @@ def magic_stream(stream, filename: Optional[Union[os.PathLike, str]] = None) -> 
 
 
 def command_line_entry(*args):
-    from argparse import ArgumentParser
     import sys
+    from argparse import ArgumentParser
 
     parser = ArgumentParser(
         description=(
@@ -379,12 +379,67 @@ def command_line_entry(*args):
 
     for fn in args.files:
         if not os.path.exists(fn):
-            print("File '{0}' does not exist!".format(fn))
+            print(f"File '{fn}' does not exist!")
             continue
         try:
-            print("'{0}' : {1}".format(fn, from_file(fn, args.mime)))
+            print(f"'{fn}' : {from_file(fn, args.mime)}")
         except PureError:
-            print("'{0}' : could not be Identified".format(fn))
+            print(f"'{fn}' : could not be Identified")
+
+
+imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
+    b"______Exif": "jpeg",
+    b"______JFIF": "jpeg",
+    b"II": "tiff",
+    b"II\\x2a\\x00": "tiff",
+    b"MM": "tiff",
+    b"MM\\x00\\x2a": "tiff",
+}
+
+
+def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: bool = True) -> str | None:
+    """A drop-in replacement for `imghdr.what()` which was removed from the standard
+    library in Python 3.13.
+
+    Usage:
+    ```python
+    # Replace...
+    from imghdr import what
+    # with...
+    from puremagic import what
+    # ---
+    # Or replace...
+    import imghdr
+    ext = imghdr.what(...)
+    # with...
+    import puremagic
+    ext = puremagic.what(...)
+    ```
+    imghdr documentation: https://docs.python.org/3.12/library/imghdr.html
+    imghdr source code: https://github.com/python/cpython/blob/3.12/Lib/imghdr.py
+
+    imghdr_strict enables bug-for-bug compatibility between imghdr.what() and puremagic.what() when the imghdr returns
+    a match but puremagic returns None.  We believe that imghdr is delivering a "false positive" in each of these
+    scenerios but we want puremagic.what()'s default behavior to match imghdr.what()'s false positives so we do not
+    break existing applications.
+
+    If imghdr_strict is True (the default) then a lookup will be done to deliver a matching result on all known false
+    positives.  If imghdr_strict is False then puremagic's algorithms will determine the image type.  True is more
+    compatible while False is more correct.
+
+    NOTE: This compatibility effort only deals false positives and we are not interested to track the opposite
+    situation where puremagic's deliver a match while imghdr would have returned None.  Also, puremagic.what() can
+    recognize many more file types than the twelve image file types that imghdr focused on.
+    """
+    if isinstance(h, str):
+        raise TypeError("h must be bytes, not str.  Consider using bytes.fromhex(h)")
+    if h and imghdr_strict and (ext := imghdr_bug_for_bug.get(h)):
+        return ext
+    try:
+        ext = (from_string(h) if h else from_file(file or "")).lstrip(".")
+    except PureError:
+        return None  # imghdr.what() returns None if it cannot find a match.
+    return imghdr_exts.get(ext, ext)
 
 
 if __name__ == "__main__":

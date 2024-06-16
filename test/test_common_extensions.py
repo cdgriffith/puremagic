@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
-import unittest
-from tempfile import NamedTemporaryFile
 import os
+import unittest
 from io import BytesIO
-import pytest
 from pathlib import Path
+from tempfile import NamedTemporaryFile
+
+import pytest
 
 import puremagic
 
@@ -21,8 +21,8 @@ TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
 class TestMagic(unittest.TestCase):
     def setUp(self):
-        self.mp4magic = b"\x00\x00\x00\x1C\x66\x74\x79\x70\x4D\x53\x4E\
-\x56\x01\x29\x00\x46\x4D\x53\x4E\x56\x6D\x70\x34\x32"
+        self.mp4magic = b"\x00\x00\x00\x1c\x66\x74\x79\x70\x4d\x53\x4e\
+\x56\x01\x29\x00\x46\x4d\x53\x4e\x56\x6d\x70\x34\x32"
         self.expect_ext = ".mp4"
         self.expect_mime = "video/mp4"
 
@@ -55,7 +55,7 @@ class TestMagic(unittest.TestCase):
         if ext_failures:
             raise AssertionError(
                 "The following files did not have the expected extensions: {}".format(
-                    ", ".join(['"{}" expected "{}"'.format(item, ext) for item, ext in ext_failures])
+                    ", ".join([f'"{item}" expected "{ext}"' for item, ext in ext_failures])
                 )
             )
         if mime_failures:
@@ -174,7 +174,7 @@ class TestMagic(unittest.TestCase):
         command_line_entry(__file__, "test.py")
 
     def test_bad_magic_input(self):
-        """Test bad magic imput"""
+        """Test bad magic input"""
         with pytest.raises(ValueError):
             puremagic.main._magic(None, None, None)
 

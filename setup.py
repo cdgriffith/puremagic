@@ -1,19 +1,18 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
-from setuptools import setup
 import os
 import re
 
+from setuptools import setup
 
 root = os.path.abspath(os.path.dirname(__file__))
 
-with open(os.path.join(root, "puremagic", "main.py"), "r") as reuse_file:
+with open(os.path.join(root, "puremagic", "main.py")) as reuse_file:
     reuse_content = reuse_file.read()
 
 attrs = dict(re.findall(r"__([a-z]+)__ *= *['\"](.+)['\"]", reuse_content))
 
-with open("README.rst", "r") as readme_file:
+with open("README.rst") as readme_file:
     long_description = readme_file.read()
 
 setup(

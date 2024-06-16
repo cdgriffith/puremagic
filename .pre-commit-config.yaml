@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
     # Identify invalid files
     - id: check-ast
@@ -17,7 +17,6 @@ repos:
     - id: check-docstring-first
     - id: debug-statements
     - id: requirements-txt-fixer
-    - id: fix-encoding-pragma
     - id: fix-byte-order-marker
     # General quality checks
     - id: mixed-line-ending
@@ -29,12 +28,28 @@ repos:
     - id: check-executables-have-shebangs
     - id: end-of-file-fixer
       exclude: ^test/resources/.+
+
+-   repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.6
+    hooks:
+      - id: ruff
+
 -   repo: https://github.com/ambv/black
-    rev: 24.1.1
+    rev: 24.4.2
     hooks:
     - id: black
-      args: [--config=.black.toml]
+
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.8.0'
+    rev: 'v1.10.0'
     hooks:
     - id: mypy
+
+-   repo: https://github.com/tox-dev/pyproject-fmt
+    rev: 2.1.3
+    hooks:
+      - id: pyproject-fmt
+
+-   repo: https://github.com/abravalheri/validate-pyproject
+    rev: v0.18
+    hooks:
+      - id: validate-pyproject

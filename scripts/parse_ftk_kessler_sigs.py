@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 This is a very ugly helper script to keep up to date with file types in
 Gary C. Kessler's FTK_sigs_GCK archive.
 
 """
 
-
-import os
-import xml.etree.ElementTree as ET
 import binascii
 import json
+import os
+import xml.etree.ElementTree as ET
 
 import puremagic
 
@@ -60,6 +58,6 @@ for sig in sigs:
     elif sig["SIG"] not in known_sigs:
         for ext in sig["EXT_NAME"]:
             if ext != "(none)":
-                print("\t\t{},".format(json.dumps([sig["SIG"], offset, ".{}".format(ext), "", sig["DESCRIPTION"]])))
+                print("\t\t{},".format(json.dumps([sig["SIG"], offset, f".{ext}", "", sig["DESCRIPTION"]])))
             else:
                 print("\t\t{},".format(json.dumps([sig["SIG"], offset, "", "", sig["DESCRIPTION"]])))

@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 1.24
+------------
+
+- Adding #72 #75 #76 #81 `.what()` to be a drop in replacement for `imghdr.what()` (thanks to Christian Clauss and Andy - NebularNerd)
+- Adding #67 Test on Python 3.13 beta (thanks to Christian Clauss)
+- Adding #77 from __future__ import annotations (thanks to Christian Clauss
+- Changing all HTML extensions to full `.html`
+- Fixing #66 Confidence sorting (thanks to Andy - NebularNerd)
+
 Version 1.23
 ------------
 

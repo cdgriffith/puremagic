@@ -69,7 +69,8 @@
       ["434d5553", 8, ".iff", "application/x-iff", "IFF Formatted Text"],
       ["5955564e", 8, ".iff", "application/x-iff", "IFF YUV Image"],
       ["46414e54", 8, ".iff", "application/x-iff", "Amiga Fantavision Movie"],
-      ["41494646", 8, ".iff", "application/x-iff", "Audio Interchange File Format"]
+      ["41494646", 8, ".iff", "application/x-iff", "Audio Interchange File Format"],
+      ["53434448", 8, ".sc2", "", "SimCity 2000 Map File"]
     ],
     "52494646": [
       ["57415645", 8, ".wav", "audio/wave", "Waveform Audio File Format"],
@@ -85,8 +86,12 @@
       ["73687235", 8, ".shr", "", "Corel SHOW! 5.0 player"],
       ["73686235", 8, ".shb", "", " Corel SHOW! 5.0 background"],
       ["524d4d50", 8, ".mmm", "", "MacroMind Multimedia Movie or Microsoft Multimedia Movie"],
-      ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"]
-    ],
+      ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"],
+	["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
+        ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
+        ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
+        ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
+        ],
     "41542654464f524d": [
       ["444a5655", 12, ".djvu", "image/vnd.djvu", "DjVu single page document or image"],
       ["444a564d", 12, ".djvu", "image/vnd.djvu+multipage", "DjVu document multi-page document"]
@@ -373,7 +378,130 @@
   		["57505542", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["57585858", 10, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"],
   		["544147", -128, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 (MP3) ID3v2.4.0 audio file"]
-  	]
+  	],
+	"01da" : [
+	  ["00010001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, single row)"],
+	  ["01010001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, single row)"],
+	  ["00020001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, single row)"],
+	  ["01020001", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, single row)"],
+	  ["00010002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, 2D Image)"],
+	  ["01010002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, 2D Image)"],
+	  ["00020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, 2D Image)"],
+	  ["01020002", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"],
+	  ["00010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 1bpc, Multiple 2D Images)"],
+	  ["01010003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 1bpc, Multiple 2D Images)"],
+	  ["00020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (Uncompressed, 2bpc, Multiple 2D Images)"],
+	  ["01020003", 2, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap (RLE compressed, 2bpc, Multiple 2D Images)"]
+	],
+	"59a66a95" : [
+	  ["00000000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, No color map)"],
+	  ["00010000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, No color map)"],
+	  ["00020000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, No color map)"],
+	  ["00030000", 22, ".sun", "image/x-sun-raster", "Sun raster image (RGB format, No color map)"],
+	  ["00040000", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, No color map)"],
+	  ["00050000", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, No color map)"],
+	  ["FFFF0000", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, No color map)"],
+	  ["00000001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, RGB color map)"],
+	  ["00010001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, RGB color map)"],
+	  ["00020001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, RGB color map)"],
+	  ["00030001", 22, ".sun", "image/x-sun-raster", "Sun raster image (RGB format, RGB color map)"],
+	  ["00040001", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, RGB color map)"],
+	  ["00050001", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RGB color map)"],
+	  ["FFFF0001", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RGB color map)"],
+	  ["00000002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Old, RAW color map)"],
+	  ["00010002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Standard, RAW color map)"],
+	  ["00020002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Byte-Encoded, RAW color map)"],
+	  ["00030002", 22, ".sun", "image/x-sun-raster", "Sun raster image (RGB format, RAW color map)"],
+	  ["00040002", 22, ".sun", "image/x-sun-raster", "Sun raster image (TIFF format, RAW color map)"],
+	  ["00050002", 22, ".sun", "image/x-sun-raster", "Sun raster image (IFF format, RAW color map)"],
+	  ["FFFF0002", 22, ".sun", "image/x-sun-raster", "Sun raster image (Experimental, RAW color map)"]
+	],
+	"716f6966" : [
+	 ["0300", 12, ".qoi", "", "Quite OK image (RGB, sRGB with linear alpha)"],
+	 ["0301", 12, ".qoi", "", "Quite OK image (RGB, All channels alpha)"],
+	 ["0400", 12, ".qoi", "", "Quite OK image (RGBA, sRGB with linear alpha)"],
+	 ["0401", 12, ".qoi", "", "Quite OK image (RGBA, All channels alpha)"]
+	],
+	"5031" : [
+		["20", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0a", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0d", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["09", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["2023", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0a23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0d23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+		["0923", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"]
+	],
+	"5034" : [
+		["20", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0a", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0d", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["09", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["2023", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0a23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0d23", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+		["0923", 2, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"]
+	],
+	"5032" : [
+		["20", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["0a", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["0d", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["09", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["2023", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["0a23", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["0d23", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+		["0923", 2, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"]
+	],
+	"5035" : [
+		["20", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["0a", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["0d", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["09", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["2023", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["0a23", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["0d23", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+		["0923", 2, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"]
+	],
+	"5033" : [
+		["20", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["0a", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["0d", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["09", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["2023", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["0a23", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["0d23", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+		["0923", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"]
+	],
+	"5036" : [
+		["20", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["0a", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["0d", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["09", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["2023", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["0a23", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["0d23", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
+		["0923", 2, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"]
+	],
+	"5046" : [
+		["0a", 2, ".pfm", "", "Portable Float Map (Colour)"],
+		["0d", 2, ".pbm", "", "Portable Float Map (Colour)"]
+	],
+	"5066" : [
+		["0a", 2, ".pfm", "", "Portable Float Map (Greyscale)"],
+		["0d", 2, ".pfm", "", "Portable Float Map (Greyscale)"]
+	],
+	"504634" : [
+		["0a", 3, ".pfm", "", "Augmented Portable Float Map"],
+		["0d", 3, ".pfm", "", "Augmented Portable Float Map"]
+	],
+	"5037" : [
+		["0a", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0d", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0a5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0d5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0a484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+		["0d484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]
+	]
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -530,8 +658,6 @@
     ["664c6143", 0, ".flac", "audio/flac", "FLAC audio"],
     ["fffb", 0, ".mpga", "audio/mpeg", "MP3 audio"],
     ["234558544d3355", 0, ".m3u8", "application/vnd.apple.mpegurl", "HTTP Live Streaming playlist"],
-    ["4d4d5c7830305c783261", 0, ".tiff", "image/tiff", "TIFF image"],
-    ["49495c7832615c783030", 0, ".tiff", "image/tiff", "TIFF image"],
     ["2521", 0, ".epsf", "image/x-eps", "EPS image"],
     ["5c3030342521", 0, ".epsf", "image/x-eps", "EPS image"],
     ["53494d504c4520203d", 0, ".fits", "image/fits", "FITS document"],
@@ -550,9 +676,7 @@
     ["6576616c205c2265786563202f7573722f62696e2f707974686f6e", 0, ".wsgi", "text/x-python", "Python script"],
     ["23212f7573722f6c6f63616c2f62696e2f707974686f6e", 0, ".wsgi", "text/x-python", "Python script"],
     ["2321202f7573722f6c6f63616c2f62696e2f707974686f6e", 0, ".wsgi", "text/x-python", "Python script"],
-    [
-      "6576616c205c2265786563202f7573722f6c6f63616c2f62696e2f707974686f6e", 0, ".wsgi", "text/x-python", "Python script"
-    ],
+    ["6576616c205c2265786563202f7573722f6c6f63616c2f62696e2f707974686f6e", 0, ".wsgi", "text/x-python", "Python script"],
     ["53756d6d6172793a20", 0, ".spec", "text/x-rpm-spec", "RPM spec file"],
     ["25646566696e6520", 0, ".spec", "text/x-rpm-spec", "RPM spec file"],
     ["667479707174", 4, ".qtvr", "video/quicktime", "QuickTime video"],
@@ -591,7 +715,12 @@
     ["474946383961", 0, ".gif", "image/gif", "Graphics interchange format file (GIF89a)"],
     ["00000100", 0, ".ico", "image/x-icon", "Icon Image file"],
     ["0100000001", 0, ".pic", "image/x-pict", "PICT Image file"],
-    ["424d", 0, ".bmp", "image/x-ms-bmp", "Bitmap image"],
+    ["424d", 0, ".bmp", "image/x-ms-bmp", "Microsoft Windows Bitmap image"],
+    ["4241", 0, ".bga", "", "OS/2 struct bitmap array"],
+    ["4349", 0, ".ico", "", "OS/2 struct color icon"],
+    ["4350", 0, ".cp", "", "OS/2 const color pointer"],
+    ["4943", 0, ".ico", "", "OS/2 struct icon"],
+    ["5054", 0, ".pt", "", "OS/2 pointer"],
     ["38425053", 0, ".psd", "image/vnd.adobe.photoshop", "Photoshop Image file"],
     ["89504e470d0a1a0a", 0, ".png", "image/png", "Portable Network Graphics file"],
     ["67696d702078636620", 0, ".xcf", "image/x-xcf", "XCF Gimp Image file"],
@@ -791,7 +920,7 @@
     ["5f434153455f", 0, ".cas", "", "EnCase case file"],
     ["5f434153455f", 0, ".cbk", "", "EnCase case file"],
     ["4e45534d1a01", 0, ".nsf", "", "NES Sound file"],
-    ["01da01010003", 0, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap"],
+    ["01da", 0, ".rgb", "image/x-rgb", "Silicon Graphics RGB Bitmap"],
     ["0000ffffffff", 7, ".hlp", "application/x-helpfile", "Windows Help file"],
     ["4d4d4d440000", 0, ".mmf", "", "Yamaha Synthetic music Mobile Application Format"],
     ["504943540008", 0, ".img", "", "ChromaGraph Graphics Card Bitmap"],
@@ -865,7 +994,6 @@
     ["0a040008", 0, ".pcx", "image/x-pcx", "ZSOFT Paintbrush file (Paintbrush for Windows, no encoding, 8bpp)"],
     ["0a050008", 0, ".pcx", "image/x-pcx", "ZSOFT Paintbrush file (3.0, no encoding, 8bpp)"],
     ["eb3c902a", 0, ".img", "", "GEM Raster file"],
-    ["4d4d002a", 0, ".tif", "image/tiff", "TIFF file"],
     ["72656766", 0, ".dat", "", "WinNT registry file"],
     ["4d4c5357", 0, ".mls", "", "Skype localization data file"],
     ["504d4343", 0, ".grp", "", "Windows Program Manager group file"],
@@ -935,7 +1063,6 @@
     ["ff575043", 0, ".wp6", "application/wordperfect", "WordPerfect text and graphics"],
     ["1a350100", 0, ".eth", "", "WinPharoah capture file"],
     ["66490000", 0, ".shd", "", "WinNT printer spool file"],
-    ["4d4d002b", 0, ".tif", "image/tiff", "TIFF file"],
     ["444d5321", 0, ".dms", "", "Amiga DiskMasher compressed archive"],
     ["d7cdc69a", 0, ".wmf", "windows/metafile", "Windows graphics metafile"],
     ["52494646", 0, ".cmx", "", "Corel Presentation Exchange metadata"],
@@ -991,7 +1118,6 @@
     ["2d6c68", 2, ".lha", "application/x-lha", "Compressed archive"],
     ["445644", 0, ".dvr", "", "DVR-Studio stream file"],
     ["1a0000", 0, ".ntf", "", "Lotus Notes database template"],
-    ["50350a", 0, ".pgm", "image/x-portable-graymap", "Portable Graymap Graphic"],
     ["464c56", 0, ".flv", "video/x-flv", "Flash video file"],
     ["736d5f", 0, ".pdb", "", "PalmOS SuperMemo"],
     ["444f53", 0, ".adf", "", "Amiga disk file"],
@@ -1317,12 +1443,12 @@
     ["5c305c305c315c30", 0, ".ico", "image/vnd.microsoft.icon", "Windows icon"],
     ["494c424d", 8, ".lbm", "image/x-ilbm", "ILBM image"],
     ["50424d20", 8, ".lbm", "image/x-ilbm", "ILBM image"],
-    ["5031", 0, ".pbm", "image/x-portable-bitmap", "PBM image"],
-    ["5034", 0, ".pbm", "image/x-portable-bitmap", "PBM image"],
-    ["5032", 0, ".pgm", "image/x-portable-graymap", "PGM image"],
-    ["5035", 0, ".pgm", "image/x-portable-graymap", "PGM image"],
-    ["5033", 0, ".ppm", "image/x-portable-pixmap", "PPM image"],
-    ["5036", 0, ".ppm", "image/x-portable-pixmap", "PPM image"],
+    ["5031", 0, ".pbm", "image/x-portable-bitmap", "PBM image (Ascii)"],
+    ["5034", 0, ".pbm", "image/x-portable-bitmap", "PBM image (Binary)"],
+    ["5032", 0, ".pgm", "image/x-portable-graymap", "PGM image (Ascii)"],
+    ["5035", 0, ".pgm", "image/x-portable-graymap", "PGM image (Binary)"],
+    ["5033", 0, ".ppm", "image/x-portable-pixmap", "PPM image (Ascii)"],
+    ["5036", 0, ".ppm", "image/x-portable-pixmap", "PPM image (Binary)"],
     ["3842505320205c3030305c3030305c3030305c303030", 0, ".psd", "image/vnd.adobe.photoshop", "Photoshop image"],
     ["59a66a95", 0, ".sun", "image/x-sun-raster", "Sun raster image"],
     ["5c305c32", 1, ".vst", "image/x-tga", "TGA image"],
@@ -1368,8 +1494,8 @@
     ["3c212d2d", 0, ".html", "text/html", "HTML document"],
     ["3c6831", 0, ".html", "text/html", "HTML document"],
     ["3c4831", 0, ".html", "text/html", "HTML document"],
-    ["3c21646f63747970652048544d4c", 0, ".htm", "text/html", "HTML document"],
-    ["3c21444f43545950452068746d6c", 0, ".htm", "text/html", "HTML document"],
+    ["3c21646f63747970652048544d4c", 0, ".html", "text/html", "HTML document"],
+    ["3c21444f43545950452068746d6c", 0, ".html", "text/html", "HTML document"],
     [
       "232e646f776e6c6f61642e7468652e667265652e476f6f676c652e566964656f2e506c61796572", 0, ".gvp",
       "text/x-google-video-pointer", "Google Video Pointer"
@@ -1635,7 +1761,7 @@
     ["5dfcc800", 0, ".hus", "", "Husqvarna Designer"],
     ["496e7465724063746976652050616765", 0, ".ipd", "", "Inter@ctive Pager Backup (BlackBerry file"],
     ["cececece", 0, ".jceks", "", "Java Cryptography Extension keystore"],
-    ["974a42320d0a1a0a", 0, ".jb2", "", "JBOG2 image file"],
+    ["974a42320d0a1a0a", 0, ".jb2", "", "JBIG2 image file"],
     ["802a5fd7", 0, ".cin", "", "Kodak Cineon image"],
     ["7801730d626260", 0, ".dmg", "application/octet-stream", "MacOS X image file"],
     ["5a5753", 0, ".swf", "application/x-shockwave-flash", "Macromedia Shockwave Flash"],
@@ -1651,7 +1777,7 @@
     ["0a166f72672e626974636f696e2e7072", 0, ".wallet", "", "MultiBit Bitcoin wallet file"],
     ["6d756c74694269742e696e666f", 0, ".info", "", "MultiBit Bitcoin wallet information"],
     ["504b03040a000200", 0, ".epub", "", "Open Publication Structure eBook"],
-    ["762f3101", 0, ".exr", "", "OpenEXR bitmap image"],
+    ["762f3101", 0, ".exr", "image/x-exr", "OpenEXR bitmap image"],
     ["bebafeca0f50616c6d53472044617461", 0, ".dat", "", "Palm Desktop DateBook"],
     ["3203100000000000000080000000ff00", 0, ".pcs", "", "Pfaff Home Embroidery"],
     ["426567696e20507566666572", 0, ".apuf", "", "Puffer ASCII encrypted archive"],
@@ -1660,9 +1786,7 @@
     ["6674797071742020", 4, ".mov", "video/quicktime", "QuickTime movie"],
     ["43444441666d7420", 8, ".cda", "", "RIFF CD audio"],
     ["514c434d666d7420", 8, ".qcp", "audio/vnd.qcelp", "RIFF Qualcomm PureVoice"],
-    ["57454250", 8, ".webp", "image/webp", "RIFF WebP"],
-    ["524946462400000057454250", 0, ".webp", "image/webp", "RIFF WebP"],
-    ["524946462400000057454250565038", 0, ".webp", "image/webp", "RIFF WebP VP8"],
+    ["52494646", 0, ".webp", "image/webp", "RIFF WebP"],
     ["524d494464617461", 8, ".rmi", "", "RIFF Windows MIDI"],
     ["484541444552205245434f52442a2a2a", 0, ".xpt", "", "SAS Transport dataset"],
     ["232153494c4b0a", 0, ".sil", "", "Skype audio compression"],
@@ -1841,6 +1965,15 @@
     ["504b0304", 0, ".apk", "", "Android Application Package"],
     ["0000000c4a5853200d0a870a", 0, ".jxs", "image/jxs", "JPEG XS image"],
     ["ff10ff50", 0, ".jxsc", "image/jxsc", "JPEG XS codestream"],
-    ["ff10ff50", 0, ".jxsv", "video/jxsv", "JPEG XS video"]
+    ["ff10ff50", 0, ".jxsv", "video/jxsv", "JPEG XS video"],
+    ["23646566696e6520", 0, ".xbm", "image/x-xbitmap", "X BitMap image"],
+    ["716f6966", 0, ".qoi", "", "Quite OK image"],
+    ["716f6166", 0, ".qoa", "", "Quite OK audio"],
+    ["464f524d", 0, ".sc2", "", "SimCity 2000 Map File"],
+    ["5a585461706521", 0, ".tzx", "", "TZX Cassette Tape File"],
+    ["5046", 0, ".pfm", "", "Portable Float Map (Colour)"],
+    ["5066", 0, ".pfm", "", "Portable Float Map (Greyscale)"],
+    ["504634", 0, ".pfm", "", "Augmented Portable Float Map"],
+    ["5037", 0, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]
   ]
 }
