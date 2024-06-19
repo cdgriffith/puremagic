@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.24"
+__version__ = "1.25"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -433,8 +433,10 @@ def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: 
     """
     if isinstance(h, str):
         raise TypeError("h must be bytes, not str.  Consider using bytes.fromhex(h)")
-    if h and imghdr_strict and (ext := imghdr_bug_for_bug.get(h)):
-        return ext
+    if h and imghdr_strict:
+        ext = imghdr_bug_for_bug.get(h)
+        if ext:
+            return ext
     try:
         ext = (from_string(h) if h else from_file(file or "")).lstrip(".")
     except PureError:
