@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.25
+------------
+
+- Changing to support Python 3.7 again
+
 Version 1.24
 ------------
 
