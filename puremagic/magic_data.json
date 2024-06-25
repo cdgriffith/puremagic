@@ -1974,6 +1974,7 @@
     ["5037", 0, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
     ["46535344", 65, ".hcom", "", "HCOM Audio File (FSSD Header)"],
     ["48434f4d", 128, ".hcom", "", "HCOM Audio File"],
-    ["534f554e44", 0, ".sndt", "", "SoundTool/SNDTOOL Audio File"]
+    ["534f554e44", 0, ".sndt", "", "SoundTool/SNDTOOL Audio File"],
+    ["3030", 0, ".sndr", "", "Sounder Audio File"]
   ]
 }
