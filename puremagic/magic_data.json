@@ -1961,7 +1961,6 @@
     ["53464344", 0, ".pmc", "", "PowerplayerMusic Cruncher file (2.0)"],
     ["4d544e", 1464, ".mod", "", "SoundTracker 2.6 module"],
     ["4f4b5441534f4e47", 0, ".okt", "", "Oktalyzer tracker module (IFF Style)"],
-    ["52494646", 0, ".sbk", "", "Creative Labs AWE Soundbank"],
     ["504b0304", 0, ".apk", "", "Android Application Package"],
     ["0000000c4a5853200d0a870a", 0, ".jxs", "image/jxs", "JPEG XS image"],
     ["ff10ff50", 0, ".jxsc", "image/jxsc", "JPEG XS codestream"],
