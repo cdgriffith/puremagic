@@ -42,7 +42,6 @@
     ["", 0, ".gpg", "", "GPG public keyring"],
     ["", 0, ".cat", "application/vnd.ms-pki.seccat", "MS security catalog file"],
     ["", 0, ".xdr", "video/x-amt-demorun", "BizTalk XML-Data Reduced Schema"],
-    ["", 0, ".dmg", "application/octet-stream", "MacOS X image file"],
     ["", 0, ".db", "", "Database, dBASE IV, or dBFast configuration file"],
     ["", 0, ".bsb", "", "MapInfo Sea Chart"],
     ["", 0, ".js", "application/javascript", "JavaScript File"],
@@ -509,7 +508,8 @@
     ["000001b7", -4, ".mpeg", "video/mpeg", "MPEG video file"],
     ["3c2f7376673e", -8, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
     ["3c2f7376673e", -7, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
-    ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"]
+    ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
+    ["6b6f6c79", -512, ".dmg", "application/x-apple-diskimage", "MacOS X image file"]
   ],
   "headers": [
     ["30313233343536373839", 0, ".puremagic_multi_footer", "text/ascii", "TESTFILE"],
@@ -563,14 +563,12 @@
     ["4d4f5649", 0, ".movie", "video/x-sgi-movie", "SGI video"],
     ["425a68", 0, ".bzip2", "application/x-bzip2", "BZIP2 Compressed Archive file"],
     ["664c614300000022", 0, ".flac", "audio/flac", "Free Lossless Audio Codec file"],
-    ["434f5744", 0, ".vmdk", "application/octet-stream", "VMware 3 Virtual Split Disk file"],
-    ["23204469736b2044657363726970746f", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Split Disk file"],
-    ["4b444d", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Split Disk file"],
-    ["4b444d56", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Single Disk file"],
+    ["434f5744", 0, ".vmdk", "application/octet-stream", "VMware Sparse Extent Image file"],
+    ["23204469736b2044657363726970746f7246696c65", 0, ".vmdk", "application/octet-stream", "VMware Image Descriptor File"],	
+    ["4b444d56", 0, ".vmdk", "application/octet-stream", "VMware Virtual Single Disk file"],
     ["e310000100000000", 0, ".info", "", "Amiga icon"],
     ["5468697320697320", 0, ".info", "", "GNU Info Reader file"],
     ["456c6646696c6500", 0, ".evtx", "", "Windows Vista event log"],
-    ["23204469736b2044", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Disk description"],
     ["4d444d5093a7", 0, ".hdmp", "", "Windows dump file"],
     ["464f524d", 0, ".aiff", "audio/aiff", "Audio Interchange File"],
     ["2e524d46", 0, ".rmvb", "", "RealMedia streaming media"],
@@ -1761,7 +1759,6 @@
     ["cececece", 0, ".jceks", "", "Java Cryptography Extension keystore"],
     ["974a42320d0a1a0a", 0, ".jb2", "", "JBIG2 image file"],
     ["802a5fd7", 0, ".cin", "", "Kodak Cineon image"],
-    ["7801730d626260", 0, ".dmg", "application/octet-stream", "MacOS X image file"],
     ["5a5753", 0, ".swf", "application/x-shockwave-flash", "Macromedia Shockwave Flash"],
     ["2142444e", 0, ".ost", "", "Microsoft Outlook Exchange Offline Storage Folder"],
     ["4d5357494d", 0, ".wim", "", "Microsoft Windows Imaging Format"],
@@ -1975,6 +1972,15 @@
     ["46535344", 65, ".hcom", "", "HCOM Audio File (FSSD Header)"],
     ["48434f4d", 128, ".hcom", "", "HCOM Audio File"],
     ["534f554e44", 0, ".sndt", "", "SoundTool/SNDTOOL Audio File"],
-    ["3030", 0, ".sndr", "", "Sounder Audio File"]
+    ["3030", 0, ".sndr", "", "Sounder Audio File"],
+    ["7668647866696c65", 0, ".vhdx", "", "Virtual PC HD image (VHDX)"],
+    ["514649fb00000001", 0, ".qcow", "", "QEMU HD Image"],
+    ["514649fb00000002", 0, ".qcow2", "", "QEMU HD Image (QCOW2)"],
+    ["514649fb00000003", 0, ".qcow2", "", "QEMU HD Image (QCOW3)"],
+    ["514544", 0, ".qed", "", "QEMU Enhanced Disk Image"],
+    ["4c554b53babe0001", 0, ".luks", "", "Linux Unified Key Setup Image (LUKS1)"],
+    ["4c554b53babe0002", 0, ".luks", "", "Linux Unified Key Setup Image (LUKS2)"],
+    ["3c3c3c2053756e2078564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (SUN)"],
+    ["3c3c3c204f7261636c6520564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (ORACLE)"]
   ]
 }
