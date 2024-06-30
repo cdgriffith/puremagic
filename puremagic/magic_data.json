@@ -53,7 +53,17 @@
     ["", 0, ".okta", "", "Oktalyzer tracker module (Memory dump format)"],
     ["", 0, ".jxsi", "image/jxsi", "JPEG XS image"],
     ["", 0, ".jxss", "image/jxss", "JPEG XS image"],
-    ["", 0, ".jxsv", "video/jxsv", "JPEG XS video"]
+    ["", 0, ".jxsv", "video/jxsv", "JPEG XS video"],
+    ["", 0, ".hc", "", "VeraCrypt File Container"],
+    ["", 0, ".cdi", "", "DiscJuggler image"],
+    ["", 0, ".bws", "", "BlindRead Sub Channel Data"],
+    ["", 0, ".bwt", "", "BlindRead Control File"],
+    ["", 0, ".bwi", "", "BlindRead Image File"],
+    ["", 0, ".b5i", "", "BlindWrite 5 Image File"],
+    ["", 0, ".b6i", "", "BlindWrite 6 Image File"],
+    ["", 0, ".cl2", "", "Adaptec Easy CD/DVD Creator image file"],
+    ["", 0, ".cl3", "", "Adaptec Easy CD/DVD Creator image file"],
+    ["", 0, ".cl4", "", "Adaptec Easy CD/DVD Creator image file"]
   ],
   "multi-part": {
     "464f524d": [
@@ -87,11 +97,12 @@
       ["73686235", 8, ".shb", "", " Corel SHOW! 5.0 background"],
       ["524d4d50", 8, ".mmm", "", "MacroMind Multimedia Movie or Microsoft Multimedia Movie"],
       ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"],
-	["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
-        ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
-        ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
-        ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
-        ],
+      ["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
+      ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
+      ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
+      ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"],
+      ["696d6167", 8, ".cif", "application/x-cif", "Adaptec Easy CD/DVD Creator image file"]
+    ],
     "41542654464f524d": [
       ["444a5655", 12, ".djvu", "image/vnd.djvu", "DjVu single page document or image"],
       ["444a564d", 12, ".djvu", "image/vnd.djvu+multipage", "DjVu document multi-page document"]
@@ -501,7 +512,10 @@
 		["0d5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0a484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0d484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]
-	]
+	],
+	"73696262" : [
+		["72686c62", 8, ".uif", "", "MagicISO Disk Image (Encrypted)"]
+	]	
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -509,7 +523,9 @@
     ["3c2f7376673e", -8, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
     ["3c2f7376673e", -7, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
     ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
-    ["6b6f6c79", -512, ".dmg", "application/x-apple-diskimage", "MacOS X image file"]
+    ["6b6f6c79", -512, ".dmg", "application/x-apple-diskimage", "MacOS X image file"],
+    ["4e45524f", -8, ".nrg", "", "Nero Disk Image (Version 1)"],
+    ["4e455235", -12, ".nrg", "", "Nero Disk Image (Version 2)"]	
   ],
   "headers": [
     ["30313233343536373839", 0, ".puremagic_multi_footer", "text/ascii", "TESTFILE"],
@@ -1981,6 +1997,24 @@
     ["4c554b53babe0001", 0, ".luks", "", "Linux Unified Key Setup Image (LUKS1)"],
     ["4c554b53babe0002", 0, ".luks", "", "Linux Unified Key Setup Image (LUKS2)"],
     ["3c3c3c2053756e2078564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (SUN)"],
-    ["3c3c3c204f7261636c6520564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (ORACLE)"]
+    ["3c3c3c204f7261636c6520564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (ORACLE)"],
+    ["73696262", 0, ".uif", "", "MagicISO Disk Image"],
+    ["444141", 0, ".daa", "", "PowerISO Direct Access Archive"],
+    ["474249", 0, ".gbi", "", "gBurner Disk Image"],
+    ["5354414b", 4, ".hc", "", "Apple HyperCard Stack"],
+    ["49735a21", 0, ".isz", "", "Compressed ISO image"],
+    ["5b436c6f6e6543445d", 0, ".ccd", "", "CloneCD Control File"],
+    ["ffffffffffffffffffffffff", 0, ".sub", "", "CloneCD Sub Channel File"],
+    ["00ffffffffffffffffffff", 0, ".img", "", "CloneCD Image File"],
+    ["f7fff9fffdfffbfff6fff7fff7fff5fff8fff7fff5fff0fffcfffafffafff7fff8fff6fff7fff7fff2fff2fff8", 0, ".img", "", "CloneCD Image File"],	
+    ["ffffffffffffffffffffffff", 0, ".b5i", "", "BlindWrite 5 Image File"],
+    ["425754352053545245414d205349474e", 0, ".b5t", "", "BlindWrite 5 Stream File"],
+    ["425754352053545245414d205349474e", 0, ".b6t", "", "BlindWrite 6 Stream File"],
+    ["4164617074656320436551756164726174205669727475616c43442046696c65", 0, ".c2d", "", "WinOnCD Image file (Adaptec version)"],
+    ["526f78696f20496d6167652046696c6520466f726d617420332e30", 0, ".c2d", "", "WinOnCD Image file (Roxio version)"],
+    ["4d454449412044455343524950544f5201", 0, ".mds", "", "Alcohol 120% Image Data File"],
+    ["4d454449412044455343524950544f5201", 0, ".xmd", "", "GameJack Image Data File"],
+    ["4d454449412044455343524950544f5202", 0, ".mdx", "", "Daemon Tools image file"],
+    ["45520200", 0, ".toast", "", "Apple CD Image File"]
   ]
 }
