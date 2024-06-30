@@ -42,7 +42,6 @@
     ["", 0, ".gpg", "", "GPG public keyring"],
     ["", 0, ".cat", "application/vnd.ms-pki.seccat", "MS security catalog file"],
     ["", 0, ".xdr", "video/x-amt-demorun", "BizTalk XML-Data Reduced Schema"],
-    ["", 0, ".dmg", "application/octet-stream", "MacOS X image file"],
     ["", 0, ".db", "", "Database, dBASE IV, or dBFast configuration file"],
     ["", 0, ".bsb", "", "MapInfo Sea Chart"],
     ["", 0, ".js", "application/javascript", "JavaScript File"],
@@ -54,7 +53,17 @@
     ["", 0, ".okta", "", "Oktalyzer tracker module (Memory dump format)"],
     ["", 0, ".jxsi", "image/jxsi", "JPEG XS image"],
     ["", 0, ".jxss", "image/jxss", "JPEG XS image"],
-    ["", 0, ".jxsv", "video/jxsv", "JPEG XS video"]
+    ["", 0, ".jxsv", "video/jxsv", "JPEG XS video"],
+    ["", 0, ".hc", "", "VeraCrypt File Container"],
+    ["", 0, ".cdi", "", "DiscJuggler image"],
+    ["", 0, ".bws", "", "BlindRead Sub Channel Data"],
+    ["", 0, ".bwt", "", "BlindRead Control File"],
+    ["", 0, ".bwi", "", "BlindRead Image File"],
+    ["", 0, ".b5i", "", "BlindWrite 5 Image File"],
+    ["", 0, ".b6i", "", "BlindWrite 6 Image File"],
+    ["", 0, ".cl2", "", "Adaptec Easy CD/DVD Creator image file"],
+    ["", 0, ".cl3", "", "Adaptec Easy CD/DVD Creator image file"],
+    ["", 0, ".cl4", "", "Adaptec Easy CD/DVD Creator image file"]
   ],
   "multi-part": {
     "464f524d": [
@@ -69,7 +78,8 @@
       ["434d5553", 8, ".iff", "application/x-iff", "IFF Formatted Text"],
       ["5955564e", 8, ".iff", "application/x-iff", "IFF YUV Image"],
       ["46414e54", 8, ".iff", "application/x-iff", "Amiga Fantavision Movie"],
-      ["41494646", 8, ".iff", "application/x-iff", "Audio Interchange File Format"],
+      ["41494646", 8, ".aiff", "audio/x-aiff", "Audio Interchange File Format"],
+      ["41494643", 8, ".aifc", "audio/x-aiff", "Audio Interchange File Format (Compressed)"],
       ["53434448", 8, ".sc2", "", "SimCity 2000 Map File"]
     ],
     "52494646": [
@@ -87,11 +97,12 @@
       ["73686235", 8, ".shb", "", " Corel SHOW! 5.0 background"],
       ["524d4d50", 8, ".mmm", "", "MacroMind Multimedia Movie or Microsoft Multimedia Movie"],
       ["7366626b4c495354", 8, ".sbk", "", "Creative Labs AWE Soundbank"],
-	["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
-        ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
-        ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
-        ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"]
-        ],
+      ["5745425056503820", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossy Compression)"],
+      ["574542505650384c", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Lossless)"],
+      ["5745425056503858", 8, ".webp", "image/webp", "RIFF WebP File (VP8 Extended File Format)"],
+      ["57454250", 8, ".webp", "image/webp", "RIFF WebP File"],
+      ["696d6167", 8, ".cif", "application/x-cif", "Adaptec Easy CD/DVD Creator image file"]
+    ],
     "41542654464f524d": [
       ["444a5655", 12, ".djvu", "image/vnd.djvu", "DjVu single page document or image"],
       ["444a564d", 12, ".djvu", "image/vnd.djvu+multipage", "DjVu document multi-page document"]
@@ -501,14 +512,20 @@
 		["0d5749445448", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0a484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
 		["0d484549474854", 2, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]
-	]
+	],
+	"73696262" : [
+		["72686c62", 8, ".uif", "", "MagicISO Disk Image (Encrypted)"]
+	]	
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
     ["000001b7", -4, ".mpeg", "video/mpeg", "MPEG video file"],
     ["3c2f7376673e", -8, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
     ["3c2f7376673e", -7, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
-    ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"]
+    ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
+    ["6b6f6c79", -512, ".dmg", "application/x-apple-diskimage", "MacOS X image file"],
+    ["4e45524f", -8, ".nrg", "", "Nero Disk Image (Version 1)"],
+    ["4e455235", -12, ".nrg", "", "Nero Disk Image (Version 2)"]	
   ],
   "headers": [
     ["30313233343536373839", 0, ".puremagic_multi_footer", "text/ascii", "TESTFILE"],
@@ -547,7 +564,6 @@
     ["1f9d90", 0, ".tar.z", "", "Compressed tape archive"],
     ["1fa0", 0, ".tar.z", "", "Compressed tape archive"],
     ["424c454e444552", 0, ".blend", "application/x-blender", "Blender scene"],
-    ["41494643", 8, ".aiffc", "audio/x-aifc", "AIFC audio"],
     ["66747970336732", 4, ".3gpp2", "video/3gpp2", "3GPP2 multimedia file"],
     ["646966665c74", 0, ".patch", "text/x-patch", "differences between files"],
     ["6469666620", 0, ".patch", "text/x-patch", "differences between files"],
@@ -563,14 +579,12 @@
     ["4d4f5649", 0, ".movie", "video/x-sgi-movie", "SGI video"],
     ["425a68", 0, ".bzip2", "application/x-bzip2", "BZIP2 Compressed Archive file"],
     ["664c614300000022", 0, ".flac", "audio/flac", "Free Lossless Audio Codec file"],
-    ["434f5744", 0, ".vmdk", "application/octet-stream", "VMware 3 Virtual Split Disk file"],
-    ["23204469736b2044657363726970746f", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Split Disk file"],
-    ["4b444d", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Split Disk file"],
-    ["4b444d56", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Single Disk file"],
+    ["434f5744", 0, ".vmdk", "application/octet-stream", "VMware Sparse Extent Image file"],
+    ["23204469736b2044657363726970746f7246696c65", 0, ".vmdk", "application/octet-stream", "VMware Image Descriptor File"],	
+    ["4b444d56", 0, ".vmdk", "application/octet-stream", "VMware Virtual Single Disk file"],
     ["e310000100000000", 0, ".info", "", "Amiga icon"],
     ["5468697320697320", 0, ".info", "", "GNU Info Reader file"],
     ["456c6646696c6500", 0, ".evtx", "", "Windows Vista event log"],
-    ["23204469736b2044", 0, ".vmdk", "application/octet-stream", "VMware 4 Virtual Disk description"],
     ["4d444d5093a7", 0, ".hdmp", "", "Windows dump file"],
     ["464f524d", 0, ".aiff", "audio/aiff", "Audio Interchange File"],
     ["2e524d46", 0, ".rmvb", "", "RealMedia streaming media"],
@@ -709,7 +723,7 @@
     ["4944330400", 0, ".mp3", "audio/mpeg", "MPEG-1 Audio Layer 3 ID3v2.4.0 (MP3) audio file"],
     ["4f67675300020000000000000000", 0, ".ogg", "application/ogg", "Ogg Vorbis audio file"],
     ["57415645666d7420", 8, ".wav", "audio/x-wav", "Windows audio file "],
-    ["464f524d00", 0, ".aif", "audio/x-aiff", "Audio Interchange File"],
+    ["464f524d", 0, ".aif", "audio/x-aiff", "Audio Interchange File"],
     ["fff94c80", 0, ".aac", "audio/aac", "AAC audio file"],
     ["474946383761", 0, ".gif", "image/gif", "Graphics interchange format file (GIF87a)"],
     ["474946383961", 0, ".gif", "image/gif", "Graphics interchange format file (GIF89a)"],
@@ -1383,8 +1397,6 @@
     ["2321414d525f4d43312e305c6e", 0, ".amr", "audio/AMR", "AMR audio"],
     ["2321414d522d57425c6e", 0, ".awb", "audio/AMR-WB", "AMR-WB audio"],
     ["2321414d522d57425f4d43312e305c6e", 0, ".awb", "audio/AMR-WB", "AMR-WB audio"],
-    ["41494646", 8, ".aif", "audio/x-aiff", "AIFF/Amiga/Mac audio"],
-    ["38535658", 8, ".aif", "audio/x-aiff", "AIFF/Amiga/Mac audio"],
     ["4d414320", 0, ".ape", "audio/x-ape", "Monkey's audio"],
     ["7776706b", 0, ".wvp", "audio/x-wavpack", "WavPack audio"],
     ["7776706b", 0, ".wvc", "audio/x-wavpack-correction", "WavPack audio correction file"],
@@ -1763,7 +1775,6 @@
     ["cececece", 0, ".jceks", "", "Java Cryptography Extension keystore"],
     ["974a42320d0a1a0a", 0, ".jb2", "", "JBIG2 image file"],
     ["802a5fd7", 0, ".cin", "", "Kodak Cineon image"],
-    ["7801730d626260", 0, ".dmg", "application/octet-stream", "MacOS X image file"],
     ["5a5753", 0, ".swf", "application/x-shockwave-flash", "Macromedia Shockwave Flash"],
     ["2142444e", 0, ".ost", "", "Microsoft Outlook Exchange Offline Storage Folder"],
     ["4d5357494d", 0, ".wim", "", "Microsoft Windows Imaging Format"],
@@ -1961,7 +1972,6 @@
     ["53464344", 0, ".pmc", "", "PowerplayerMusic Cruncher file (2.0)"],
     ["4d544e", 1464, ".mod", "", "SoundTracker 2.6 module"],
     ["4f4b5441534f4e47", 0, ".okt", "", "Oktalyzer tracker module (IFF Style)"],
-    ["52494646", 0, ".sbk", "", "Creative Labs AWE Soundbank"],
     ["504b0304", 0, ".apk", "", "Android Application Package"],
     ["0000000c4a5853200d0a870a", 0, ".jxs", "image/jxs", "JPEG XS image"],
     ["ff10ff50", 0, ".jxsc", "image/jxsc", "JPEG XS codestream"],
@@ -1974,6 +1984,37 @@
     ["5046", 0, ".pfm", "", "Portable Float Map (Colour)"],
     ["5066", 0, ".pfm", "", "Portable Float Map (Greyscale)"],
     ["504634", 0, ".pfm", "", "Augmented Portable Float Map"],
-    ["5037", 0, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"]
+    ["5037", 0, ".pam", "image/x-portable-arbitrarymap", "Portable Arbitrary Map"],
+    ["46535344", 65, ".hcom", "", "HCOM Audio File (FSSD Header)"],
+    ["48434f4d", 128, ".hcom", "", "HCOM Audio File"],
+    ["534f554e44", 0, ".sndt", "", "SoundTool/SNDTOOL Audio File"],
+    ["3030", 0, ".sndr", "", "Sounder Audio File"],
+    ["7668647866696c65", 0, ".vhdx", "", "Virtual PC HD image (VHDX)"],
+    ["514649fb00000001", 0, ".qcow", "", "QEMU HD Image"],
+    ["514649fb00000002", 0, ".qcow2", "", "QEMU HD Image (QCOW2)"],
+    ["514649fb00000003", 0, ".qcow2", "", "QEMU HD Image (QCOW3)"],
+    ["514544", 0, ".qed", "", "QEMU Enhanced Disk Image"],
+    ["4c554b53babe0001", 0, ".luks", "", "Linux Unified Key Setup Image (LUKS1)"],
+    ["4c554b53babe0002", 0, ".luks", "", "Linux Unified Key Setup Image (LUKS2)"],
+    ["3c3c3c2053756e2078564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (SUN)"],
+    ["3c3c3c204f7261636c6520564d205669727475616c426f78204469736b20496d616765203e3e3e", 0, ".vdi", "", "VirtualBox Disk Image (ORACLE)"],
+    ["73696262", 0, ".uif", "", "MagicISO Disk Image"],
+    ["444141", 0, ".daa", "", "PowerISO Direct Access Archive"],
+    ["474249", 0, ".gbi", "", "gBurner Disk Image"],
+    ["5354414b", 4, ".hc", "", "Apple HyperCard Stack"],
+    ["49735a21", 0, ".isz", "", "Compressed ISO image"],
+    ["5b436c6f6e6543445d", 0, ".ccd", "", "CloneCD Control File"],
+    ["ffffffffffffffffffffffff", 0, ".sub", "", "CloneCD Sub Channel File"],
+    ["00ffffffffffffffffffff", 0, ".img", "", "CloneCD Image File"],
+    ["f7fff9fffdfffbfff6fff7fff7fff5fff8fff7fff5fff0fffcfffafffafff7fff8fff6fff7fff7fff2fff2fff8", 0, ".img", "", "CloneCD Image File"],	
+    ["ffffffffffffffffffffffff", 0, ".b5i", "", "BlindWrite 5 Image File"],
+    ["425754352053545245414d205349474e", 0, ".b5t", "", "BlindWrite 5 Stream File"],
+    ["425754352053545245414d205349474e", 0, ".b6t", "", "BlindWrite 6 Stream File"],
+    ["4164617074656320436551756164726174205669727475616c43442046696c65", 0, ".c2d", "", "WinOnCD Image file (Adaptec version)"],
+    ["526f78696f20496d6167652046696c6520466f726d617420332e30", 0, ".c2d", "", "WinOnCD Image file (Roxio version)"],
+    ["4d454449412044455343524950544f5201", 0, ".mds", "", "Alcohol 120% Image Data File"],
+    ["4d454449412044455343524950544f5201", 0, ".xmd", "", "GameJack Image Data File"],
+    ["4d454449412044455343524950544f5202", 0, ".mdx", "", "Daemon Tools image file"],
+    ["45520200", 0, ".toast", "", "Apple CD Image File"]
   ]
 }
