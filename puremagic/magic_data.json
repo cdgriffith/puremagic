@@ -1727,7 +1727,7 @@
     ["04224d18", 0, ".tlz4", "application/x-lz4-compressed-tar", "LZ4 Tar Archive"],
     ["04224d18", 0, ".tar.lz4", "application/x-lz4-compressed-tar", "LZ4 Tar Archive"],
     ["4f50434c444154", 0, ".attachment", "", "1Password 4 Cloud Keychain"],
-    ["63616666", 0, ".caf", "", "Apple Core Audio File"],
+    ["63616666", 0, ".caf", "audio/x-caf", "Apple Core Audio File"],
     ["667479704d344120", 4, ".m4a", "", "Apple Lossless Audio Codec file"],
     ["3c7e363c5c255f30675371683b", 0, ".b85", "", "BASE85 file"],
     ["425047fb", 0, ".bpg", "", "Better Portable Graphics"],
