@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.25"
+__version__ = "1.26"
 __all__ = [
     "magic_file",
     "magic_string",
