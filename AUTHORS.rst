@@ -19,3 +19,5 @@ A big thank you to everyone that has helped!
 - R. Singh (Gr3atWh173)
 - Andy (NebularNerd)
 - Raphaël Vinot (Rafiot)
+- Sebastian Kreft (sk-)
+- William Bonnaventure  (Aztorius)

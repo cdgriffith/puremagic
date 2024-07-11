@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 1.26
+------------
+
+- Adding #87 sndhdr update and HD/CD/DVD Image files (thanks to Andy - NebularNerd)
+- Adding #88 Add .caf mime type (thanks to William Bonnaventure)
+- Fixing #89 add py.typed to package_data (thanks to Sebastian Kreft)
+
 Version 1.25
 ------------
 
