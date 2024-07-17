@@ -28,6 +28,7 @@
     ["", 0, ".c", "text/x-csrc", "C Code File"],
     ["", 0, ".cc", "text/x-csrc", "C Code File"],
     ["", 0, ".h", "text/x-csrc", "C Header File"],
+    ["", 0, ".pdf", "application/pdf", "Adobe Portable Document Format file"],
     ["", 0, ".stl", "model/stl", "stereolithography CAD software"],
     ["", 0, ".srt", "application/x-subrip", "SubRip subtitles"],
     ["", 0, ".obj", "", "Relocatable object code"],
