@@ -20,7 +20,7 @@
     ["", 0, ".crt", "text/plain", "X.509 Certificate"],
     ["", 0, ".reg", "", "Windows Registry File"],
     ["", 0, ".md", "text/plain", "Markdown File"],
-    ["", 0, ".json", "application/json", "Markdown File"],
+    ["", 0, ".json", "application/json", "JSON File"],
     ["", 0, ".rst", "text/plain", "Restructured Text File"],
     ["", 0, ".cfg", "text/plain", "Configuration File"],
     ["", 0, ".flake8", "text/plain", "Flake 8 Configuration File"],
