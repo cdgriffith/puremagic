@@ -229,7 +229,8 @@ def _stream_details(stream):
     try:
         stream.seek(-max_foot, os.SEEK_END)
     except:
-        stream.seek(stream.tell(), os.SEEK_END)    
+        stream.seek(stream.tell(), os.SEEK_END)
+        raise
     stream.seek(-max_foot, os.SEEK_END)
     foot = stream.read()
     stream.seek(0)
