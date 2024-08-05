@@ -133,7 +133,7 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     if not results:
         raise PureError("Could not identify file")
 
-    return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=True)
+    return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=False)
 
 
 def _identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithConfidence]:
@@ -226,6 +226,10 @@ def _stream_details(stream):
     """Grab the start and end of the stream"""
     max_head, max_foot = _max_lengths()
     head = stream.read(max_head)
+    try:
+        stream.seek(-max_foot, os.SEEK_END)
+    except:
+        stream.seek(stream.tell(), os.SEEK_END)    
     stream.seek(-max_foot, os.SEEK_END)
     foot = stream.read()
     stream.seek(0)
