@@ -228,9 +228,8 @@ def _stream_details(stream):
     head = stream.read(max_head)
     try:
         stream.seek(-max_foot, os.SEEK_END)
-    except:
+    except OSError:
         stream.seek(stream.tell(), os.SEEK_END)
-        raise
     stream.seek(-max_foot, os.SEEK_END)
     foot = stream.read()
     stream.seek(0)
