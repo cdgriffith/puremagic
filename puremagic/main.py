@@ -134,10 +134,7 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
         raise PureError("Could not identify file")
 
     """ Allows imghdr tests to pass """
-    if "PYTEST_CURRENT_TEST" in os.environ:
-        order = True
-    else:
-        order = False
+    order = True if "PYTEST_CURRENT_TEST" in os.environ else False
 
     return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=order)
 
