@@ -138,7 +138,7 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
         order = True
     else:
         order = False
-        
+
     return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=order)
 
 
