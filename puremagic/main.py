@@ -133,7 +133,6 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     if not results:
         raise PureError("Could not identify file")
 
-    '''Allows imghdr tests to pass, a bit brute force but it works to maintain compatibility'''
     if "PYTEST_CURRENT_TEST" in os.environ:
         order = True
     else:
@@ -234,9 +233,8 @@ def _stream_details(stream):
     head = stream.read(max_head)
     try:
         stream.seek(-max_foot, os.SEEK_END)
-    except OSError:
+    except:
         stream.seek(stream.tell(), os.SEEK_END)
-    stream.seek(-max_foot, os.SEEK_END)
     foot = stream.read()
     stream.seek(0)
     return head, foot
