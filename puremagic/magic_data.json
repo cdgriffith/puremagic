@@ -948,7 +948,6 @@
     ["564350434830", 0, ".pch", "", "Visual C PreCompiled header"],
     ["554641c6d2c1", 0, ".ufa", "", "UFA compressed archive"],
     ["ac9ebd8f0000", 0, ".qdf", "", "Quicken data"],
-    ["57696e5a6970", 29152, ".zip", "application/zip", "WinZip compressed archive"],
     ["504147454455", 0, ".dmp", "", "Windows memory dump"],
     ["4d444d5093a7", 0, ".dmp", "", "Windows dump file"],
     ["458600000600", 0, ".qbb", "", "QuickBooks backup"],

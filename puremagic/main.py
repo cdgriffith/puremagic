@@ -114,6 +114,9 @@ def _max_lengths() -> tuple[int, int]:
     return max_header_length, max_footer_length
 
 
+max_head, max_foot = _max_lengths()
+
+
 def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     """Rough confidence based on string length and file extension"""
     results = []
@@ -205,7 +208,6 @@ def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
 
 def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
     """Grab the start and end of the file"""
-    max_head, max_foot = _max_lengths()
     with open(filename, "rb") as fin:
         head = fin.read(max_head)
         try:
@@ -218,13 +220,11 @@ def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
 
 def _string_details(string):
     """Grab the start and end of the string"""
-    max_head, max_foot = _max_lengths()
     return string[:max_head], string[-max_foot:]
 
 
 def _stream_details(stream):
     """Grab the start and end of the stream"""
-    max_head, max_foot = _max_lengths()
     head = stream.read(max_head)
     try:
         stream.seek(-max_foot, os.SEEK_END)
