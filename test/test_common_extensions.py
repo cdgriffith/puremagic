@@ -9,6 +9,7 @@ import pytest
 import puremagic
 
 LOCAL_DIR = os.path.realpath(os.path.dirname(__file__))
+RESOUCE_DIR = os.path.join(LOCAL_DIR, "resources")
 IMAGE_DIR = os.path.join(LOCAL_DIR, "resources", "images")
 VIDEO_DIR = os.path.join(LOCAL_DIR, "resources", "video")
 AUDIO_DIR = os.path.join(LOCAL_DIR, "resources", "audio")
@@ -171,7 +172,9 @@ class TestMagic(unittest.TestCase):
         """Test CLI options"""
         from puremagic.main import command_line_entry
 
-        command_line_entry(__file__, "test.py")
+        command_line_entry(__file__, os.path.join(AUDIO_DIR, "test.mp3"), "-v")
+        command_line_entry(__file__, "DOES NOT EXIST FILE")
+        command_line_entry(__file__, os.path.join(RESOUCE_DIR, "fake_file"), "-v")
 
     def test_bad_magic_input(self):
         """Test bad magic input"""
