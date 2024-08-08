@@ -398,13 +398,13 @@ def command_line_entry(*args):
                 if i == 0:
                     print("\n\tBest Match")
                 else:
-                    print(f"\tAlertnative Match {i}")
-                print(f"\tname: {result.name}")
-                print(f"\tconfidence: {result.confidence}")
-                print(f"\textension: {result.extension}")
-                print(f"\tmime_type: {result.mime_type}")
-                print(f"\tbyte_match: {result.byte_match}")
-                print(f"\toffset: {result.offset}")
+                    print(f"\tAlertnative Match #{i}")
+                print(f"\tName: {result.name}")
+                print(f"\tConfidence: {int(result.confidence * 100)}%")
+                print(f"\tExtension: {result.extension}")
+                print(f"\tMime Type: {result.mime_type}")
+                print(f"\tByte Match: {result.byte_match}")
+                print(f"\tOffset: {result.offset}")
                 print("")
 
 
