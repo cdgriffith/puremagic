@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 1.27
+------------
+
+- Adding new verbose output to command line with `-v` or `--verbose`
+- Adding #92 include py.typed in sdist (thanks to Nicholas Bollweg - bollwyvl)
+- Adding #93 Improve PDF file detection, fix json description (thanks to Péter - peterekepeter)
+- Adding #95 README clarification for Faster Import (thanks to mara004)
+- Fixing #96 #86 stream does not work properly on opened small files (thanks to Felipe Lema and Andy - NebularNerd)
+
 Version 1.26
 ------------
 

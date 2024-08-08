@@ -19,7 +19,7 @@ others might.
 
 Advantages over using a wrapper for 'file' or 'libmagic':
 
--  Faster
+-  Faster Import
 -  Lightweight
 -  Cross platform compatible
 -  No dependencies

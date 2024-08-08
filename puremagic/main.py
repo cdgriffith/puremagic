@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.26"
+__version__ = "1.27"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -229,8 +229,8 @@ def _stream_details(stream):
     try:
         stream.seek(-max_foot, os.SEEK_END)
     except OSError:
-        stream.seek(stream.tell(), os.SEEK_END)
-    stream.seek(-max_foot, os.SEEK_END)
+        # File is smaller than the max_foot size, jump to beginning
+        stream.seek(0)
     foot = stream.read()
     stream.seek(0)
     return head, foot
@@ -378,6 +378,7 @@ def command_line_entry(*args):
         dest="mime",
         help="Return the mime type instead of file type",
     )
+    parser.add_argument("-v", "--v", action="store_true", dest="verbose", help="Print verbose output")
     parser.add_argument("files", nargs="+")
     args = parser.parse_args(args if args else sys.argv[1:])
 
@@ -385,6 +386,27 @@ def command_line_entry(*args):
         if not os.path.exists(fn):
             print(f"File '{fn}' does not exist!")
             continue
+        if args.verbose:
+            try:
+                matches = magic_file(fn)
+            except PureError:
+                print(f"'{fn}' : could not be Identified")
+                continue
+            print("")
+            print(f"File: {fn}")
+            print(f"Total Possible Matches: {len(matches)}")
+            for i, result in enumerate(matches):
+                if i == 0:
+                    print("\n\tBest Match")
+                else:
+                    print(f"\tAlertnative Match {i}")
+                print(f"\tname: {result.name}")
+                print(f"\tconfidence: {result.confidence}")
+                print(f"\textension: {result.extension}")
+                print(f"\tmime_type: {result.mime_type}")
+                print(f"\tbyte_match: {result.byte_match}")
+                print(f"\toffset: {result.offset}")
+                print("")
         try:
             print(f"'{fn}' : {from_file(fn, args.mime)}")
         except PureError:
