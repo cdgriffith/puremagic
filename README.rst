@@ -35,7 +35,7 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 3.8+
+-  Python 3.7+
 
 Using github ci to run continuous integration tests on listed platforms.
 
@@ -174,7 +174,7 @@ http://www.garykessler.net/library/file_sigs.html
 
 Freedesktop.org
 
-For use of their shared-mime-info file (even if they do use XML, blea), available at:
+For use of their shared-mime-info file, available at:
 https://cgit.freedesktop.org/xdg/shared-mime-info/
 
 License

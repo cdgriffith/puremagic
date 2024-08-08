@@ -9,6 +9,7 @@ import pytest
 import puremagic
 
 LOCAL_DIR = os.path.realpath(os.path.dirname(__file__))
+RESOUCE_DIR = os.path.join(LOCAL_DIR, "resources")
 IMAGE_DIR = os.path.join(LOCAL_DIR, "resources", "images")
 VIDEO_DIR = os.path.join(LOCAL_DIR, "resources", "video")
 AUDIO_DIR = os.path.join(LOCAL_DIR, "resources", "audio")
@@ -17,6 +18,14 @@ ARCHIVE_DIR = os.path.join(LOCAL_DIR, "resources", "archive")
 MEDIA_DIR = os.path.join(LOCAL_DIR, "resources", "media")
 SYSTEM_DIR = os.path.join(LOCAL_DIR, "resources", "system")
 TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
+
+
+class MockBytesIO(BytesIO):
+
+    def seek(self, offset, whence=0):
+        if offset < 0:
+            raise OSError("Invalid seek position")
+        return super().seek(offset, whence)
 
 
 class TestMagic(unittest.TestCase):
@@ -127,6 +136,10 @@ class TestMagic(unittest.TestCase):
         self.assertEqual(result[0].extension, ".tga")
         self.assertRaises(ValueError, puremagic.magic_stream, BytesIO(b""))
 
+    def test_small_stream_error(self):
+        ext = puremagic.from_stream(MockBytesIO(b"#!/usr/bin/env python"))
+        self.assertEqual(ext, ".py")
+
     def test_mime(self):
         """Identify mime type"""
         self.assertEqual(puremagic.from_file(TGA_FILE, True), "image/tga")
@@ -171,7 +184,9 @@ class TestMagic(unittest.TestCase):
         """Test CLI options"""
         from puremagic.main import command_line_entry
 
-        command_line_entry(__file__, "test.py")
+        command_line_entry(__file__, os.path.join(AUDIO_DIR, "test.mp3"), "-v")
+        command_line_entry(__file__, "DOES NOT EXIST FILE")
+        command_line_entry(__file__, os.path.join(RESOUCE_DIR, "fake_file"), "-v")
 
     def test_bad_magic_input(self):
         """Test bad magic input"""

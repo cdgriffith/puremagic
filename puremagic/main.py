@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.26"
+__version__ = "1.27"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -114,6 +114,9 @@ def _max_lengths() -> tuple[int, int]:
     return max_header_length, max_footer_length
 
 
+max_head, max_foot = _max_lengths()
+
+
 def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     """Rough confidence based on string length and file extension"""
     results = []
@@ -133,7 +136,7 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
     if not results:
         raise PureError("Could not identify file")
 
-    return sorted(results, key=lambda x: (x.confidence, x.byte_match), reverse=True)
+    return sorted(results, key=lambda x: (x.confidence, len(x.byte_match)), reverse=True)
 
 
 def _identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithConfidence]:
@@ -205,7 +208,6 @@ def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
 
 def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
     """Grab the start and end of the file"""
-    max_head, max_foot = _max_lengths()
     with open(filename, "rb") as fin:
         head = fin.read(max_head)
         try:
@@ -218,15 +220,17 @@ def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
 
 def _string_details(string):
     """Grab the start and end of the string"""
-    max_head, max_foot = _max_lengths()
     return string[:max_head], string[-max_foot:]
 
 
 def _stream_details(stream):
     """Grab the start and end of the stream"""
-    max_head, max_foot = _max_lengths()
     head = stream.read(max_head)
-    stream.seek(-max_foot, os.SEEK_END)
+    try:
+        stream.seek(-max_foot, os.SEEK_END)
+    except OSError:
+        # File is smaller than the max_foot size, jump to beginning
+        stream.seek(0)
     foot = stream.read()
     stream.seek(0)
     return head, foot
@@ -374,6 +378,7 @@ def command_line_entry(*args):
         dest="mime",
         help="Return the mime type instead of file type",
     )
+    parser.add_argument("-v", "--v", action="store_true", dest="verbose", help="Print verbose output")
     parser.add_argument("files", nargs="+")
     args = parser.parse_args(args if args else sys.argv[1:])
 
@@ -385,6 +390,21 @@ def command_line_entry(*args):
             print(f"'{fn}' : {from_file(fn, args.mime)}")
         except PureError:
             print(f"'{fn}' : could not be Identified")
+            continue
+        if args.verbose:
+            matches = magic_file(fn)
+            print(f"Total Possible Matches: {len(matches)}")
+            for i, result in enumerate(matches):
+                if i == 0:
+                    print("\n\tBest Match")
+                else:
+                    print(f"\tAlertnative Match #{i}")
+                print(f"\tName: {result.name}")
+                print(f"\tConfidence: {int(result.confidence * 100)}%")
+                print(f"\tExtension: {result.extension}")
+                print(f"\tMime Type: {result.mime_type}")
+                print(f"\tByte Match: {result.byte_match}")
+                print(f"\tOffset: {result.offset}\n")
 
 
 imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
@@ -444,5 +464,5 @@ def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: 
     return imghdr_exts.get(ext, ext)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     command_line_entry()

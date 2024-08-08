@@ -20,4 +20,7 @@ A big thank you to everyone that has helped!
 - Andy (NebularNerd)
 - Raphaël Vinot (Rafiot)
 - Sebastian Kreft (sk-)
-- William Bonnaventure  (Aztorius)
+- William Bonnaventure (Aztorius)
+- Nicholas Bollweg (bollwyvl)
+- Péter (peterekepeter)
+- mara004
