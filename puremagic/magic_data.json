@@ -64,9 +64,19 @@
     ["", 0, ".b6i", "", "BlindWrite 6 Image File"],
     ["", 0, ".cl2", "", "Adaptec Easy CD/DVD Creator image file"],
     ["", 0, ".cl3", "", "Adaptec Easy CD/DVD Creator image file"],
-    ["", 0, ".cl4", "", "Adaptec Easy CD/DVD Creator image file"]
+    ["", 0, ".cl4", "", "Adaptec Easy CD/DVD Creator image file"],
+	["", 0, ".vba", "", "Visual Basic Script"],
+	["", 0, "README", "text/plain", "README File" ]
+
+
   ],
   "multi-part": {
+	"7b22": [
+		["227d", -2, ".json", "application/json", "JSON File"]
+		],
+	  "7b": [
+		["22", -1, ".json", "application/json", "JSON File"]
+	  ],
     "464f524d": [
       ["494c424d", 8, ".iff", "image/x-ilbm", "IFF Interleaved Bitmap Image"],
       ["38535658", 8, ".iff", "audio/x-8svx", "IFF 8-Bit Sampled Voice"],
@@ -516,7 +526,7 @@
 	],
 	"73696262" : [
 		["72686c62", 8, ".uif", "", "MagicISO Disk Image (Encrypted)"]
-	]	
+	]
   },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
@@ -526,10 +536,20 @@
     ["3c2f7376673e", -6, ".svg", "image/svg+xml", "Scalable Vector Graphics Image"],
     ["6b6f6c79", -512, ".dmg", "application/x-apple-diskimage", "MacOS X image file"],
     ["4e45524f", -8, ".nrg", "", "Nero Disk Image (Version 1)"],
-    ["4e455235", -12, ".nrg", "", "Nero Disk Image (Version 2)"]	
+    ["4e455235", -12, ".nrg", "", "Nero Disk Image (Version 2)"]
   ],
   "headers": [
-    ["30313233343536373839", 0, ".puremagic_multi_footer", "text/ascii", "TESTFILE"],
+	["595556344d504547",0, ".y4m", "video/x-yuv4mpeg", "YUV4MPEG2 video file"],
+	["3c68746d6c", 0, ".html", "text/html", "HTML File"],
+	["424c5545", 0, ".bvr", "", "Blue Iris Video File"],
+	["2d2d2d2d2d424547494e20504b4353372d2d2d2d2d", 0, ".p7b", "", "PKCS 7 Certificate File" ],
+	["7b22", 0, ".json", "application/json", "JSON File"],
+	["7b", 0, ".json", "application/json", "JSON File"],
+	["50755454592d557365722d4b65792d46696c65", 0, ".ppk", "", "PuTTY User Key File"],
+    ["2d2d2d2d20424547494e2053534832205055424c4943204b4559202d2d2d2d", 0, "", "", "SSH Public Key"],
+	["2d2d2d2d424547494e", 0, "", "", "Key or Cert File"],
+	["2d2d2d2d20424547494e", 0, "", "", "Key or Cert File"],
+	["30313233343536373839", 0, ".puremagic_multi_footer", "text/ascii", "TESTFILE"],
     ["ff0a", 0, ".jxl", "image/jxl", "JPEG XL image (Raw stream)"],
     ["0000000c4a584c200d0a870a", 0, ".jxl", "image/jxl", "JPEG XL image (ISOBMFF container)"],
     ["3c3f786d6c", 0, ".xml", "application/xml", "XML Document"],
@@ -581,7 +601,7 @@
     ["425a68", 0, ".bzip2", "application/x-bzip2", "BZIP2 Compressed Archive file"],
     ["664c614300000022", 0, ".flac", "audio/flac", "Free Lossless Audio Codec file"],
     ["434f5744", 0, ".vmdk", "application/octet-stream", "VMware Sparse Extent Image file"],
-    ["23204469736b2044657363726970746f7246696c65", 0, ".vmdk", "application/octet-stream", "VMware Image Descriptor File"],	
+    ["23204469736b2044657363726970746f7246696c65", 0, ".vmdk", "application/octet-stream", "VMware Image Descriptor File"],
     ["4b444d56", 0, ".vmdk", "application/octet-stream", "VMware Virtual Single Disk file"],
     ["e310000100000000", 0, ".info", "", "Amiga icon"],
     ["5468697320697320", 0, ".info", "", "GNU Info Reader file"],
@@ -2008,7 +2028,7 @@
     ["5b436c6f6e6543445d", 0, ".ccd", "", "CloneCD Control File"],
     ["ffffffffffffffffffffffff", 0, ".sub", "", "CloneCD Sub Channel File"],
     ["00ffffffffffffffffffff", 0, ".img", "", "CloneCD Image File"],
-    ["f7fff9fffdfffbfff6fff7fff7fff5fff8fff7fff5fff0fffcfffafffafff7fff8fff6fff7fff7fff2fff2fff8", 0, ".img", "", "CloneCD Image File"],	
+    ["f7fff9fffdfffbfff6fff7fff7fff5fff8fff7fff5fff0fffcfffafffafff7fff8fff6fff7fff7fff2fff2fff8", 0, ".img", "", "CloneCD Image File"],
     ["ffffffffffffffffffffffff", 0, ".b5i", "", "BlindWrite 5 Image File"],
     ["425754352053545245414d205349474e", 0, ".b5t", "", "BlindWrite 5 Stream File"],
     ["425754352053545245414d205349474e", 0, ".b6t", "", "BlindWrite 6 Stream File"],
