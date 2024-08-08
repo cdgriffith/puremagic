@@ -20,6 +20,14 @@ SYSTEM_DIR = os.path.join(LOCAL_DIR, "resources", "system")
 TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
 
+class MockBytesIO(BytesIO):
+
+    def seek(self, offset, whence=0):
+        if offset < 0:
+            raise OSError("Invalid seek position")
+        return super().seek(offset, whence)
+
+
 class TestMagic(unittest.TestCase):
     def setUp(self):
         self.mp4magic = b"\x00\x00\x00\x1c\x66\x74\x79\x70\x4d\x53\x4e\
@@ -127,6 +135,10 @@ class TestMagic(unittest.TestCase):
         result = puremagic.magic_stream(stream, TGA_FILE)
         self.assertEqual(result[0].extension, ".tga")
         self.assertRaises(ValueError, puremagic.magic_stream, BytesIO(b""))
+
+    def test_small_stream_error(self):
+        ext = puremagic.from_stream(MockBytesIO(b"#!/usr/bin/env python"))
+        self.assertEqual(ext, ".py")
 
     def test_mime(self):
         """Identify mime type"""
