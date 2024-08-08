@@ -386,14 +386,13 @@ def command_line_entry(*args):
         if not os.path.exists(fn):
             print(f"File '{fn}' does not exist!")
             continue
+        try:
+            print(f"'{fn}' : {from_file(fn, args.mime)}")
+        except PureError:
+            print(f"'{fn}' : could not be Identified")
+            continue
         if args.verbose:
-            try:
-                matches = magic_file(fn)
-            except PureError:
-                print(f"'{fn}' : could not be Identified")
-                continue
-            print("")
-            print(f"File: {fn}")
+            matches = magic_file(fn)
             print(f"Total Possible Matches: {len(matches)}")
             for i, result in enumerate(matches):
                 if i == 0:
@@ -407,10 +406,6 @@ def command_line_entry(*args):
                 print(f"\tbyte_match: {result.byte_match}")
                 print(f"\toffset: {result.offset}")
                 print("")
-        try:
-            print(f"'{fn}' : {from_file(fn, args.mime)}")
-        except PureError:
-            print(f"'{fn}' : could not be Identified")
 
 
 imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
@@ -470,5 +465,5 @@ def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: 
     return imghdr_exts.get(ext, ext)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     command_line_entry()
