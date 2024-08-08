@@ -404,8 +404,7 @@ def command_line_entry(*args):
                 print(f"\tExtension: {result.extension}")
                 print(f"\tMime Type: {result.mime_type}")
                 print(f"\tByte Match: {result.byte_match}")
-                print(f"\tOffset: {result.offset}")
-                print("")
+                print(f"\tOffset: {result.offset}\n")
 
 
 imghdr_bug_for_bug = {  # Special cases where imghdr is probably incorrect.
