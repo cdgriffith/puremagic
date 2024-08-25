@@ -576,7 +576,7 @@
 	"4949bc01" : [
 		["574d50484f544f00", 90, ".jxr", "image/jxr", "JPEG XR image"]
 	]
-  }, 
+  },
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
     ["000001b7", -4, ".mpeg", "video/mpeg", "MPEG video file"],
