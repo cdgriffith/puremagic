@@ -575,8 +575,18 @@
 	],
 	"4949bc01" : [
 		["574d50484f544f00", 90, ".jxr", "image/jxr", "JPEG XR image"]
+	],
+	"444f53" : [
+		["00", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (OFS)"],
+		["01", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (FFS)"],
+		["02", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (OFS International)"],
+		["03", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (FFS International)"],
+		["04", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (OFS International and Directory Cache)"],
+		["05", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (FFS International and Directory Cache)"],
+		["06", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (OFS Long Filename)"],
+		["07", 3, ".adf", "application/x-amiga-disk-format", "Amiga disk image (FFS Long Filename)"]
 	]
-  },
+  }, 
   "footers": [
     ["54525545564953494f4e2d5846494c452e00", -18, ".tga", "image/tga", "Truevision Targa Graphic file"],
     ["000001b7", -4, ".mpeg", "video/mpeg", "MPEG video file"],
@@ -1203,7 +1213,6 @@
     ["445644", 0, ".dvr", "", "DVR-Studio stream file"],
     ["1a0000", 0, ".ntf", "", "Lotus Notes database template"],
     ["736d5f", 0, ".pdb", "", "PalmOS SuperMemo"],
-    ["444f53", 0, ".adf", "", "Amiga disk file"],
     ["475832", 0, ".gx2", "", "Show Partner graphics file"],
     ["0110", 0, ".tr1", "", "Novell LANalyzer capture file"],
     ["4c01", 0, ".obj", "", "MS COFF relocatable object code"],
@@ -1619,7 +1628,7 @@
     ["504b5c3030335c303034", 0, ".key", "application/x-iwork-keynote-sffkey", "Apple Keynote 5 presentation"],
     ["49574144", 0, ".wad", "application/x-doom-wad", "Doom WAD"],
     ["50574144", 0, ".wad", "application/x-doom-wad", "Doom WAD"],
-    ["444f535c783030", 0, ".adf", "application/x-amiga-disk-format", "Amiga disk image"],
+    ["444f53", 0, ".adf", "application/x-amiga-disk-format", "Amiga disk image"],
     ["0000001466747970336770", 0, ".3g2", "video/3gpp", "3GPP 3rd Generation Partnership Project video file"],
     ["000001ba", 0, ".vob", "video/dvd", "DVD video file"],
     ["000001ba", 0, ".mpg", "video/mpeg", "DVD video file"],
@@ -2170,6 +2179,10 @@
 	["01fe", 0, ".wps", "application/vnd.ms-works", "Microsoft Works Word document (Version 1-2)"],
 	["4949bc01", 0, ".jxr", "image/jxr", "JPEG XR image"],
 	["4949bc01", 0, ".wdp", "image/vnd.ms-photo", "JPEG XR image"],
-	["ffd8fff7", 0, ".jls", "image/jls", "JPEG-LS image"]
+	["ffd8fff7", 0, ".jls", "image/jls", "JPEG-LS image"],
+	["5244534b", 0, ".hdf", "", "Amiga Harddisk image"],
+	["504653", 0, ".hdf", "", "Amiga Harddisk image (Professional Filesystem 3)"],
+	["504453", 0, ".hdf", "", "Amiga Harddisk image (Professional Filesystem 3)"],
+	["534653", 0, ".hdf", "", "Amiga Harddisk image (Smart File System)"]
   ]
 }
