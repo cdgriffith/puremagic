@@ -1843,7 +1843,7 @@
     ["01003930", 0, ".fdb", "", "Firebird and Interbase database files"],
     ["01003930", 0, ".gdb", "", "Firebird and Interbase database files"],
     [
-      "53494d504c4520203d202020202020202020202020202020202020202054", 0, ".fits", "",
+      "53494d504c4520203d202020202020202020202020202020202020202054", 0, ".fits", "image/fits",
       "Flexible Image Transport System (FITS) file"
     ],
     ["256269746d6170", 0, ".fbm", "", "Fuzzy bitmap (FBM) file"],
