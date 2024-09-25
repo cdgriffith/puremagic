@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.28
+
+- Adding #99 New file support (thanks to Andy - NebularNerd)
+- Fixing #100 FITS files no longer had mime type (thanks to ejeschke)
+
 Version 1.27
 ------------
 
