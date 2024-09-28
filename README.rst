@@ -157,9 +157,8 @@ Acknowledgements
 
 Gary C. Kessler
 
-
 For use of his File Signature Tables, available at:
-http://www.garykessler.net/library/file_sigs.html
+https://filesig.search.org/
 
 Freedesktop.org
 
