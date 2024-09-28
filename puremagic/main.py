@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.29"
+__version__ = "2.0.0b1"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -196,11 +196,14 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithC
     return _confidence(matches, ext)
 
 
-def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
+def _magic(header: bytes, footer: bytes, mime: bool, ext=None, deep_scan=True, filename=None) -> str:
     """Discover what type of file it is based on the incoming string"""
     if not header:
         raise ValueError("Input was empty")
-    info = _identify_all(header, footer, ext)[0]
+    infos = _identify_all(header, footer, ext)
+    if deep_scan and filename:
+        return _run_deep_scan(infos, filename, header, footer)[0].extension
+    info = infos[0]
     if mime:
         return info.mime_type
     return info.extension if not isinstance(info.extension, list) else info[0].extension
@@ -257,7 +260,7 @@ def ext_from_filename(filename: os.PathLike | str) -> str:
     return ext
 
 
-def from_file(filename: os.PathLike | str, mime: bool = False) -> str:
+def from_file(filename: os.PathLike | str, mime: bool = False, deep_scan: bool = False) -> str:
     """Opens file, attempts to identify content based
     off magic number and will return the file extension.
     If mime is True it will return the mime type instead.
@@ -268,7 +271,7 @@ def from_file(filename: os.PathLike | str, mime: bool = False) -> str:
     """
 
     head, foot = _file_details(filename)
-    return _magic(head, foot, mime, ext_from_filename(filename))
+    return _magic(head, foot, mime, ext_from_filename(filename), deep_scan=deep_scan, filename=filename)
 
 
 def from_string(string: str | bytes, mime: bool = False, filename: os.PathLike | str | None = None) -> str:
@@ -305,7 +308,7 @@ def from_stream(stream, mime: bool = False, filename: os.PathLike | str | None =
     return _magic(head, foot, mime, ext)
 
 
-def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
+def magic_file(filename: os.PathLike | str, deep_scan=True) -> list[PureMagicWithConfidence]:
     """
     Returns list of (num_of_matches, array_of_matches)
     arranged highest confidence match first.
@@ -321,6 +324,8 @@ def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
     except PureError:
         info = []
     info.sort(key=lambda x: x.confidence, reverse=True)
+    if deep_scan:
+        return _run_deep_scan(info, filename, head, foot)
     return info
 
 
@@ -361,6 +366,60 @@ def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[Pure
     return info
 
 
+def _single_deep_scan(bytes_match: bytes | bytearray | None, filename: os.PathLike | str, head=None, foot=None):
+    from puremagic.scanners import zip_scanner, pdf_scanner
+
+    match bytes_match:
+        case zip_scanner.match_bytes:
+            return zip_scanner.main(filename, head, foot)
+        case pdf_scanner.match_bytes:
+            return pdf_scanner.main(filename, head, foot)
+        case None:
+            for scanner in (pdf_scanner,):
+                result = scanner.main(filename, head, foot)
+                if result:
+                    return result
+    return None
+
+
+def _run_deep_scan(matches: list[PureMagicWithConfidence], filename: os.PathLike | str, head=None, foot=None):
+    if not matches:
+        try:
+            result = _single_deep_scan(None, filename, head, foot)
+        except Exception:
+            pass
+        else:
+            if result:
+                return [
+                    PureMagicWithConfidence(
+                        confidence=1.0,
+                        byte_match=None,
+                        offset=None,
+                        extension=result.extension,
+                        mime_type=result.mime_type,
+                        name=result.name,
+                    )
+                ]
+
+    for pure_magic_match in matches:
+        try:
+            result = _single_deep_scan(pure_magic_match.byte_match, filename, head, foot)
+        except Exception:
+            continue
+        if result:
+            return [
+                PureMagicWithConfidence(
+                    confidence=1.0,
+                    byte_match=pure_magic_match.byte_match,
+                    offset=pure_magic_match.offset,
+                    extension=result.extension,
+                    mime_type=result.mime_type,
+                    name=result.name,
+                )
+            ]
+    return matches
+
+
 def command_line_entry(*args):
     import sys
     from argparse import ArgumentParser
@@ -387,12 +446,12 @@ def command_line_entry(*args):
             print(f"File '{fn}' does not exist!")
             continue
         try:
-            print(f"'{fn}' : {from_file(fn, args.mime)}")
+            print(f"'{fn}' : {from_file(fn, args.mime, deep_scan=True)}")
         except PureError:
             print(f"'{fn}' : could not be Identified")
             continue
         if args.verbose:
-            matches = magic_file(fn)
+            matches = magic_file(fn, deep_scan=True)
             print(f"Total Possible Matches: {len(matches)}")
             for i, result in enumerate(matches):
                 if i == 0:
