@@ -19,9 +19,10 @@ import os
 from binascii import unhexlify
 from collections import namedtuple
 from itertools import chain
+from pathlib import Path
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.0b1"
+__version__ = "2.0.0b2"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -133,9 +134,6 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
             if ext == magic_row.extension
         ]
 
-    if not results:
-        raise PureError("Could not identify file")
-
     return sorted(results, key=lambda x: (x.confidence, len(x.byte_match)), reverse=True)
 
 
@@ -202,7 +200,9 @@ def _magic(header: bytes, footer: bytes, mime: bool, ext=None, deep_scan=True, f
         raise ValueError("Input was empty")
     infos = _identify_all(header, footer, ext)
     if deep_scan and filename:
-        return _run_deep_scan(infos, filename, header, footer)[0].extension
+        return _run_deep_scan(infos, filename, header, footer, raise_on_none=True)[0].extension
+    if not infos:
+        raise PureError("Could not identify file")
     info = infos[0]
     if mime:
         return info.mime_type
@@ -325,7 +325,7 @@ def magic_file(filename: os.PathLike | str, deep_scan=True) -> list[PureMagicWit
         info = []
     info.sort(key=lambda x: x.confidence, reverse=True)
     if deep_scan:
-        return _run_deep_scan(info, filename, head, foot)
+        return _run_deep_scan(info, filename, head, foot, raise_on_none=False)
     return info
 
 
@@ -348,7 +348,10 @@ def magic_string(string, filename: os.PathLike | str | None = None) -> list[Pure
     return info
 
 
-def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[PureMagicWithConfidence]:
+def magic_stream(
+    stream,
+    filename: os.PathLike | None = None,
+) -> list[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
@@ -366,23 +369,36 @@ def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[Pure
     return info
 
 
-def _single_deep_scan(bytes_match: bytes | bytearray | None, filename: os.PathLike | str, head=None, foot=None):
-    from puremagic.scanners import zip_scanner, pdf_scanner
+def _single_deep_scan(
+    bytes_match: bytes | bytearray | None,
+    filename: os.PathLike | str,
+    head=None,
+    foot=None,
+):
+    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner
 
+    if not isinstance(filename, os.PathLike):
+        filename = Path(filename)
     match bytes_match:
         case zip_scanner.match_bytes:
             return zip_scanner.main(filename, head, foot)
         case pdf_scanner.match_bytes:
             return pdf_scanner.main(filename, head, foot)
         case None:
-            for scanner in (pdf_scanner,):
+            for scanner in (pdf_scanner, text_scanner):
                 result = scanner.main(filename, head, foot)
                 if result:
                     return result
     return None
 
 
-def _run_deep_scan(matches: list[PureMagicWithConfidence], filename: os.PathLike | str, head=None, foot=None):
+def _run_deep_scan(
+    matches: list[PureMagicWithConfidence],
+    filename: os.PathLike | str,
+    head=None,
+    foot=None,
+    raise_on_none=True,
+):
     if not matches:
         try:
             result = _single_deep_scan(None, filename, head, foot)
@@ -392,7 +408,7 @@ def _run_deep_scan(matches: list[PureMagicWithConfidence], filename: os.PathLike
             if result:
                 return [
                     PureMagicWithConfidence(
-                        confidence=1.0,
+                        confidence=result.confidence,
                         byte_match=None,
                         offset=None,
                         extension=result.extension,
@@ -400,6 +416,8 @@ def _run_deep_scan(matches: list[PureMagicWithConfidence], filename: os.PathLike
                         name=result.name,
                     )
                 ]
+        if raise_on_none:
+            raise PureError("Could not identify file")
 
     for pure_magic_match in matches:
         try:

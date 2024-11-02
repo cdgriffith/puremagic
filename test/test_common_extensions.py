@@ -72,9 +72,9 @@ class TestMagic(unittest.TestCase):
 
     def test_file(self):
         """File identification"""
-        mp4file = NamedTemporaryFile(delete=False)
-        mp4file.write(self.mp4magic)
-        mp4file.close()
+        with NamedTemporaryFile(delete=False) as mp4file:
+            mp4file.write(self.mp4magic)
+
         ext = puremagic.from_file(mp4file.name)
         os.unlink(mp4file.name)
         self.assertEqual(self.expect_ext, ext)

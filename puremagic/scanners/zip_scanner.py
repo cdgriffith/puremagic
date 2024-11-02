@@ -159,8 +159,11 @@ def cbz_check(internal_files: list[str], extension: str) -> Optional[Match]:
     return Match(".cbz", "Comic Book Archive", "application/vnd.comicbook+zip")
 
 
-def main(file_path: os.PathLike | str, _, __) -> Optional[Match]:
-    extension = str(file_path).split(".")[-1]
+def main(file_path: os.PathLike, _, __) -> Optional[Match]:
+    extension = str(file_path).split(".")[-1].lower()
+    if extension == "zip" and not str(file_path).endswith(".fb2.zip"):
+        return Match(".zip", "ZIP archive", "application/zip")
+
     with ZipFile(file_path) as myzip:
         internal_files = myzip.namelist()
         office_result = office_check(internal_files, myzip, extension)

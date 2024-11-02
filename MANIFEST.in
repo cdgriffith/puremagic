@@ -1,5 +1,6 @@
 include puremagic/*.json
 include puremagic/py.typed
+include puremagic/scanners/*.py
 include LICENSE
 include AUTHORS.rst
 include CHANGELOG.md
