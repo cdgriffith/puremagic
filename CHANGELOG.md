@@ -4,8 +4,9 @@ Changelog
 Version 1.29
 ------------
 
+- Changing to publishing to pypi with Python 3.9
 - Fixing #105 fsspec/gcsfs throws an ValueError instead of a OSError (thanks to Markus)
-- Fixing python versions in github actions need to be explict to work
+- Fixing github actions due to updates
 
 Version 1.28
 ------------
