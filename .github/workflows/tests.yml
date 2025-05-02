@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-22.04]
         python-version: ["3.7.17", "3.8.18", "3.9.22", "3.10.17", "3.11.12", "3.12.10", "3.13.3"]
         include:
           - os: macos-latest
