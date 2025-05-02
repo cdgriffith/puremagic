@@ -180,7 +180,7 @@ https://cgit.freedesktop.org/xdg/shared-mime-info/
 License
 -------
 
-MIT Licenced, see LICENSE, Copyright (c) 2013-2024 Chris Griffith
+MIT Licenced, see LICENSE, Copyright (c) 2013-2025 Chris Griffith
 
 .. |CoverageStatus| image:: https://coveralls.io/repos/github/cdgriffith/puremagic/badge.svg?branch=develop
    :target: https://coveralls.io/github/cdgriffith/puremagic?branch=develop

@@ -16,12 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.7", "3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.7.17", "3.8.18", "3.9.22", "3.10.17", "3.11.12", "3.12.10", "3.13.3"]
         include:
           - os: macos-latest
-            python-version: '3.13'
+            python-version: '3.13.3'
           - os: windows-latest
-            python-version: '3.13'
+            python-version: '3.13.3'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
         pip install coveralls flake8 setuptools wheel twine
 
     - name: Verify Code with Black
-      if: ${{ matrix.python-version != '3.7' }}
+      if: ${{ matrix.python-version != '3.7.17' }}
       run: |
         pip install black==24.4.2
         black --check puremagic test
