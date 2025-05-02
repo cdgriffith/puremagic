@@ -228,7 +228,7 @@ def _stream_details(stream):
     head = stream.read(max_head)
     try:
         stream.seek(-max_foot, os.SEEK_END)
-    except OSError:
+    except (OSError, ValueError):  # fsspec throws ValueError
         # File is smaller than the max_foot size, jump to beginning
         stream.seek(0)
     foot = stream.read()
