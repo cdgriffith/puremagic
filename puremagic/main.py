@@ -4,7 +4,7 @@ puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross platform
 compatible, with no imports when used as a module.
 
-© 2013-2024 Chris Griffith - License: MIT (see LICENSE)
+© 2013-2025 Chris Griffith - License: MIT (see LICENSE)
 
 Acknowledgements
 Gary C. Kessler
@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.28"
+__version__ = "1.29"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -228,7 +228,7 @@ def _stream_details(stream):
     head = stream.read(max_head)
     try:
         stream.seek(-max_foot, os.SEEK_END)
-    except OSError:
+    except (OSError, ValueError):  # fsspec throws ValueError
         # File is smaller than the max_foot size, jump to beginning
         stream.seek(0)
     foot = stream.read()

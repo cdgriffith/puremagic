@@ -1,7 +1,15 @@
 Changelog
 =========
 
+Version 1.29
+------------
+
+- Changing to publishing to pypi with Python 3.9
+- Fixing #105 fsspec/gcsfs throws an ValueError instead of a OSError (thanks to Markus)
+- Fixing github actions due to updates
+
 Version 1.28
+------------
 
 - Adding #99 New file support (thanks to Andy - NebularNerd)
 - Fixing #100 FITS files no longer had mime type (thanks to ejeschke)
