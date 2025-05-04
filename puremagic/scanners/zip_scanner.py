@@ -133,17 +133,16 @@ def xpi_check(internal_files: list[str], zip_file: ZipFile) -> Optional[Match]:
     return None
 
 
-def fb2_check(internal_files: list[str], zip_file: ZipFile, extension: Optional[str] = None) -> Optional[Match]:
+def fb2_check(internal_files: list[str], zip_file: ZipFile, file_path: os.PathLike) -> Optional[Match]:
     if (
         len(internal_files) == 1
         and internal_files[0].endswith(".fb2")
         and b"<FictionBook" in zip_file.read(internal_files[0])
     ):
-        if extension:
-            if extension == "fb2.zip":
-                return Match(".fb2.zip", "FictionBook", "application/x-fictionbook+xml")
-            if extension == "fbz":
-                return Match(".fbz", "FictionBook", "application/x-fictionbook+xml")
+        if str(file_path).endswith("fb2.zip"):
+            return Match(".fb2.zip", "FictionBook", "application/x-fictionbook+xml")
+        if str(file_path).endswith("fbz"):
+            return Match(".fbz", "FictionBook", "application/x-fictionbook+xml")
         return Match(".fb2.zip", "FictionBook", "application/x-fictionbook+xml")
 
     return None
@@ -186,7 +185,7 @@ def main(file_path: os.PathLike, _, __) -> Optional[Match]:
         if xpi_result:
             return xpi_result
 
-        fb_result = fb2_check(internal_files, myzip, extension)
+        fb_result = fb2_check(internal_files, myzip, file_path)
         if fb_result:
             return fb_result
 

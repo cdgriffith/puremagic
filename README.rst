@@ -36,7 +36,9 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 3.7+
+-  Python 3.12+
+
+For use with with 3.7 use the 1.x branch.
 
 Using github ci to run continuous integration tests on listed platforms.
 
@@ -151,18 +153,6 @@ file standard. The subset signature will be longer, therefore report
 with greater confidence, because it will have both the base file type
 signature plus the additional subset one.
 
-*You don't have sliding offsets that could better detect plenty of
-common formats, why's that?*
-
-Design choice, so it will be a lot faster and more accurate. Without
-more intelligent or deeper identification past a sliding offset I don't
-feel comfortable including it as part of a 'magic number' library.
-
-*Your version isn't as complete as I want it to be, where else should I
-look?*
-
-Look into python modules that wrap around libmagic or use something like
-Apache Tika.
 
 Acknowledgements
 ----------------

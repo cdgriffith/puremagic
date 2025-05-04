@@ -1,9 +1,14 @@
 from __future__ import annotations
 
 import os
+import re
 from typing import Optional
 
 from puremagic.scanners.helpers import Match
+
+crlf_pattern = re.compile(rb"\r\n")
+lf_pattern = re.compile(rb"(?<!\r)\n")
+cr_pattern = re.compile(rb"\r(?!\n)")
 
 
 def main(file_path: os.PathLike | str, _, __) -> Optional[Match]:
@@ -15,9 +20,9 @@ def main(file_path: os.PathLike | str, _, __) -> Optional[Match]:
             head.decode("ascii")
         except UnicodeDecodeError:
             return Match("", "data", "application/octet-stream", confidence=0.5)
-        crlf = head.count(b"\r\n")
-        lf = head.count(b"\n")
-        cr = head.count(b"\r")
+        crlf = len(crlf_pattern.findall(head))
+        lf = len(lf_pattern.findall(head))
+        cr = len(cr_pattern.findall(head))
         if crlf + lf + cr == 0:
             return Match(".txt", "ASCII text", "text/plain", confidence=0.9)
 

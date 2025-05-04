@@ -4,7 +4,7 @@ Changelog
 Version 2.0.0
 -------------
 
-- Adding deep scan for improved accuracy
+- Adding deep scan for improved accuracy #102 #94 #70 #69 #12 #3
 - Changing to full semantic versioning to be able to denote bugfixes vs minor features
 - Removing support for python 3.7, 3.8, 3.9, 3.10 and 3.11 please stick to 1.x release chain to support older versions
 
