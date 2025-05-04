@@ -1,10 +1,6 @@
 [tool.black]
 line-length = 120
 target-version = [
-  'py38',
-  'py39',
-  'py310',
-  'py311',
   'py312',
   'py313',
 ]
@@ -34,6 +30,7 @@ lint.extend-ignore = [
   "B008",
   "BLE001",
   "C408",
+  "C901",    # too complex
   "COM812",
   "D",
   "EM101",
@@ -43,23 +40,29 @@ lint.extend-ignore = [
   "F403",
   "FBT",
   "FIX002",
+  "I001",
   "N817",
   "PERF401",
   "PGH003",
+  "PLR0911", # Too many return statements
+  "PLR0912", #  Too many branches
+  "PLR0913", # Too many arguments in function definition
+  "PLR2004",
   "PT",
   "PTH",
   "PYI024",
   "S101",
+  "S110",
   "S112",
   "S314",
   "SLF001",
   "T201",
+  "TCH003",
   "TD002",
   "TD003",
   "TRY003",
   "UP",
 ]
-lint.mccabe.max-complexity = 13
 lint.pylint.allow-magic-value-types = [
   "float",
   "int",

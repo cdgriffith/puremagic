@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
 puremagic is a pure python module that will identify a file based off it's
-magic numbers. It is designed to be minimalistic and inherently cross platform
+magic numbers. It is designed to be minimalistic and inherently cross-platform
 compatible, with no imports when used as a module.
 
 © 2013-2025 Chris Griffith - License: MIT (see LICENSE)
@@ -19,9 +19,13 @@ import os
 from binascii import unhexlify
 from collections import namedtuple
 from itertools import chain
+from pathlib import Path
+
+if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
+    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner
 
 __author__ = "Chris Griffith"
-__version__ = "1.29"
+__version__ = "2.0.0b1"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -133,9 +137,6 @@ def _confidence(matches, ext=None) -> list[PureMagicWithConfidence]:
             if ext == magic_row.extension
         ]
 
-    if not results:
-        raise PureError("Could not identify file")
-
     return sorted(results, key=lambda x: (x.confidence, len(x.byte_match)), reverse=True)
 
 
@@ -196,11 +197,22 @@ def _identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithC
     return _confidence(matches, ext)
 
 
-def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
+def _magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=None) -> str:
     """Discover what type of file it is based on the incoming string"""
     if not header:
         raise ValueError("Input was empty")
-    info = _identify_all(header, footer, ext)[0]
+    infos = _identify_all(header, footer, ext)
+    if filename and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
+        results = _run_deep_scan(infos, filename, header, footer, raise_on_none=True)
+        if results:
+            if results[0].extension == "":
+                raise PureError("Could not identify file")
+            if mime:
+                return results[0].mime_type
+            return results[0].extension
+    if not infos:
+        raise PureError("Could not identify file")
+    info = infos[0]
     if mime:
         return info.mime_type
     return info.extension if not isinstance(info.extension, list) else info[0].extension
@@ -268,7 +280,7 @@ def from_file(filename: os.PathLike | str, mime: bool = False) -> str:
     """
 
     head, foot = _file_details(filename)
-    return _magic(head, foot, mime, ext_from_filename(filename))
+    return _magic(head, foot, mime, ext_from_filename(filename), filename=filename)
 
 
 def from_string(string: str | bytes, mime: bool = False, filename: os.PathLike | str | None = None) -> str:
@@ -321,6 +333,8 @@ def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
     except PureError:
         info = []
     info.sort(key=lambda x: x.confidence, reverse=True)
+    if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
+        return _run_deep_scan(info, filename, head, foot, raise_on_none=False)
     return info
 
 
@@ -343,7 +357,10 @@ def magic_string(string, filename: os.PathLike | str | None = None) -> list[Pure
     return info
 
 
-def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[PureMagicWithConfidence]:
+def magic_stream(
+    stream,
+    filename: os.PathLike | None = None,
+) -> list[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged highest confidence match first
     If filename is provided it will be used in the computation.
@@ -359,6 +376,75 @@ def magic_stream(stream, filename: os.PathLike | str | None = None) -> list[Pure
     info = _identify_all(head, foot, ext)
     info.sort(key=lambda x: x.confidence, reverse=True)
     return info
+
+
+def _single_deep_scan(
+    bytes_match: bytes | bytearray | None,
+    filename: os.PathLike | str,
+    head=None,
+    foot=None,
+):
+    if os.getenv("PUREMAGIC_DEEPSCAN") == "0":
+        return None
+    if not isinstance(filename, os.PathLike):
+        filename = Path(filename)
+    match bytes_match:
+        case zip_scanner.match_bytes:
+            return zip_scanner.main(filename, head, foot)
+        case pdf_scanner.match_bytes:
+            return pdf_scanner.main(filename, head, foot)
+        case None | b"":
+            for scanner in (text_scanner, pdf_scanner):
+                result = scanner.main(filename, head, foot)
+                if result:
+                    return result
+    return None
+
+
+def _run_deep_scan(
+    matches: list[PureMagicWithConfidence],
+    filename: os.PathLike | str,
+    head=None,
+    foot=None,
+    raise_on_none=True,
+):
+    if not matches or matches[0].byte_match == b"":
+        try:
+            result = _single_deep_scan(None, filename, head, foot)
+        except Exception:
+            pass
+        else:
+            if result:
+                return [
+                    PureMagicWithConfidence(
+                        confidence=result.confidence,
+                        byte_match=None,
+                        offset=None,
+                        extension=result.extension,
+                        mime_type=result.mime_type,
+                        name=result.name,
+                    )
+                ]
+        if raise_on_none:
+            raise PureError("Could not identify file")
+
+    for pure_magic_match in matches:
+        try:
+            result = _single_deep_scan(pure_magic_match.byte_match, filename, head, foot)
+        except Exception:
+            continue
+        if result:
+            return [
+                PureMagicWithConfidence(
+                    confidence=result.confidence,
+                    byte_match=pure_magic_match.byte_match,
+                    offset=pure_magic_match.offset,
+                    extension=result.extension,
+                    mime_type=result.mime_type,
+                    name=result.name,
+                )
+            ]
+    return matches
 
 
 def command_line_entry(*args):

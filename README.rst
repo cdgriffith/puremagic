@@ -5,8 +5,6 @@ puremagic
 puremagic is a pure python module that will identify a file based off
 it's magic numbers.
 
-|CoverageStatus| |License| |PyPi|
-
 It is designed to be minimalistic and inherently cross platform
 compatible. It is also designed to be a stand in for python-magic, it
 incorporates the functions from\_file(filename[, mime]) and
@@ -36,7 +34,9 @@ Disadvantages:
 Compatibility
 ~~~~~~~~~~~~~
 
--  Python 3.7+
+-  Python 3.12+
+
+For use with with 3.7 use the 1.x branch.
 
 Using github ci to run continuous integration tests on listed platforms.
 
@@ -151,18 +151,6 @@ file standard. The subset signature will be longer, therefore report
 with greater confidence, because it will have both the base file type
 signature plus the additional subset one.
 
-*You don't have sliding offsets that could better detect plenty of
-common formats, why's that?*
-
-Design choice, so it will be a lot faster and more accurate. Without
-more intelligent or deeper identification past a sliding offset I don't
-feel comfortable including it as part of a 'magic number' library.
-
-*Your version isn't as complete as I want it to be, where else should I
-look?*
-
-Look into python modules that wrap around libmagic or use something like
-Apache Tika.
 
 Acknowledgements
 ----------------
@@ -182,10 +170,3 @@ License
 -------
 
 MIT Licenced, see LICENSE, Copyright (c) 2013-2025 Chris Griffith
-
-.. |CoverageStatus| image:: https://coveralls.io/repos/github/cdgriffith/puremagic/badge.svg?branch=develop
-   :target: https://coveralls.io/github/cdgriffith/puremagic?branch=develop
-.. |PyPi| image:: https://img.shields.io/pypi/v/puremagic.svg?maxAge=2592000
-   :target: https://pypi.python.org/pypi/puremagic/
-.. |License| image:: https://img.shields.io/pypi/l/puremagic.svg
-   :target: https://pypi.python.org/pypi/puremagic/

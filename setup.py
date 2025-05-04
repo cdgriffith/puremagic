@@ -28,6 +28,7 @@ setup(
     packages=["puremagic"],
     include_package_data=True,
     platforms="any",
+    python_requires=">=3.12",
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
