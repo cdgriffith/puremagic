@@ -205,6 +205,8 @@ def _magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=None) ->
     if filename and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         results = _run_deep_scan(infos, filename, header, footer, raise_on_none=True)
         if results:
+            if results[0].extension == "":
+                raise PureError("Could not identify file")
             if mime:
                 return results[0].mime_type
             return results[0].extension
@@ -434,7 +436,7 @@ def _run_deep_scan(
         if result:
             return [
                 PureMagicWithConfidence(
-                    confidence=1.0,
+                    confidence=result.confidence,
                     byte_match=pure_magic_match.byte_match,
                     offset=pure_magic_match.offset,
                     extension=result.extension,
