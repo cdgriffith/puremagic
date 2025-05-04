@@ -5,8 +5,6 @@ puremagic
 puremagic is a pure python module that will identify a file based off
 it's magic numbers.
 
-|CoverageStatus| |License| |PyPi|
-
 It is designed to be minimalistic and inherently cross platform
 compatible. It is also designed to be a stand in for python-magic, it
 incorporates the functions from\_file(filename[, mime]) and
@@ -172,10 +170,3 @@ License
 -------
 
 MIT Licenced, see LICENSE, Copyright (c) 2013-2025 Chris Griffith
-
-.. |CoverageStatus| image:: https://coveralls.io/repos/github/cdgriffith/puremagic/badge.svg?branch=develop
-   :target: https://coveralls.io/github/cdgriffith/puremagic?branch=develop
-.. |PyPi| image:: https://img.shields.io/pypi/v/puremagic.svg?maxAge=2592000
-   :target: https://pypi.python.org/pypi/puremagic/
-.. |License| image:: https://img.shields.io/pypi/l/puremagic.svg
-   :target: https://pypi.python.org/pypi/puremagic/
