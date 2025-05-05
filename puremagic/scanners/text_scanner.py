@@ -1,8 +1,5 @@
-from __future__ import annotations
-
 import os
 import re
-from typing import Optional
 
 from puremagic.scanners.helpers import Match
 
@@ -11,7 +8,7 @@ lf_pattern = re.compile(rb"(?<!\r)\n")
 cr_pattern = re.compile(rb"\r(?!\n)")
 
 
-def main(file_path: os.PathLike | str, _, __) -> Optional[Match]:
+def main(file_path: os.PathLike | str, _, __) -> Match | None:
     with open(file_path, "rb") as file:
         head = file.read(1_000_000)
         if len(head) < 8:

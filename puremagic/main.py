@@ -9,10 +9,8 @@ compatible, with no imports when used as a module.
 Acknowledgements
 Gary C. Kessler
     For use of his File Signature Tables, available at:
-    http://www.garykessler.net/library/file_sigs.html
+    https://filesig.search.org/
 """
-
-from __future__ import annotations
 
 import json
 import os
@@ -22,10 +20,10 @@ from itertools import chain
 from pathlib import Path
 
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
-    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner
+    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.0b1"
+__version__ = "2.0.0b2"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -262,7 +260,7 @@ def ext_from_filename(filename: os.PathLike | str) -> str:
     all_exts = [x.extension for x in chain(magic_header_array, magic_footer_array)]
 
     if base[-4:].startswith("."):
-        # For double extensions like like .tar.gz
+        # For double extensions like .tar.gz
         long_ext = base[-4:] + ext
         if long_ext in all_exts:
             return long_ext
@@ -320,7 +318,7 @@ def from_stream(stream, mime: bool = False, filename: os.PathLike | str | None =
 def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
     """
     Returns list of (num_of_matches, array_of_matches)
-    arranged highest confidence match first.
+    arranged by highest confidence match first.
 
     :param filename: path to file
     :return: list of possible matches, highest confidence first
@@ -341,7 +339,7 @@ def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
 def magic_string(string, filename: os.PathLike | str | None = None) -> list[PureMagicWithConfidence]:
     """
     Returns tuple of (num_of_matches, array_of_matches)
-    arranged highest confidence match first
+    arranged by highest confidence match first
     If filename is provided it will be used in the computation.
 
     :param string: string representation to check
@@ -362,7 +360,7 @@ def magic_stream(
     filename: os.PathLike | None = None,
 ) -> list[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
-    arranged highest confidence match first
+    arranged by highest confidence match first
     If filename is provided it will be used in the computation.
 
     :param stream: stream representation to check
@@ -393,12 +391,25 @@ def _single_deep_scan(
             return zip_scanner.main(filename, head, foot)
         case pdf_scanner.match_bytes:
             return pdf_scanner.main(filename, head, foot)
-        case None | b"":
-            for scanner in (text_scanner, pdf_scanner):
-                result = scanner.main(filename, head, foot)
-                if result:
-                    return result
+
+    # First match wins, so text_scanner should always be last
+    for scanner in (pdf_scanner, python_scanner, json_scanner):
+        result = scanner.main(filename, head, foot)
+        if result:
+            return result
     return None
+
+
+def _catch_all_deep_scan(
+    filename: os.PathLike | str,
+    head=None,
+    foot=None,
+):
+    if os.getenv("PUREMAGIC_DEEPSCAN") == "0":
+        return None
+    if not isinstance(filename, os.PathLike):
+        filename = Path(filename)
+    return text_scanner.main(filename, head, foot)
 
 
 def _run_deep_scan(
@@ -425,10 +436,18 @@ def _run_deep_scan(
                         name=result.name,
                     )
                 ]
+        try:
+            result = _catch_all_deep_scan(filename, head, foot)
+        except Exception:
+            pass
+        else:
+            if result:
+                return [result]
         if raise_on_none:
             raise PureError("Could not identify file")
 
     for pure_magic_match in matches:
+        # noinspection PyBroadException
         try:
             result = _single_deep_scan(pure_magic_match.byte_match, filename, head, foot)
         except Exception:
@@ -484,7 +503,7 @@ def command_line_entry(*args):
                 if i == 0:
                     print("\n\tBest Match")
                 else:
-                    print(f"\tAlertnative Match #{i}")
+                    print(f"\tAlternative Match #{i}")
                 print(f"\tName: {result.name}")
                 print(f"\tConfidence: {int(result.confidence * 100)}%")
                 print(f"\tExtension: {result.extension}")
@@ -526,14 +545,14 @@ def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: 
 
     imghdr_strict enables bug-for-bug compatibility between imghdr.what() and puremagic.what() when the imghdr returns
     a match but puremagic returns None.  We believe that imghdr is delivering a "false positive" in each of these
-    scenerios but we want puremagic.what()'s default behavior to match imghdr.what()'s false positives so we do not
+    scenarios, but we want puremagic.what()'s default behavior to match imghdr.what()'s false positives so we do not
     break existing applications.
 
     If imghdr_strict is True (the default) then a lookup will be done to deliver a matching result on all known false
     positives.  If imghdr_strict is False then puremagic's algorithms will determine the image type.  True is more
     compatible while False is more correct.
 
-    NOTE: This compatibility effort only deals false positives and we are not interested to track the opposite
+    NOTE: This compatibility effort only deals false positives, and we are not interested to track the opposite
     situation where puremagic's deliver a match while imghdr would have returned None.  Also, puremagic.what() can
     recognize many more file types than the twelve image file types that imghdr focused on.
     """

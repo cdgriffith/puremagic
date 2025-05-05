@@ -1,8 +1,5 @@
-from __future__ import annotations
-
 import re
 import os
-from typing import Optional
 from zipfile import ZipFile
 
 from puremagic.scanners.helpers import Match
@@ -13,7 +10,7 @@ office_macro_enable_match = b"macroEnabled"
 application_re = re.compile(b"<Application>(.*)</Application>")
 
 
-def open_office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Optional[Match]:
+def open_office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Match | None:
     if "content.xml" not in internal_files:
         return None
     if "mimetype" not in internal_files:
@@ -35,7 +32,7 @@ def open_office_check(internal_files: list[str], zip_file: ZipFile, extension: s
     return None
 
 
-def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Optional[Match]:
+def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Match | None:
     if "[Content_Types].xml" not in internal_files:
         return None
     if "docProps/app.xml" not in internal_files:
@@ -107,7 +104,7 @@ def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | 
     return None
 
 
-def jar_check(internal_files: list[str], zip_file: ZipFile) -> Optional[Match]:
+def jar_check(internal_files: list[str], zip_file: ZipFile) -> Match | None:
 
     if "META-INF/MANIFEST.MF" not in internal_files:
         return None
@@ -119,7 +116,7 @@ def jar_check(internal_files: list[str], zip_file: ZipFile) -> Optional[Match]:
     return None
 
 
-def apk_check(internal_files: list[str]) -> Optional[Match]:
+def apk_check(internal_files: list[str]) -> Match | None:
     if "META-INF/MANIFEST.MF" not in internal_files:
         return None
     if "AndroidManifest.xml" in internal_files:
@@ -127,13 +124,13 @@ def apk_check(internal_files: list[str]) -> Optional[Match]:
     return None
 
 
-def xpi_check(internal_files: list[str], zip_file: ZipFile) -> Optional[Match]:
+def xpi_check(internal_files: list[str], zip_file: ZipFile) -> Match | None:
     if "install.rdf" in internal_files and b"mozilla:install-manifest" in zip_file.read("install.rdf"):
         return Match(".xpi", "Mozilla Firefox Add-on", "application/x-xpinstall")
     return None
 
 
-def fb2_check(internal_files: list[str], zip_file: ZipFile, file_path: os.PathLike) -> Optional[Match]:
+def fb2_check(internal_files: list[str], zip_file: ZipFile, file_path: os.PathLike) -> Match | None:
     if (
         len(internal_files) == 1
         and internal_files[0].endswith(".fb2")
@@ -148,7 +145,7 @@ def fb2_check(internal_files: list[str], zip_file: ZipFile, file_path: os.PathLi
     return None
 
 
-def cbz_check(internal_files: list[str], extension: str) -> Optional[Match]:
+def cbz_check(internal_files: list[str], extension: str) -> Match | None:
     if extension != "cbz":
         return None
     image_extensions = (".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".tif")
@@ -158,7 +155,7 @@ def cbz_check(internal_files: list[str], extension: str) -> Optional[Match]:
     return Match(".cbz", "Comic Book Archive", "application/vnd.comicbook+zip")
 
 
-def main(file_path: os.PathLike, _, __) -> Optional[Match]:
+def main(file_path: os.PathLike, _, __) -> Match | None:
     extension = str(file_path).split(".")[-1].lower()
     if extension == "zip" and not str(file_path).endswith(".fb2.zip"):
         return Match(".zip", "ZIP archive", "application/zip")
