@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 1.30
+------------
+
+- Adding #109 Halt on non-regular files like /dev/zero and /dev/random (thanks to Yuri Schaeffer) 
+
 Version 1.29
 ------------
 

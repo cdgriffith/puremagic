@@ -21,7 +21,7 @@ from collections import namedtuple
 from itertools import chain
 
 __author__ = "Chris Griffith"
-__version__ = "1.29"
+__version__ = "1.30"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -208,6 +208,8 @@ def _magic(header: bytes, footer: bytes, mime: bool, ext=None) -> str:
 
 def _file_details(filename: os.PathLike | str) -> tuple[bytes, bytes]:
     """Grab the start and end of the file"""
+    if not os.path.isfile(filename):
+        raise PureError("Not a regular file")
     with open(filename, "rb") as fin:
         head = fin.read(max_head)
         try:
