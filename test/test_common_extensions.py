@@ -23,7 +23,6 @@ TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
 
 class MockBytesIO(BytesIO):
-
     def seek(self, offset, whence=0):
         if offset < 0:
             raise OSError("Invalid seek position")
@@ -205,7 +204,10 @@ def test_ext():
 
 def test_cmd_options():
     """Test CLI options"""
-    from puremagic.main import command_line_entry
+    try:
+        from puremagic.main import command_line_entry  # noqa: PLC0415
+    except ImportError:
+        raise AssertionError("could not load command_line_entry")
 
     command_line_entry(__file__, os.path.join(AUDIO_DIR, "test.mp3"), "-v")
     command_line_entry(__file__, "DOES NOT EXIST FILE")

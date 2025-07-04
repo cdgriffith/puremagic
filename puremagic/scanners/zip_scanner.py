@@ -105,7 +105,6 @@ def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | 
 
 
 def jar_check(internal_files: list[str], zip_file: ZipFile) -> Match | None:
-
     if "META-INF/MANIFEST.MF" not in internal_files:
         return None
     if "version.json" not in internal_files:

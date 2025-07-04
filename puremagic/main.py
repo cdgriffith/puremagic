@@ -23,7 +23,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.0b2"
+__version__ = "2.0.0b3"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -469,8 +469,8 @@ def _run_deep_scan(
 
 
 def command_line_entry(*args):
-    import sys
-    from argparse import ArgumentParser
+    import sys  # noqa: PLC0415
+    from argparse import ArgumentParser  # noqa: PLC0415
 
     parser = ArgumentParser(
         description=(
@@ -532,14 +532,18 @@ def what(file: os.PathLike | str | None, h: bytes | None = None, imghdr_strict: 
     ```python
     # Replace...
     from imghdr import what
+
     # with...
     from puremagic import what
+
     # ---
     # Or replace...
     import imghdr
+
     ext = imghdr.what(...)
     # with...
     import puremagic
+
     ext = puremagic.what(...)
     ```
     imghdr documentation: https://docs.python.org/3.12/library/imghdr.html
