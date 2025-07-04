@@ -16,7 +16,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.12", "3.13"]
+        python-version: ["3.12", "3.13", "3.14-dev"]
         include:
           - os: macos-latest
             python-version: '3.13'
@@ -31,7 +31,6 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
         allow-prereleases: true
-        cache: 'pip'
 
     - name: Install the latest version of uv and activate the environment
       uses: astral-sh/setup-uv@v6
