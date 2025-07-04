@@ -32,4 +32,4 @@ jobs:
         TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
       run: |
         uv build
-        twine upload dist/*
+        uv run twine upload dist/*

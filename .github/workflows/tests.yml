@@ -49,7 +49,7 @@ jobs:
       shell: bash
       run: |
         uv build
-        twine check dist/*
+        uv run twine check dist/*
         ls -lah "dist/"
         WHL=$(find dist -name *.whl -print -quit)
         echo ${WHL}
