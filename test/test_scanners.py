@@ -1,6 +1,6 @@
 import puremagic
 from test.common import OFFICE_DIR, SYSTEM_DIR
-from puremagic.scanners import python_scanner, text_scanner, json_scanner
+from puremagic.scanners import python_scanner, json_scanner
 
 sample_text = b"""Lorem ipsum dolor sit amet, consectetur adipiscing elit,{ending}
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.{ending}

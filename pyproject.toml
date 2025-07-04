@@ -1,73 +1,101 @@
-[tool.black]
-line-length = 120
-target-version = [
-  'py312',
-  'py313',
+[build-system]
+build-backend = "setuptools.build_meta"
+
+requires = [ "setuptools", "setuptools-scm[toml]>=6.2", "wheel" ]
+
+[project]
+name = "puremagic"
+description = "Pure python implementation of magic file detection"
+readme = "README.rst"
+license = "MIT"
+authors = [
+  { name = "Chris Griffith", email = "chris@cdgriffith.com" },
 ]
-exclude = '''
-/(
-    \.eggs
-  | \.git
-  | \.idea
-  | \.pytest_cache
-  | \.github
-  | _build
-  | build
-  | dist
-  | venv
-  | test/resources
-)/
-'''
+requires-python = ">=3.12"
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: Implementation :: PyPy",
+  "Topic :: Utilities",
+]
+
+dynamic = [ "version" ]
+urls.Homepage = "https://github.com/cdgriffith/puremagic"
+scripts.fastflix = "puremagic.__main__:command_line_entry"
+
+[dependency-groups]
+dev = [
+  "coverage>=7.9.2",
+  "pre-commit>=4.2",
+  "pytest>=8.4.1",
+  "pytest-cov>=6.2.1",
+  "ruff>=0.12.2",
+  "setuptools>=80.9",
+  "twine>=6.1",
+  "wheel>=0.45.1",
+]
+
+[tool.setuptools.packages.find]
+where = [ "." ]
+include = [ "puremagic*" ]
+
+[tool.setuptools.package-data]
+"*" = [ '*.json' ]
+
+[tool.setuptools.dynamic]
+version = { attr = "puremagic.main.__version__" }
 
 [tool.ruff]
-line-length = 120
+target-version = "py312"
 
-lint.select = [
-  "ALL",
+line-length = 120
+indent-width = 4
+
+# Exclude a variety of commonly ignored directories.
+exclude = [
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".ipynb_checkpoints",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".pytype",
+  ".ruff_cache",
+  ".venv",
+  ".vscode",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "venv",
 ]
-lint.extend-ignore = [
-  "ANN",
-  "B008",
-  "BLE001",
-  "C408",
-  "C901",    # too complex
-  "COM812",
-  "D",
-  "EM101",
-  "EM103",
-  "EXE001",
-  "F401",
-  "F403",
-  "FA102",
-  "FBT",
-  "FIX002",
-  "I001",
-  "INP001",
-  "N817",
-  "PERF401",
-  "PGH003",
-  "PLR0911", # Too many return statements
-  "PLR0912", #  Too many branches
-  "PLR0913", # Too many arguments in function definition
-  "PLR2004",
-  "PT",
-  "PTH",
-  "PYI024",
-  "S101",
-  "S110",
-  "S112",
-  "S314",
-  "SLF001",
-  "T201",
-  "TCH003",
-  "TD002",
-  "TD003",
-  "TRY003",
-  "UP",
-]
-lint.pylint.allow-magic-value-types = [
-  "float",
-  "int",
-  "str",
-]
-lint.pylint.max-branches = 13
+
+# Like Black, indent with spaces, rather than tabs.
+format.indent-style = "space"
+# Like Black, use double quotes for strings.
+format.quote-style = "double"
+format.line-ending = "lf"
+# Like Black, respect magic trailing commas.
+format.skip-magic-trailing-comma = false
+# Set the line length limit used when formatting code snippets in
+# docstrings.
+#
+# This only has an effect when the `docstring-code-format` setting is
+# enabled.
+format.docstring-code-line-length = "dynamic"
+# Enable auto-formatting of code examples in docstrings. Markdown,
+# reStructuredText code/literal blocks and doctests are all supported.
+#
+# This is currently disabled by default, but it is planned for this
+# to be opt-out in the future.
+format.docstring-code-format = true
+lint.fixable = [ "F541" ]
+lint.unfixable = [ "F401" ]
