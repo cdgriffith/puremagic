@@ -22,8 +22,6 @@ jobs:
 
     - name: Install the latest version of uv and activate the environment
       uses: astral-sh/setup-uv@v6
-      with:
-        activate-environment: true
 
     - name: Install dependencies
       run: uv sync --frozen
