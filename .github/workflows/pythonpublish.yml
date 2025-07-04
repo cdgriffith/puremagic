@@ -20,10 +20,13 @@ jobs:
       with:
         python-version: '3.12'
 
+    - name: Install the latest version of uv and activate the environment
+      uses: astral-sh/setup-uv@v6
+      with:
+        activate-environment: true
+
     - name: Install dependencies
-      run: |
-        python -m pip install --upgrade uv
-        uv sync --frozen
+      run: uv sync --frozen
 
     - name: Build and publish
       env:
