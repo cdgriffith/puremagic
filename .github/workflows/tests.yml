@@ -50,7 +50,7 @@ jobs:
     - name: Check distribution log description
       shell: bash
       run: |
-        ub build
+        uv build
         twine check dist/*
         ls -lah "dist/"
         WHL=$(find dist -name *.whl -print -quit)
