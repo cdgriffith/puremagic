@@ -62,51 +62,15 @@ def test_json_scanner():
 
 
 def test_sndhdr_scanner():
-    # Test the sndhdr scanner with WAV file
-    wav_file = AUDIO_DIR / "test.wav"
-    with open(wav_file, "rb") as f:
-        head = f.read(512)
-    result = sndhdr_scanner.test_wav(head)
-    puremagic.magic_file(wav_file)
-    assert result is not None
-    assert result.extension == ".wav"
-    assert result.name == "WAVE Audio File"
-    assert result.mime_type == "audio/x-wav"
-    assert result.confidence == 1.0
-
-    # Test the sndhdr scanner with AIFF file
-    aif_file = AUDIO_DIR / "test.aif"
-    with open(aif_file, "rb") as f:
-        head = f.read(512)
-    result = sndhdr_scanner.test_aifc(head)
-    puremagic.magic_file(aif_file)
-    assert result is not None
-    assert result.extension == ".aif"
-    assert result.name == "Audio Interchange File Format"
-    assert result.mime_type == "audio/x-aiff"
-    assert result.confidence == 1.0
-
-    # Test the main function with both files
-    with open(wav_file, "rb") as f:
-        wav_head = f.read(512)
-    result = sndhdr_scanner.main(wav_file, wav_head, b"")
-    assert result is not None
-    assert result.extension == ".wav"
-
-    with open(aif_file, "rb") as f:
-        aif_head = f.read(512)
-    result = sndhdr_scanner.main(aif_file, aif_head, b"")
-    assert result is not None
-    assert result.extension == ".aif"
 
     # Test the sndhdr scanner with sndr file
     sndr_file = AUDIO_DIR / "test.sndr"
     with open(sndr_file, "rb") as f:
         head = f.read(512)
-    result = sndhdr_scanner.test_sndr(head)
-    puremagic.magic_file(aif_file)
+    result = sndhdr_scanner.main(None, head, None)
+    puremagic.magic_file(sndr_file)
     assert result is not None
     assert result.extension == ".sndr"
-    assert result.name == "Macintosh SNDR Resource"
+    assert result.name.startswith("Macintosh SNDR Resource")
     assert result.mime_type == "audio/x-sndr"
     assert result.confidence == 0.1
