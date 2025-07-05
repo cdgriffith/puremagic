@@ -19,6 +19,8 @@ from collections import namedtuple
 from itertools import chain
 from pathlib import Path
 
+import puremagic
+
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner
 
@@ -485,8 +487,9 @@ def command_line_entry(*args):
         dest="mime",
         help="Return the mime type instead of file type",
     )
-    parser.add_argument("-v", "--v", action="store_true", dest="verbose", help="Print verbose output")
+    parser.add_argument("-v", "--verbose", action="store_true", dest="verbose", help="Print verbose output")
     parser.add_argument("files", nargs="+")
+    parser.add_argument("--version", action="version", version=puremagic.__version__)
     args = parser.parse_args(args if args else sys.argv[1:])
 
     for fn in args.files:
