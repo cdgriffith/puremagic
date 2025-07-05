@@ -474,9 +474,9 @@ def command_line_entry(*args):
 
     parser = ArgumentParser(
         description=(
-            "puremagic is a pure python file identification module."
-            "It looks for matching magic numbers in the file to locate the file type. "
-        )
+            """puremagic is a pure python file identification module.
+            It looks for matching magic numbers in the file to locate the file type."""
+        ),
     )
     parser.add_argument(
         "-m",
