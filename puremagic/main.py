@@ -22,7 +22,7 @@ from pathlib import Path
 import puremagic
 
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
-    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner
+    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner, sndhdr_scanner
 
 __author__ = "Chris Griffith"
 __version__ = "2.0.0b4"
@@ -385,6 +385,7 @@ def _single_deep_scan(
     filename: os.PathLike | str,
     head=None,
     foot=None,
+    confidence=0,
 ):
     if os.getenv("PUREMAGIC_DEEPSCAN") == "0":
         return None
@@ -395,6 +396,16 @@ def _single_deep_scan(
             return zip_scanner.main(filename, head, foot)
         case pdf_scanner.match_bytes:
             return pdf_scanner.main(filename, head, foot)
+        case (
+            sndhdr_scanner.aif_match_bytes
+            | sndhdr_scanner.wav_match_bytes
+            | sndhdr_scanner.au_match_bytes
+            | sndhdr_scanner.sndr_match_bytes
+        ):
+            # sndr is a loose confidence and other results may be better
+            result = sndhdr_scanner.main(filename, head, foot)
+            if result and result.confidence > confidence:
+                return result
 
     # First match wins, so text_scanner should always be last
     for scanner in (pdf_scanner, python_scanner, json_scanner):
@@ -453,7 +464,7 @@ def _run_deep_scan(
     for pure_magic_match in matches:
         # noinspection PyBroadException
         try:
-            result = _single_deep_scan(pure_magic_match.byte_match, filename, head, foot)
+            result = _single_deep_scan(pure_magic_match.byte_match, filename, head, foot, pure_magic_match.confidence)
         except Exception:
             continue
         if result:

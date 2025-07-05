@@ -598,6 +598,8 @@
     ["4e455235", -12, ".nrg", "", "Nero Disk Image (Version 2)"]
   ],
   "headers": [
+    ["0000", 0, ".sndr", "audio/x-sndr", "Macintosh SNDR Resource"],
+    ["437265617469766520566f6963652046696c651a", 0, ".voc", "audio/x-voc", "Creative Voice File"],
     ["595556344d504547",0, ".y4m", "video/x-yuv4mpeg", "YUV4MPEG2 video file"],
     ["3c68746d6c", 0, ".html", "text/html", "HTML File"],
     ["424c5545", 0, ".bvr", "", "Blue Iris Video File"],
