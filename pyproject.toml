@@ -27,11 +27,12 @@ classifiers = [
 
 dynamic = [ "version" ]
 urls.Homepage = "https://github.com/cdgriffith/puremagic"
-scripts.fastflix = "puremagic.__main__:command_line_entry"
+scripts.puremagic = "puremagic.main:command_line_entry"
 
 [dependency-groups]
 dev = [
   "coverage>=7.9.2",
+  "poethepoet>=0.36.0",
   "pre-commit>=4.2",
   "pytest>=8.4.1",
   "pytest-cov>=6.2.1",
@@ -99,3 +100,11 @@ format.docstring-code-line-length = "dynamic"
 format.docstring-code-format = true
 lint.fixable = [ "F541" ]
 lint.unfixable = [ "F401" ]
+
+[tool.poe]
+executor.type = "uv"
+
+[tool.poe.tasks]
+test = "pytest --cov=puremagic test/"
+lint = "ruff check --fix"
+format = "ruff format"

@@ -23,7 +23,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.0b3"
+__version__ = "2.0.0b4"
 __all__ = [
     "magic_file",
     "magic_string",
