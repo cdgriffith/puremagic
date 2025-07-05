@@ -19,11 +19,13 @@ from collections import namedtuple
 from itertools import chain
 from pathlib import Path
 
+import puremagic
+
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.0b3"
+__version__ = "2.0.0b4"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -474,9 +476,9 @@ def command_line_entry(*args):
 
     parser = ArgumentParser(
         description=(
-            "puremagic is a pure python file identification module."
-            "It looks for matching magic numbers in the file to locate the file type. "
-        )
+            """puremagic is a pure python file identification module.
+            It looks for matching magic numbers in the file to locate the file type."""
+        ),
     )
     parser.add_argument(
         "-m",
@@ -485,8 +487,9 @@ def command_line_entry(*args):
         dest="mime",
         help="Return the mime type instead of file type",
     )
-    parser.add_argument("-v", "--v", action="store_true", dest="verbose", help="Print verbose output")
+    parser.add_argument("-v", "--verbose", action="store_true", dest="verbose", help="Print verbose output")
     parser.add_argument("files", nargs="+")
+    parser.add_argument("--version", action="version", version=puremagic.__version__)
     args = parser.parse_args(args if args else sys.argv[1:])
 
     for fn in args.files:
