@@ -221,4 +221,5 @@ def test_bad_magic_input():
 
 
 def test_fake_file():
-    assert puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))[0].confidence == 0.5
+    results = puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))
+    assert results[0].confidence == 0.5, results

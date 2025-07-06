@@ -22,7 +22,7 @@ from pathlib import Path
 import puremagic
 
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
-    from puremagic.scanners import (zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner, sndhdr_scanner)
+    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner, sndhdr_scanner
 
 __author__ = "Chris Griffith"
 __version__ = "2.0.0b5"
@@ -66,6 +66,10 @@ PureMagicWithConfidence = namedtuple(
 
 class PureError(LookupError):
     """Do not have that type of file in our databanks"""
+
+
+class PureValueError(ValueError):
+    """Invalid input"""
 
 
 def magic_data(
@@ -193,7 +197,7 @@ def identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithCo
 def perform_magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=None) -> str:
     """Discover what type of file it is based on the incoming string"""
     if not header:
-        raise ValueError("Input was empty")
+        raise PureValueError("Input was empty")
     infos = identify_all(header, footer, ext)
     if filename and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         results = run_deep_scan(infos, filename, header, footer, raise_on_none=True)
@@ -322,7 +326,7 @@ def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
     """
     head, foot = file_details(filename)
     if not head:
-        raise ValueError("Input was empty")
+        raise PureValueError("Input was empty")
     try:
         info = identify_all(head, foot, ext_from_filename(filename))
     except PureError:
@@ -344,7 +348,7 @@ def magic_string(string, filename: os.PathLike | str | None = None) -> list[Pure
     :return: list of possible matches, highest confidence first
     """
     if not string:
-        raise ValueError("Input was empty")
+        raise PureValueError("Input was empty")
     head, foot = string_details(string)
     ext = ext_from_filename(filename) if filename else None
     info = identify_all(head, foot, ext)
@@ -366,7 +370,7 @@ def magic_stream(
     """
     head, foot = stream_details(stream)
     if not head:
-        raise ValueError("Input was empty")
+        raise PureValueError("Input was empty")
     ext = ext_from_filename(filename) if filename else None
     info = identify_all(head, foot, ext)
     info.sort(key=lambda x: x.confidence, reverse=True)
@@ -389,17 +393,13 @@ def single_deep_scan(
             return zip_scanner.main(filename, head, foot)
         case pdf_scanner.match_bytes:
             return pdf_scanner.main(filename, head, foot)
-        case (
-            sndhdr_scanner.hcom_match_bytes
-            | sndhdr_scanner.fssd_match_bytes
-            | sndhdr_scanner.sndr_match_bytes
-        ):
+        case sndhdr_scanner.hcom_match_bytes | sndhdr_scanner.fssd_match_bytes | sndhdr_scanner.sndr_match_bytes:
             # sndr is a loose confidence and other results may be better
             result = sndhdr_scanner.main(filename, head, foot)
             if result and result.confidence > confidence:
                 return result
 
-    # The first match wins, so text_scanner should always be the last
+    # The first match wins
     for scanner in (pdf_scanner, python_scanner, json_scanner):
         result = scanner.main(filename, head, foot)
         if result:
@@ -446,7 +446,7 @@ def run_deep_scan(
         try:
             result = catch_all_deep_scan(filename, head, foot)
         except Exception:
-            pass
+            raise
         else:
             if result:
                 return [result]
@@ -491,19 +491,29 @@ def command_line_entry(*args):
         help="Return the mime type instead of file type",
     )
     parser.add_argument("-v", "--verbose", action="store_true", dest="verbose", help="Print verbose output")
-    parser.add_argument("files", nargs="+")
+    parser.add_argument("files", nargs="+", type=Path)
     parser.add_argument("--version", action="version", version=puremagic.__version__)
     args = parser.parse_args(args if args else sys.argv[1:])
 
     for fn in args.files:
-        if not os.path.exists(fn):
+        if not fn.exists():
             print(f"File '{fn}' does not exist!")
             continue
-        try:
-            print(f"'{fn}' : {from_file(fn, args.mime)}")
-        except PureError:
-            print(f"'{fn}' : could not be Identified")
-            continue
+        if fn.is_dir():
+            for file in fn.iterdir():
+                if not file.is_file():
+                    continue
+                try:
+                    print(f"'{file}' : {from_file(file, args.mime)}")
+                except (PureError, PureValueError):
+                    print(f"'{file}' : could not be Identified")
+                    continue
+        else:
+            try:
+                print(f"'{fn}' : {from_file(fn, args.mime)}")
+            except (PureError, PureValueError):
+                print(f"'{fn}' : could not be Identified")
+                continue
         if args.verbose:
             matches = magic_file(fn)
             print(f"Total Possible Matches: {len(matches)}")

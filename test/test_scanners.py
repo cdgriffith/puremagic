@@ -17,7 +17,7 @@ def test_text_scanner():
     lr_file.write_bytes(sample_text.replace(b"\n", b"").replace(b"{ending}", b"\n"))
     results = puremagic.magic_file(lr_file)
     assert results[0].extension == ".txt"
-    assert results[0].name == "ASCII text, with LF line terminators"
+    assert results[0].name == "ascii text, with LF line terminators"
     assert results[0].mime_type == "text/plain"
     assert results[0].confidence == 0.9
 
@@ -25,15 +25,15 @@ def test_text_scanner():
     crlf_file.write_bytes(sample_text.replace(b"\n", b"").replace(b"{ending}", b"\r\n"))
     results = puremagic.magic_file(crlf_file)
     assert results[0].extension == ".txt"
-    assert results[0].name == "ASCII text, with CRLF line terminators"
+    assert results[0].name == "ascii text, with CRLF line terminators"
     assert results[0].mime_type == "text/plain"
     assert results[0].confidence == 0.9
 
     cr_file = OFFICE_DIR / "text_cr.txt"
     cr_file.write_bytes(sample_text.replace(b"\n", b"").replace(b"{ending}", b"\r"))
     results = puremagic.magic_file(cr_file)
+    assert results[0].name == "ascii text, with CR line terminators"
     assert results[0].extension == ".txt"
-    assert results[0].name == "ASCII text, with CR line terminators"
     assert results[0].mime_type == "text/plain"
     assert results[0].confidence == 0.9
 
@@ -41,10 +41,10 @@ def test_text_scanner():
 def test_python_scanner():
     # Test the Python scanner with a sample Python file
     py_file = SYSTEM_DIR / "test.py"
-    result = python_scanner.main(py_file)
+    result = python_scanner.main(py_file, None, None)
     magic_result = puremagic.magic_file(py_file)
-    assert result.confidence == magic_result[0].confidence
     assert result.extension == ".py"
+    assert result.confidence == magic_result[0].confidence
     assert result.name == "Python Script"
     assert result.mime_type == "text/x-python"
     assert result.confidence == 1.0
@@ -62,7 +62,6 @@ def test_json_scanner():
 
 
 def test_sndhdr_scanner():
-
     # Test the sndhdr scanner with sndr file
     sndr_file = AUDIO_DIR / "test.sndr"
     with open(sndr_file, "rb") as f:

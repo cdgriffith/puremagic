@@ -30,6 +30,7 @@ def test_hcom(head: bytes) -> Optional[Match]:
         )
     return None
 
+
 def main(_, head: bytes, __) -> Optional[Match]:
     try:
         rate = get_short_le(head[2:4])

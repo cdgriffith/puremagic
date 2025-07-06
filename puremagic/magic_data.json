@@ -1747,9 +1747,6 @@
     ["0a0d0d0a", 0, ".pcapng", "application/octet-stream", "pcapng capture file"],
     ["05000000", 0, "", "", "INFO2 Windows recycle bin"],
     ["34cdb2a1", 0, "", "", "Tcpdump capture file"],
-    ["fffe0000", 0, "", "", "UTF-32|UCS-4 file"],
-    ["efbbbf", 0, "", "", "UTF8 file"],
-    ["feff", 0, "", "", "UTF-16|UCS-2 file"],
     ["6f3c", 0, "", "", "SMS text (SIM)"],
     ["aced", 0, "", "", "Java serialization data"],
     [
