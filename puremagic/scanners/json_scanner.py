@@ -7,7 +7,7 @@ match_bytes = b"{"
 
 
 def main(file_path: os.PathLike | str, head: bytes, foot: bytes) -> Match | None:
-    if not (head.strip().startswith(b"{") and foot.strip().endswith(b"}")):
+    if not (head.strip().startswith(b"{") and foot.strip().endswith(b"}")) and not (head.strip().startswith(b"[") and foot.strip().endswith(b"]")):
         return None
     try:
         with open(file_path, "rb") as file:

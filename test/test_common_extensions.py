@@ -217,8 +217,9 @@ def test_cmd_options():
 def test_bad_magic_input():
     """Test bad magic input"""
     with pytest.raises(ValueError):
-        puremagic.main._magic(None, None, None)
+        puremagic.main.perform_magic(None, None, None)
 
 
 def test_fake_file():
-    assert puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))[0].confidence == 0.5
+    results = puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))
+    assert results[0].confidence == 0.5, results
