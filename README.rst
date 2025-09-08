@@ -3,16 +3,16 @@ puremagic
 =========
 
 puremagic is a pure python module that will identify a file based off
-it's magic numbers.
+its magic numbers.
 
 It is designed to be minimalistic and inherently cross platform
-compatible. It is also designed to be a stand in for python-magic, it
-incorporates the functions from\_file(filename[, mime]) and
-from\_string(string[, mime]) however the magic\_file() and
-magic\_string() are more powerful and will also display confidence and
+compatible. It is also designed to be a stand in for python-magic. It
+implements the functions :code:`from_file(filename[, mime])` and
+:code:`from_string(string[, mime])` however the :code:`magic_file()` and
+:code:`magic_string()` are more powerful and will also display confidence and
 duplicate matches.
 
-It does NOT try to match files off non-magic string. In other words it
+It does NOT try to match files off non-magic string. In other words, it
 will not search for a string within a certain window of bytes like
 others might.
 
@@ -40,7 +40,7 @@ For use with with 3.7 use the 1.x branch.
 
 Using github ci to run continuous integration tests on listed platforms.
 
-Install from pypy
+Install from PyPI
 -----------------
 
 .. code:: bash
