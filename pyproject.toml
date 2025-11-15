@@ -52,6 +52,14 @@ include = [ "puremagic*" ]
 [tool.setuptools.dynamic]
 version = { attr = "puremagic.main.__version__" }
 
+[tool.black]
+# Prevent black from linting as we use Ruff now
+force-exclude = '.*\.py$'
+
+[tool.flake8]
+# Prevent flake8 from linting as we use Ruff now
+exclude = ["*"]
+
 [tool.ruff]
 target-version = "py312"
 
