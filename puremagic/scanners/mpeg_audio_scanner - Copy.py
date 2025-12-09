@@ -1,30 +1,23 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # cSpell:disable
 
 """
-MPEG Audio Deep Scanner (.mp1, .mp2, .mp3).
+MPEG Audio Deep Scanner (MP1, MP2, MP3).
 
-This performs a deepscan to confirm if a file is a bonafide MP3
+This performs a frame-by-frame check-up to confirm if it's a bonafide MP3
 A successful match is only returned if the main MPEG audio data stream can be decoded correctly.
 *AND* if present an ID3v2 (which needs decoding to find the audio afterwards).
 
 The scanner quickly pulls out all the crucial stream details:
-    * MPEG Version and Layer (MPEG 1/2/2.5 - Layer I/II/III)
-    * Sample Rate, Bit Rate,  Stereo/Mono
-    * Detects and checks LAME Xing/Info and Fraunhofer VBRI frames
-    * Detects CBR vs. VBR encoding through frame analysis (does not rely on above tags)
-    * Frame analysis also confirms validity of MP3 stream
-    * Detects and checks ID3v2, ID3v1, APE v1/v2, Lyrics3 v1/v2, ID3v1.2 EXT, ID3v1 TAG+ and 3DI tags
+    * **Sample Rate**
+    * **Bit Rate**
+    * **Bitrate Mode** (CBR/VBR)
+    * **Channel Mode** (Mono/Stereo)
+    * **Metadata Tag Styles**
 
 Note on Tags:
-    * End-of-file metadata tags (like ID3v1 or APE) are checked purely for informational
-      purposes and do not influence the file's pass/fail status. You may have a perfectly valid audio stream,
-      but have horrifically malformed tags at the end, if the audio data is valid we pass the file.
-    * LAME Xing/Info and Fraunhofer VBRI tags are checked for validity and are used for informational
-      purposes only, they should not affect pass/fail status unless they are so badly malformed
-      they cause the main audio decoder to fail finding valid frames.
-
+    End-of-file metadata tags (like ID3v1 or APE) are checked purely for informational
+    purposes and **do not influence the file's pass/fail status**. We include tolerance
+    for these EOF tags even if they are placed in non-spec-compliant locations.
 """
 
 import os
@@ -33,78 +26,29 @@ from typing import IO, Any, Dict, List, Optional
 
 from puremagic.scanners.helpers import Match
 
+"""These are all the valid signatures for raw MPEG Audio streams (Layers I, II, III), or those starting with a ID3v2 tag."""
 mpeg_audio_signatures = [
-    # These are all the valid signatures for raw MPEG Audio streams (Layers I, II, III),
-    # or those starting with a ID3v2 tag. You may spot some duplicates, this is fine,
-    # MPEG audio is full of little joys like this where the same header may mean
-    # different things when the stream is actually decoded.
-    b"ID3",  # ID3 Tag (Metadata header, often precedes the audio stream)
-    # ILLEGAL/RESERVED COMBINATIONS (Layer Bits = 00)
-    # These represent reserved/illegal layer combinations for the three valid versions.
-    b"\xff\xf0",  # MPEG-1, Layer Reserved, Protected (CRC used)
-    b"\xff\xf1",  # MPEG-1, Layer Reserved, No Protection (CRC not used)
-    b"\xff\xe0",  # MPEG-2, Layer Reserved, Protected (CRC used)
-    b"\xff\xe1",  # MPEG-2, Layer Reserved, No Protection (CRC not used)
-    b"\xff\xd0",  # MPEG-2.5, Layer Reserved, Protected (CRC used)
-    b"\xff\xd1",  # MPEG-2.5, Layer Reserved, No Protection (CRC not used)
-    b"\xff\xf2",  # MPEG-1, Layer III (MP3), No Protection (CRC not used)
-    # MPEG-1 HEADERS (Version Bits = 11)
-    # Layer III (MP3) - Layer Bits = 01
-    b"\xff\xfb",  # MPEG-1, Layer III (MP3), Protected (CRC used)
-    b"\xff\xfa",  # MPEG-1, Layer III (MP3), Protected (CRC used)
-    b"\xff\xf7",  # MPEG-1, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xf6",  # MPEG-1, Layer III (MP3), Protected (CRC used)
-    b"\xff\xf5",  # MPEG-1, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xf4",  # MPEG-1, Layer III (MP3), Protected (CRC used)
-    b"\xff\xf3",  # MPEG-1, Layer III (MP3), No Protection (CRC not used)
-    # Layer II (MP2) - Layer Bits = 10
-    b"\xff\xfd",  # MPEG-1, Layer II (MP2), Protected (CRC used)
-    b"\xff\xfc",  # MPEG-1, Layer II (MP2), Protected (CRC used)
-    b"\xff\xf9",  # MPEG-1, Layer II (MP2), No Protection (CRC not used)
-    b"\xff\xf8",  # MPEG-1, Layer II (MP2), No Protection (CRC not used)
-    # Layer I (MP1) - Layer Bits = 11
-    b"\xff\xff",  # MPEG-1, Layer I (MP1), Protected (CRC used)
-    b"\xff\xfe",  # MPEG-1, Layer I (MP1), Protected (CRC used)
-    b"\xff\xfd",  # MPEG-1, Layer I (MP1), No Protection (CRC not used)
-    b"\xff\xfc",  # MPEG-1, Layer I (MP1), No Protection (CRC not used)
-    b"\xff\xfb",  # MPEG-1, Layer I (MP1), Protected (CRC used)
-    b"\xff\xfa",  # MPEG-1, Layer I (MP1), Protected (CRC used)
-    b"\xff\xf9",  # MPEG-1, Layer I (MP1), No Protection (CRC not used)
-    b"\xff\xf8",  # MPEG-1, Layer I (MP1), No Protection (CRC not used)
-    # MPEG-2 HEADERS (Version Bits = 10)
-    # Layer III (MP3) - Layer Bits = 01
-    b"\xff\xef",  # MPEG-2, Layer III (MP3), Protected (CRC used)
-    b"\xff\xee",  # MPEG-2, Layer III (MP3), Protected (CRC used)
-    b"\xff\xe7",  # MPEG-2, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xe6",  # MPEG-2, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xeb",  # MPEG-2, Layer III (MP3), Protected (CRC used)
-    b"\xff\xea",  # MPEG-2, Layer III (MP3), Protected (CRC used)
-    b"\xff\xe5",  # MPEG-2, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xe4",  # MPEG-2, Layer III (MP3), No Protection (CRC not used)
-    # Layer II (MP2) - Layer Bits = 10
-    b"\xff\xed",  # MPEG-2, Layer II (MP2), Protected (CRC used)
-    b"\xff\xec",  # MPEG-2, Layer II (MP2), Protected (CRC used)
-    b"\xff\xe9",  # MPEG-2, Layer II (MP2), No Protection (CRC not used)
-    b"\xff\xe8",  # MPEG-2, Layer II (MP2), No Protection (CRC not used)
-    # Layer I (MP1) - Layer Bits = 11
-    b"\xff\xef",  # MPEG-2, Layer I (MP1), Protected (CRC used)
-    b"\xff\xee",  # MPEG-2, Layer I (MP1), Protected (CRC used)
-    b"\xff\xe7",  # MPEG-2, Layer I (MP1), No Protection (CRC not used)
-    b"\xff\xe6",  # MPEG-2, Layer I (MP1), No Protection (CRC not used)
-    b"\xff\xeb",  # MPEG-2, Layer I (MP1), Protected (CRC used)
-    b"\xff\xea",  # MPEG-2, Layer I (MP1), Protected (CRC used)
-    b"\xff\xe5",  # MPEG-2, Layer I (MP1), No Protection (CRC not used)
-    b"\xff\xe4",  # MPEG-2, Layer I (MP1), No Protection (CRC not used)
-    # MPEG-2.5 HEADERS (Version Bits = 00)
-    # Layer III (MP3) - Layer Bits = 01
-    b"\xff\xe3",  # MPEG-2.5, Layer III (MP3), Protected (CRC used)
-    b"\xff\xe2",  # MPEG-2.5, Layer III (MP3), Protected (CRC used)
-    b"\xff\xdb",  # MPEG-2.5, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xda",  # MPEG-2.5, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xdf",  # MPEG-2.5, Layer III (MP3), Protected (CRC used)
-    b"\xff\xde",  # MPEG-2.5, Layer III (MP3), Protected (CRC used)
-    b"\xff\xd7",  # MPEG-2.5, Layer III (MP3), No Protection (CRC not used)
-    b"\xff\xd6",  # MPEG-2.5, Layer III (MP3), No Protection (CRC not used)
+    # The 'ID3' tag identifies a separate metadata block (like song title/artist)
+    # that often precedes the actual MPEG audio data. It is not an audio frame header.
+    b"ID3",  # ID3 Tag (Metadata header)
+    b"\xff\xfb",  # MPEG 1, Layer 3 (MP3), Protected (CRC used)
+    b"\xff\xfe",  # MPEG 1, Layer 3 (MP3), Reserved/Invalid Bit
+    b"\xff\xff",  # MPEG 1, Layer 3 (MP3), Reserved/Invalid Bit
+    b"\xff\xfc",  # MPEG 1, Layer 2, Protected (CRC used)
+    b"\xff\xfd",  # MPEG 1, Layer 3, No Protection (CRC not used)
+    b"\xff\xfa",  # MPEG 1, Layer 3 (MP3), Protected (CRC used)
+    b"\xff\xf6",  # MPEG 1, Layer 2, No Protection (CRC not used)
+    b"\xff\xf7",  # MPEG 1, Layer 3 (MP3), No Protection (CRC not used)
+    b"\xff\xf4",  # MPEG 1, Layer 2, Protected (CRC used)
+    b"\xff\xf5",  # MPEG 1, Layer 3 (MP3), No Protection (CRC not used)
+    b"\xff\xf2",  # MPEG 1, Layer 2, Protected (CRC used)
+    b"\xff\xf3",  # MPEG 1, Layer 3 (MP3), No Protection (CRC not used)
+    b"\xff\xe6",  # MPEG 2, Layer 3 (MP3), Protected (CRC used)
+    b"\xff\xe7",  # MPEG 2, Layer 3 (MP3), No Protection (CRC not used)
+    b"\xff\xe4",  # MPEG 2, Layer 2, Protected (CRC used)
+    b"\xff\xe5",  # MPEG 2, Layer 3 (MP3), No Protection (CRC not used)
+    b"\xff\xe2",  # MPEG 2, Layer 2, Protected (CRC used)
+    b"\xff\xe3",  # MPEG 2, Layer 3 (MP3), No Protection (CRC not used)
 ]
 
 
@@ -113,7 +57,6 @@ class DataCache:
     We use a data cache as puremagic calls the script more than once.
 
     Work is performed on first call, cached output is returned in subsequent calls.
-    This saves doing everything twice.
     """
 
     _processed_result = None
@@ -168,9 +111,9 @@ class EndOfFileTags:
         Searches for ID3v1 TAG in last 128 bytes.
 
         Validation relies on the 'TAG' signature
-        *AND* either a 4-digit year (1700-3000 seems sensible)
-        *OR* four null bytes in the Year field
-        *OR* four spaces (hex 20 used by non compliant encoders/taggers).
+        AND either a 4-digit year (1900-2100)
+        OR four null bytes in the Year field
+        OR four spaces (hex 20 used by non compliant encoders/taggers).
 
         Returns True so we can check for TAG+ or EXT.
         Returns None if tag is not valid, no point then checking above.
@@ -190,16 +133,17 @@ class EndOfFileTags:
                 return False  # Tag not 128 bytes
 
             # Year is stored at byte 93 and 97 of TAG
-            # this should be a 4 digit number, or 4 nulls/spaces
+            # this should be a 4 digit number, or 4 nulls
+            # but some crappy enocders use hex 20 (spaces)
             year = self.foot_string[find_tag_loc + 93 : find_tag_loc + 97]
-            if year == b"\x00\x00\x00\x00" or year == b"\x20\x20\x20\x20":  # Check for empty year (all nulls/spaces)
+            if year == b"\x00\x00\x00\x00" or year == b"\x20\x20\x20\x20":  # Check for empty year (all nulls)
                 self.tags.append("ID3v1")
                 return True
             try:
                 year_str = year.decode("ascii", errors="ignore").replace("\x00", "").replace("\x20", "").strip()
-                if len(year_str) == 4 and year_str.isdigit():  # Check for a plausible 4-digit year 1700-3000
+                if len(year_str) == 4 and year_str.isdigit():  # Check for a plausible 4-digit year 1900-2100
                     year_int = int(year_str)
-                    if 1700 <= year_int <= 3000:
+                    if 1900 <= year_int <= 2100:
                         self.tags.append("ID3v1")
                         return True
             except ValueError:
@@ -214,13 +158,13 @@ class EndOfFileTags:
         """
         Checks for the ID3v1 Enhanced Tag ('TAG+').
 
-        This should be located in at 355 bytes from end of file.
+        This should be located in one fixed place at 355 bytes from end of file.
         There is a chance another tag (like APE or EXT) can push it around,
         which means the data could be there, but in the wrong place.
 
         Validation relies on the 'TAG+' signature, correct tag size,
-        *AND* either the approved speed bytes (01=slow, 02=medium, 03=fast, 04=hardcore)
-        *OR* a null byte (00) if unpopulated.
+        AND either the approved speed bytes (01=slow, 02=medium, 03=fast, 04=hardcore)
+        OR a null byte (00) if unpopulated.
 
         Returns None as a graceful exit if TAG+ not found
         """
@@ -257,7 +201,7 @@ class EndOfFileTags:
         """
         Checks for the ID3v1.2 Enhanced Tag ('EXT').
 
-        This should be located at 256 bytes from end of file.
+        This should be located in one fixed place at 256 bytes from end of file.
         There is a chance another tag (like APE or EXT) can push it around,
         which means the data could be there, but in the wrong place.
 
@@ -332,7 +276,7 @@ class EndOfFileTags:
         """
         Checks for the Lyrics3 v1 and v2.
 
-        These are large tags (upto 1MB) and should be located at either:
+        These are large tags (upto 1MB) and should be located at:
         a) Upto 1024 bytes from end of file if no ID3v1
         b) Upto 1152 bytes from end of file if ID3v1 present
         There is a chance another tag (like APE or EXT) can push it around,
@@ -353,7 +297,7 @@ class EndOfFileTags:
         combined_size = (max_tag_size + id3v1_size) if id3v1 else max_tag_size
 
         if self.foot_size < combined_size:  # LYRICS OR LYRICS + ID3v1
-            combined_size = self.foot_size
+            combined_size = self.foot_size  # We have no way to know what size the tag is
 
         try:
             # Scan only calculated tag area, try to avoid false positives
@@ -415,7 +359,7 @@ class EndOfFileTags:
 
         We currently do not test for weird variants such as:
         a) v1 lacking the APETAGEX footer
-        b) v2 lacking the APETAGEX header, footer or both (crazy, but apparently valid)
+        b) v2 lacking the APETAGEX header/footer
         c) v2 placed at the start of the file
         If sample files with these ever appear we can look to test.
 
@@ -464,11 +408,12 @@ class EndOfFileTags:
         combined_size = (max_tag_size + id3v1_size) if id3v1 else max_tag_size
 
         if self.foot_size < combined_size:  # APE OR APE + ID3v1
-            combined_size = self.foot_size
+            combined_size = self.foot_size  # We have no way to know what size the tag is
 
         try:
             # Scan only calculated tag area, try to avoid false positives
-            # This just checks for APETAGEX marker immediately before EOF or ID3v1 TAG
+            # This just checks for APETAGEX marker immediately
+            # before EOF or ID3v1 TAG
             apextag_size = 32  # This is for APETAGEX and data bytes
             end_size = (apextag_size + id3v1_size) if id3v1 else apextag_size
             end_tag_start = self.foot_size - end_size
@@ -593,7 +538,7 @@ class MpegAudioDecoder:
         Checks the first frame for Xing/Info (LAME) and VBRI (Fraunhofer) VBR tags.
 
         This function relies on self._decode_mp3_header having already passed its
-        validity checks (sync word, reserved bits, valid rates).
+        internal validity checks (sync word, reserved bits, valid rates).
 
         Returns the tag identifier string ("Xing", "Info", or "VBRI") if a tag is found,
         otherwise returns None.
@@ -647,6 +592,7 @@ class MpegAudioDecoder:
         Decodes the 4-byte header. Raises ValueError if invalid.
         Performs frame size calculation based on MPEG version and Layer.
         """
+
         header_int = struct.unpack(">I", header_bytes)[0]
 
         # Extract Fields
@@ -657,14 +603,15 @@ class MpegAudioDecoder:
         sample_rate_index = (header_int >> 10) & 0b11
         padding_bit = (header_int >> 9) & 0b1
         channel_mode_index = (header_int >> 6) & 0b11
+
         # --- 1. Basic Validation ---
-        # Sync word can be 0xFFE or 0xFFF
-        if sync_word < 0xFFE:
+        if sync_word != 0xFFF:
             raise ValueError("Sync word not fully set.")
         if mpeg_version_index == 1 or layer_index == 0:
             raise ValueError("Reserved MPEG version or Layer used.")
         if bit_rate_index == 0 or bit_rate_index == 15 or sample_rate_index == 3:
             raise ValueError("Reserved bit rate, index 0, or sample rate index used.")
+
         # --- 2. Lookup Values ---
         sr_list = self.sample_rate_table.get(mpeg_version_index)
         if not sr_list:
@@ -718,58 +665,43 @@ class MpegAudioDecoder:
             "mpeg_version_index": mpeg_version_index,
         }
 
+    # --- OBSOLETE VBR METHODS REMOVED ---
+
     def _check_stream_consistency(
         self, file_handle, frame1_bit_rate_index, frame2_start_abs_offset, frame1_size
     ) -> str | None:
         """
         Checks the bit rate index of the next few frames (up to 3 total) against
-        the first frame to determine stream consistency, using a small search
-        window to overcome frame 'wobble' found in some Layer II encodings.
+        the first frame to determine stream consistency.
         """
         frames_to_check = 2
         current_offset = frame2_start_abs_offset
         step_size = frame1_size
 
-        # Loop for Frame 2 and Frame 3
+        total_frames_checked = 1  # We start having checked Frame 1
+
         for i in range(1, frames_to_check + 1):
-            found_match = False
+            total_frames_checked += 1
+            try:
+                file_handle.seek(current_offset, os.SEEK_SET)
+                frame_header_bytes = file_handle.read(4)
+                if len(frame_header_bytes) < 4:
+                    return None  # Too short to hold a frame header
 
-            # Search window of 4 bytes (0, 1, 2, 3 bytes ahead)
-            for search_offset in range(4):
-                seek_pos = current_offset + search_offset
+                frame_bit_rate_index = self.extract_bit_rate_index(frame_header_bytes)
 
-                try:
-                    file_handle.seek(seek_pos, os.SEEK_SET)
-                    frame_header_bytes = file_handle.read(4)
+                if frame_bit_rate_index == -1 or frame_bit_rate_index != frame1_bit_rate_index:
+                    # Found a change or invalid header at expected position -> VBR/ABR.
+                    # This currently has a bodge for Layer II (.mp2)
+                    return "VBR" if self.header_results["layer"] != "Layer II (MP2)" else "CBR"
 
-                    if len(frame_header_bytes) < 4:
-                        # End of file reached before full consistency check.
-                        # Assume CBR based on checks passed so far.
-                        return "CBR"
+                # If consistent, prepare for the next frame check.
+                current_offset += step_size
 
-                    frame_bit_rate_index = self.extract_bit_rate_index(frame_header_bytes)
+            except Exception:
+                return None
 
-                    # Check 1: Must be a valid header (not -1) AND
-                    # Check 2: Must have the same bit rate index as Frame 1 (frame1_bit_rate_index)
-                    if frame_bit_rate_index != -1 and frame_bit_rate_index == frame1_bit_rate_index:
-                        # Found the next frame at the expected bit rate (CBR).
-                        # Break the inner search loop and prepare for the next frame check.
-
-                        # Update the current offset to the *actual* start of the found frame
-                        # plus the expected frame size, for the next check.
-                        current_offset = seek_pos + step_size
-                        found_match = True
-                        break
-
-                except Exception:
-                    continue  # Try the next search_offset
-
-            # If we failed to find a consistent frame nearby after checking the window:
-            if not found_match:
-                # The bit rate index is inconsistent over a small range.
-                return "VBR"
-
-        # If the loop completed (F1, F2, and F3 were consistent or found nearby)
+        # If the loop completed without finding a difference (F1=F2=F3)
         return "CBR"
 
     def extract_bit_rate_index(self, header_bytes):
@@ -786,8 +718,9 @@ class MpegAudioDecoder:
     def decoder(self, head: bytes, file: IO[bytes]):
         """Decodes the MPEG Audios Stream."""
 
-        # Seek to start (start of file or after ID3v2)
+        # 1. Seek to start (after ID3v2)
         file.seek(self.first_frame_offset, os.SEEK_SET)
+
         # Decode the first frame header (H1)
         header_bytes_frame1 = file.read(4)
         if len(header_bytes_frame1) < 4:
@@ -801,22 +734,19 @@ class MpegAudioDecoder:
 
         raw_frame_size = self.header_results["raw_frame_size"]
 
-        # Read the area for VBR check
+        # 2. Read the area for VBR check
         read_size_for_vbr_check = min(raw_frame_size - 4, 150)
         frame_body_for_vbr = file.read(read_size_for_vbr_check)
 
         # Combine header and body bytes for easy slicing in the VBR parser
         frame_bytes_for_vbr = header_bytes_frame1 + frame_body_for_vbr
 
-        # Check for VBR Header (Xing/Info/VBRI)
-        # This is only an informative check, we do not determine VBR/CBR from this.
-        # These headers are for Layer III only, Layers I and II do not have them.
+        # 3. Check for VBR Header (Xing/Info/VBRI)
         self.vbr_info = self._parse_vbr_header(frame_bytes_for_vbr, self.header_results)
 
         frame_step_size = raw_frame_size
 
-        # Check Stream Consistency by seeking to Frame 2 and 3
-        # This determines VBR/CBR for all MPEG versions and Layers.
+        # 4. Check Stream Consistency by seeking to Frame 2 and 3
         if raw_frame_size > 0:
             frame2_start_abs_offset = self.first_frame_offset + frame_step_size
             frame1_bit_rate_index = self.header_results["bit_rate_index"]
@@ -830,7 +760,7 @@ class MpegAudioDecoder:
         else:
             stream_type_deduction = None
 
-        # Final Result Compilation
+        # 5. Final Result Compilation
         if stream_type_deduction is not None and self.header_results.get("sync_word"):
             self.tags = [
                 self.header_results["bit_rate"],
@@ -838,7 +768,11 @@ class MpegAudioDecoder:
                 self.header_results["chanel_mode"],
             ]
 
-            self.tags.append(stream_type_deduction)
+            # Use the VBR info if present, otherwise use the deduction
+            if self.vbr_info:
+                self.tags.append(f"Encoded as VBR ({self.vbr_info} Tag)")
+            else:
+                self.tags.append(stream_type_deduction)
 
             return self.tags
 
@@ -846,14 +780,26 @@ class MpegAudioDecoder:
 
 
 class ID3v2Decoder:
-    """Decodes the ID3v2 tag and calculates the file offset where the audio stream begins."""
+    """
+    Decodes the ID3v2 tag and calculates the file offset where the audio stream begins.
+    Its sole responsibility is parsing the tag data at offset 0.
+    """
 
-    def __init__(self, file_size: int, mpega: type[Any]):
+    def __init__(self, file_size: int, mpega: type[Any]):  # Using Any for the type hint to simplify
         self.id3v2_tag = None
         self.file_size = file_size
         self.id3_tag_size = None  # Total tag size (10-byte header + content)
 
-        self.tagsv22 = [  # Tag list for ID3v2.2
+        # NOTE: Keeping these MPEGA constants for now, but they could be removed
+        # if they aren't used in _check_id3v2_tag (which they are not).
+        self.sample_rate_table = mpega.sample_rate_table
+        self.bitrate_table = mpega.bitrate_table
+        self.mpeg_version_map = mpega.mpeg_version_map
+        self.layer_map = mpega.layer_map
+        self.channel_mode_map = mpega.channel_mode_map
+
+        # Tag lists remain for validation
+        self.tagsv22 = [
             b"AEN",
             b"BUF",
             b"CNT",
@@ -919,8 +865,6 @@ class ID3v2Decoder:
             b"WIR",
             b"UIN",
         ]
-        # Tag list for ID3v2.3 and 2.4, there are some uniques to both, but not enough
-        # to make repeating the list beneficial to speed or validity.
         self.tagsv23 = [
             b"AENC",
             b"APIC",
@@ -1011,11 +955,13 @@ class ID3v2Decoder:
             b"TSST",
             b"TXXX",
         ]
-        self.tagsv23_3letter = [  # Super niche 3 letter tags used in ID3v2.3 only
+        self.tagsv23_3letter = [
             b"WAF",
             b"WIR",
             b"WYY",
         ]
+
+    # --- ID3V2 Parsing Logic ---
 
     def _check_id3v2_tag(self, head: bytes) -> Optional[int]:
         """
@@ -1029,7 +975,7 @@ class ID3v2Decoder:
             return None  # Header too small
 
         if head[0:3] != b"ID3":
-            return None  # This should never happen
+            return None  # This should never happen if called correctly
 
         size_field = head[6:10]
         tag_content_size = 0
@@ -1057,11 +1003,14 @@ class ID3v2Decoder:
         else:
             return None  # Invalid tag version
 
+        # Commit success state
         self.id3v2_tag = tag
         self.id3_tag_size = 10 + tag_content_size  # Total tag size plus 10-byte header
 
         # Return the offset where the audio stream starts
         return self.id3_tag_size
+
+    # --- Public Entry Point ---
 
     def decode_id3v2(self, head: bytes) -> int:
         """
@@ -1070,6 +1019,9 @@ class ID3v2Decoder:
         Returns the absolute file offset where the first audio frame should be
         (0 if no ID3v2 tag is found).
         """
+        # The file stream IO is no longer needed in this simplified class.
+
+        # Check the tag and calculate the size
         audio_start_offset = self._check_id3v2_tag(head)
 
         # If _check_id3v2_tag was successful, it returns the tag size (the starting offset).
@@ -1077,23 +1029,9 @@ class ID3v2Decoder:
         return audio_start_offset if audio_start_offset is not None else 0
 
 
-def build_name(mpega, id3v2_tags: str, eof_tags: List) -> str | None:
-    """
-    Build an return the full name string and extension.
-
-    Name is constructed from scan results, some examples of final output:
-    MPEG-1 Audio Layer III (MP3) file [64k 44.1Khz Stereo VBR LAME(Xing) ID3v1 TAG+]
-    MPEG-1 Audio Layer II (MP2) file [64k 44.1Khz Mono CBR]
-    MPEG-2 Audio Layer III (MP3) file [64k 24.0Khz Stereo CBR LAME(Info) ID3v2.4]
-    MPEG-1 Audio Layer I (MP1) file [384k 32.0Khz Stereo CBR]
-    MPEG-2.5 Audio Layer III (MP3) file [32k 12.0Khz Stereo CBR LAME(Info) ID3v2.4]
-    MPEG-1 Audio Layer III (MP3) file [160k 44.1Khz Stereo VBR VBRI ID3v2.3]
-    """
-    mpega_results = mpega.header_results
-    mpega_tags = mpega.tags
-    vbr_type = mpega.vbr_info
-
-    # Set version: MPEG-1, MPEG-2, MPEG-2.5
+def build_name(mpega_results: Dict, id3v2_tags: str, mpega_tags: List, eof_tags: List, vbr_type: str) -> str | None:
+    """Return the full name string and extension."""
+    # set version: MPEG-1, MPEG-2, MPEG-2.5
     # Reserved if a super rare fringe case that should never happen
     version = (
         mpega_results["mpeg_version"].replace(" ", "-")
@@ -1155,7 +1093,7 @@ def test_mpega(file_path: os.PathLike | str, head: bytes) -> Optional[Match]:
         except Exception:
             return None  # If the decode process fails for any unknown reason
 
-        full_name, ext = build_name(mpega, id3v2.id3v2_tag, eof.tags)
+        full_name, ext = build_name(mpega.header_results, id3v2.id3v2_tag, mpega.tags, eof.tags, mpega.vbr_info)
         if full_name is None or ext is None:
             return None  # Name building failed for some reason
 

@@ -406,34 +406,14 @@ def single_deep_scan(
             result = sndhdr_scanner.main(filename, head, foot)
             if result and result.confidence > confidence:
                 return result
-        case (
-            mpeg_audio_scanner.mp3_id3_match_bytes
-            | mpeg_audio_scanner.raw_mp3_match_bytes
-            | mpeg_audio_scanner.fffe_match_bytes
-            | mpeg_audio_scanner.ffff_match_bytes
-            | mpeg_audio_scanner.fffc_match_bytes
-            | mpeg_audio_scanner.fffd_match_bytes
-            | mpeg_audio_scanner.fffa_match_bytes
-            | mpeg_audio_scanner.fff6_match_bytes
-            | mpeg_audio_scanner.fff7_match_bytes
-            | mpeg_audio_scanner.fff4_match_bytes
-            | mpeg_audio_scanner.fff5_match_bytes
-            | mpeg_audio_scanner.fff2_match_bytes
-            | mpeg_audio_scanner.fff3_match_bytes
-            | mpeg_audio_scanner.ffe6_match_bytes
-            | mpeg_audio_scanner.ffe7_match_bytes
-            | mpeg_audio_scanner.ffe4_match_bytes
-            | mpeg_audio_scanner.ffe5_match_bytes
-            | mpeg_audio_scanner.ffe2_match_bytes
-            | mpeg_audio_scanner.ffe3_match_bytes
-        ):
-            result = mpeg_audio_scanner.main(filename, head)
+        case mpeg_bytes if mpeg_bytes in mpeg_audio_scanner.mpeg_audio_signatures:
+            result = mpeg_audio_scanner.main(filename, head, foot)
             if result and result.confidence > confidence:
                 return result
 
     # The first match wins
     for scanner in (pdf_scanner, python_scanner, json_scanner):
-        result = scanner.main(filename, head)
+        result = scanner.main(filename, head, foot)
         if result:
             return result
     return None
