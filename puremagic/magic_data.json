@@ -2357,6 +2357,7 @@
     ["5244534b", 0, ".hdf", "", "Amiga Harddisk image"],
     ["504653", 0, ".hdf", "", "Amiga Harddisk image (Professional Filesystem 3)"],
     ["504453", 0, ".hdf", "", "Amiga Harddisk image (Professional Filesystem 3)"],
-    ["534653", 0, ".hdf", "", "Amiga Harddisk image (Smart File System)"]
+    ["534653", 0, ".hdf", "", "Amiga Harddisk image (Smart File System)"],
+    ["d0cf11e0a1b11ae1", 0, ".msg", "application/vnd.ms-outlook", "Outlook 97-2003 Item File"]
   ]
 }
