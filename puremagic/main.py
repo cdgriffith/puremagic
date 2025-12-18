@@ -22,7 +22,15 @@ from pathlib import Path
 import puremagic
 
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
-    from puremagic.scanners import zip_scanner, pdf_scanner, text_scanner, json_scanner, python_scanner, sndhdr_scanner
+    from puremagic.scanners import (
+        zip_scanner,
+        pdf_scanner,
+        text_scanner,
+        json_scanner,
+        python_scanner,
+        sndhdr_scanner,
+        mpeg_audio_scanner,
+    )
 
 __author__ = "Chris Griffith"
 __version__ = "2.0.0b5"
@@ -398,6 +406,10 @@ def single_deep_scan(
             result = sndhdr_scanner.main(filename, head, foot)
             if result and result.confidence > confidence:
                 return result
+        case mpeg_bytes if mpeg_bytes in mpeg_audio_scanner.mpeg_audio_signatures:
+            result = mpeg_audio_scanner.main(filename, head, foot)
+            if result and result.confidence > confidence:
+                return result
 
     # The first match wins
     for scanner in (pdf_scanner, python_scanner, json_scanner):
@@ -519,7 +531,7 @@ def command_line_entry(*args):
             print(f"Total Possible Matches: {len(matches)}")
             for i, result in enumerate(matches):
                 if i == 0:
-                    print("\n\tBest Match")
+                    print("\n\tDeepscan Match" if int(result.confidence == 1) else "\n\tBest Match")
                 else:
                     print(f"\tAlternative Match #{i}")
                 print(f"\tName: {result.name}")
