@@ -168,4 +168,4 @@ https://cgit.freedesktop.org/xdg/shared-mime-info/
 License
 -------
 
-MIT Licenced, see LICENSE, Copyright (c) 2013-2025 Chris Griffith
+MIT Licenced, see LICENSE, Copyright (c) 2013-2026 Chris Griffith

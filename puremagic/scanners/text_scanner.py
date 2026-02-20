@@ -8,6 +8,15 @@ crlf_pattern = re.compile(r"\r\n")
 lf_pattern = re.compile(r"(?<!\r)\n")
 cr_pattern = re.compile(r"\r(?!\n)")
 
+# Common RFC 2822 / MIME email headers (bytes pattern for use on raw head)
+EMAIL_HEADERS = re.compile(
+    rb"^(Delivered-To|Received|From|To|Subject|Date|MIME-Version"
+    rb"|Message-ID|Content-Type|Return-Path|X-Mailer|Reply-To"
+    rb"|X-Received|ARC-Seal|DKIM-Signature|X-Pm-Origin"
+    rb"|Authentication-Results|Received-SPF|X-Original-To)\s*:",
+    re.IGNORECASE | re.MULTILINE,
+)
+
 
 def decode_any(unicode: bytes) -> tuple[str, str]:
     try:
@@ -136,6 +145,15 @@ def csv_check(file_path, text) -> Match | None:
 def file_ending_match(extension, text, mime, file_path):
     return Match(extension, text, mime, confidence=1.0 if str(file_path).lower().endswith(extension) else 0.9)
 
+def eml_check(head: bytes) -> Match | None:
+    """Check if raw bytes look like an RFC 2822 email message."""
+    matches = EMAIL_HEADERS.findall(head)
+    if len(matches) < 2:
+        return None
+    if b"\r\n\r\n" not in head and b"\n\n" not in head:
+        return None
+    return Match(".eml", "RFC 2822 Email Message", "message/rfc822", confidence=1.0)
+
 def dynamic_checks(text, file_path) -> Match | None:
     text = text.strip()
     if text.startswith("$MeshFormat"):
@@ -167,6 +185,12 @@ def dynamic_checks(text, file_path) -> Match | None:
         return file_ending_match(".vtpascii", "vtpascii", "text/plain", file_path)
     if text.startswith("# CMAP File "):
         return file_ending_match(".cmap", "cmap", "text/plain", file_path)
+    if text.startswith("##fileformat=VCF"):
+        return file_ending_match(".vcf", "Variant Call Format", "text/x-vcard", file_path)
+    if text.startswith("@HD\t") or text.startswith("@SQ\t"):
+        return file_ending_match(".sam", "Sequence Alignment Map", "text/x-sam", file_path)
+    if text.startswith("IQ-TREE"):
+        return file_ending_match(".iqtree", "IQ-TREE phylogenetic analysis", "text/plain", file_path)
 
     return None
 

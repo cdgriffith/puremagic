@@ -63,6 +63,15 @@ def test_json_scanner():
     assert result.confidence == 1.0
 
 
+def test_eml_scanner():
+    eml_file = OFFICE_DIR / "test.eml"
+    results = puremagic.magic_file(eml_file)
+    assert results[0].extension == ".eml"
+    assert results[0].name == "RFC 2822 Email Message"
+    assert results[0].mime_type == "message/rfc822"
+    assert results[0].confidence == 1.0
+
+
 def test_sndhdr_scanner():
     # Test the sndhdr scanner with sndr file
     sndr_file = AUDIO_DIR / "test.sndr"

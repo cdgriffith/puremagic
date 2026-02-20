@@ -30,6 +30,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         python_scanner,
         sndhdr_scanner,
         mpeg_audio_scanner,
+        hdf5_scanner,
     )
 
 __author__ = "Chris Griffith"
@@ -413,8 +414,11 @@ def single_deep_scan(
             if result and result.confidence > confidence:
                 return result
 
+    if eml_result := text_scanner.eml_check(head):
+        return eml_result
+
     # The first match wins
-    for scanner in (pdf_scanner, python_scanner, json_scanner):
+    for scanner in (pdf_scanner, python_scanner, json_scanner, hdf5_scanner):
         result = scanner.main(filename, head, foot)
         if result:
             return result
