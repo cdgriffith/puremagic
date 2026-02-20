@@ -29,10 +29,10 @@ for file in os.listdir(folder):
                     if grandchild.tag == "EXT_NAME":
                         sig[grandchild.tag] = grandchild.text.lower().split("|")  # type: ignore
                     else:
-                        sig[grandchild.tag] = grandchild.text  # type: ignore
+                        sig[grandchild.tag] = grandchild.text
         sigs.append(sig)
 
-known_sigs = {binascii.hexlify(x[0]).decode("ascii") for x in puremagic.magic_header_array}
+known_sigs = {binascii.hexlify(x[0]).decode("ascii") for x in puremagic.main.magic_header_array}
 
 for sig in sigs:
     sig["SIG"] = sig["SIG"].lower().strip()

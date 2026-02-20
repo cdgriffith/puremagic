@@ -1,7 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-
-requires = [ "setuptools", "setuptools-scm[toml]>=6.2", "wheel" ]
+requires = [ "setuptools", "setuptools-scm[toml]>=6.2"]
 
 [project]
 name = "puremagic"
@@ -21,6 +20,7 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Utilities",
 ]
@@ -39,6 +39,7 @@ dev = [
   "ruff>=0.12.2",
   "setuptools>=80.9",
   "twine>=6.1",
+  "ty>=0.0.17",
   "wheel>=0.45.1",
 ]
 
@@ -51,6 +52,14 @@ include = [ "puremagic*" ]
 
 [tool.setuptools.dynamic]
 version = { attr = "puremagic.main.__version__" }
+
+[tool.black]
+# Prevent black from linting as we use Ruff now
+force-exclude = '.*\.py$'
+
+[tool.flake8]
+# Prevent flake8 from linting as we use Ruff now
+exclude = ["*"]
 
 [tool.ruff]
 target-version = "py312"
@@ -65,7 +74,7 @@ exclude = [
   ".git",
   ".git-rewrite",
   ".ipynb_checkpoints",
-  ".mypy_cache",
+  ".ty",
   ".pytest_cache",
   ".pytype",
   ".ruff_cache",
@@ -108,3 +117,4 @@ executor.type = "uv"
 test = "pytest --cov=puremagic test/"
 lint = "ruff check --fix"
 format = "ruff format"
+typecheck = "ty check"
