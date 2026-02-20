@@ -1,0 +1,9 @@
+From: sender@example.com
+To: recipient@example.com
+Subject: Test Email Message
+Date: Thu, 01 Jan 2026 00:00:00 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Message-ID: <test-001@example.com>
+
+This is a test email message body used for puremagic file type detection.
