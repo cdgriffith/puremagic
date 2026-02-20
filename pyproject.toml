@@ -1,7 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-
-requires = [ "setuptools", "setuptools-scm[toml]>=6.2", "wheel" ]
+requires = [ "setuptools", "setuptools-scm[toml]>=6.2"]
 
 [project]
 name = "puremagic"
@@ -39,6 +38,7 @@ dev = [
   "ruff>=0.12.2",
   "setuptools>=80.9",
   "twine>=6.1",
+  "ty>=0.0.17",
   "wheel>=0.45.1",
 ]
 
@@ -73,7 +73,7 @@ exclude = [
   ".git",
   ".git-rewrite",
   ".ipynb_checkpoints",
-  ".mypy_cache",
+  ".ty",
   ".pytest_cache",
   ".pytype",
   ".ruff_cache",
@@ -116,3 +116,4 @@ executor.type = "uv"
 test = "pytest --cov=puremagic test/"
 lint = "ruff check --fix"
 format = "ruff format"
+typecheck = "ty check"

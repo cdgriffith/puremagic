@@ -7,7 +7,7 @@ omit =
     */venv/*
     */.*/*
     */*.egg-info/*
-    */.mypy_cache/*
+    */.ty/*
     */.pytest_cache/*
 exclude_lines =
     command_line_entry

@@ -43,6 +43,7 @@ def test_python_scanner():
     py_file = SYSTEM_DIR / "test.py"
     result = python_scanner.main(py_file, None, None)
     magic_result = puremagic.magic_file(py_file)
+    assert result is not None
     assert result.extension == ".py"
     assert result.confidence == magic_result[0].confidence
     assert result.name == "Python Script"
@@ -54,6 +55,7 @@ def test_json_scanner():
     json_file = SYSTEM_DIR / "test.json"
     result = json_scanner.main(json_file, b"{", b"}")
     magic_result = puremagic.magic_file(json_file)
+    assert result is not None
     assert result.confidence == magic_result[0].confidence
     assert result.extension == ".json"
     assert result.name == "JSON File"

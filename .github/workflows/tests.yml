@@ -16,12 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: ["3.12", "3.13", "3.14-dev"]
+        python-version: ["3.12", "3.13", "3.14"]
         include:
           - os: macos-latest
-            python-version: '3.13'
+            python-version: '3.14'
           - os: windows-latest
-            python-version: '3.13'
+            python-version: '3.14'
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -40,6 +40,9 @@ jobs:
 
     - name: Verify Code with Ruff
       run: uv run ruff check
+
+    - name: Type check with ty
+      run: uv run ty check
 
     - name: Test with pytest
       run: uv run pytest --cov=puremagic test/

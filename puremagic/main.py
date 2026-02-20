@@ -366,7 +366,7 @@ def magic_string(string, filename: os.PathLike | str | None = None) -> list[Pure
 
 def magic_stream(
     stream,
-    filename: os.PathLike | None = None,
+    filename: os.PathLike | str | None = None,
 ) -> list[PureMagicWithConfidence]:
     """Returns tuple of (num_of_matches, array_of_matches)
     arranged by highest confidence match first
@@ -388,11 +388,13 @@ def magic_stream(
 def single_deep_scan(
     bytes_match: bytes | bytearray | None,
     filename: os.PathLike | str,
-    head=None,
-    foot=None,
-    confidence=0,
+    head: bytes | None = None,
+    foot: bytes | None = None,
+    confidence: float = 0,
 ):
     if os.getenv("PUREMAGIC_DEEPSCAN") == "0":
+        return None
+    if head is None or foot is None:
         return None
     if not isinstance(filename, os.PathLike):
         filename = Path(filename)
@@ -421,10 +423,12 @@ def single_deep_scan(
 
 def catch_all_deep_scan(
     filename: os.PathLike | str,
-    head=None,
-    foot=None,
+    head: bytes | None = None,
+    foot: bytes | None = None,
 ):
     if os.getenv("PUREMAGIC_DEEPSCAN") == "0":
+        return None
+    if head is None or foot is None:
         return None
     if not isinstance(filename, os.PathLike):
         filename = Path(filename)
@@ -434,9 +438,9 @@ def catch_all_deep_scan(
 def run_deep_scan(
     matches: list[PureMagicWithConfidence],
     filename: os.PathLike | str,
-    head=None,
-    foot=None,
-    raise_on_none=True,
+    head: bytes | None = None,
+    foot: bytes | None = None,
+    raise_on_none: bool = True,
 ):
     if not matches or matches[0].byte_match == b"":
         try:

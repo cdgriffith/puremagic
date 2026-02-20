@@ -144,7 +144,7 @@ class DataCache:
         return cls._matched
 
     @classmethod
-    def get_file_path(cls) -> os.PathLike | str:
+    def get_file_path(cls) -> os.PathLike | str | None:
         """Retrieves the file path."""
         return cls._file_path
 
@@ -163,7 +163,7 @@ class EndOfFileTags:
         self.foot_string = None
         self.foot_size = 1572864  # 1.5MB in bytes, changes if file is smaller
 
-    def _id3v1(self) -> bool:
+    def _id3v1(self) -> bool | None:
         """
         Searches for ID3v1 TAG in last 128 bytes.
 
@@ -175,6 +175,7 @@ class EndOfFileTags:
         Returns True so we can check for TAG+ or EXT.
         Returns None if tag is not valid, no point then checking above.
         """
+        assert self.foot_string is not None
         tag_size = 128
 
         if self.foot_size < tag_size:
@@ -224,6 +225,7 @@ class EndOfFileTags:
 
         Returns None as a graceful exit if TAG+ not found
         """
+        assert self.foot_string is not None
         tag_size = 128
         tag_plus_size = 227
         speed_loc = 184  # Speed byte posistion in tag
@@ -266,6 +268,7 @@ class EndOfFileTags:
 
         Returns None as a graceful exit if EXT not found
         """
+        assert self.foot_string is not None
         tag_size = 128
         ext_tag_size = 128
         combined_size = ext_tag_size + tag_size
@@ -290,7 +293,7 @@ class EndOfFileTags:
         except Exception:
             return None  # Other unexpected issues
 
-    def _3di(self, id3v1: bool) -> None:
+    def _3di(self, id3v1: bool | None) -> None:
         """
         Checks for the rare ID3v1 3DI tag ('3DI').
 
@@ -305,6 +308,7 @@ class EndOfFileTags:
 
         Returns None as a graceful exit if 3DI not found
         """
+        assert self.foot_string is not None
         tag_size = 128
         size_3di = 10
         combined_size = (size_3di + tag_size) if id3v1 else size_3di
@@ -328,7 +332,7 @@ class EndOfFileTags:
         except Exception:
             return None  # Other unexpected issues
 
-    def _lyrics3(self, id3v1: bool) -> None:
+    def _lyrics3(self, id3v1: bool | None) -> None:
         """
         Checks for the Lyrics3 v1 and v2.
 
@@ -348,6 +352,7 @@ class EndOfFileTags:
 
         Returns None as a graceful exit if tag block not found
         """
+        assert self.foot_string is not None
         id3v1_size = 128
         max_tag_size = 1048576  # This is on paper the max a Lyrics3 tag could be (v1 in theory has no limit)
         combined_size = (max_tag_size + id3v1_size) if id3v1 else max_tag_size
@@ -403,7 +408,7 @@ class EndOfFileTags:
         except Exception:
             return None  # Other unexpected issues
 
-    def _ape(self, id3v1: bool) -> None:
+    def _ape(self, id3v1: bool | None) -> None:
         """
         Checks for the Ape v1 and v2.
 
@@ -427,6 +432,7 @@ class EndOfFileTags:
 
         Returns None as a graceful exit if tag block not found
         """
+        assert self.foot_string is not None
         common_ape_keys = (
             b"Title",
             b"Artist",
@@ -800,6 +806,7 @@ class MpegAudioDecoder:
             return None
 
         raw_frame_size = self.header_results["raw_frame_size"]
+        assert isinstance(raw_frame_size, int)
 
         # Read the area for VBR check
         read_size_for_vbr_check = min(raw_frame_size - 4, 150)
@@ -848,7 +855,7 @@ class MpegAudioDecoder:
 class ID3v2Decoder:
     """Decodes the ID3v2 tag and calculates the file offset where the audio stream begins."""
 
-    def __init__(self, file_size: int, mpega: type[Any]):
+    def __init__(self, file_size: int, mpega: MpegAudioDecoder):
         self.id3v2_tag = None
         self.file_size = file_size
         self.id3_tag_size = None  # Total tag size (10-byte header + content)
@@ -1077,7 +1084,7 @@ class ID3v2Decoder:
         return audio_start_offset if audio_start_offset is not None else 0
 
 
-def build_name(mpega, id3v2_tags: str, eof_tags: List) -> str | None:
+def build_name(mpega, id3v2_tags: str | None, eof_tags: List) -> tuple[str, str] | tuple[None, None]:
     """
     Build an return the full name string and extension.
 

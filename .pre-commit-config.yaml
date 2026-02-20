@@ -1,6 +1,6 @@
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
     # Identify invalid files
     - id: check-ast
@@ -35,7 +35,7 @@ repos:
 
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.12.2
+    rev: v0.15.2
     hooks:
       # Run the linter.
       - id: ruff-check
@@ -43,17 +43,21 @@ repos:
       # Run the formatter.
       - id: ruff-format
 
--   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v1.16.1'
+-   repo: local
     hooks:
-    - id: mypy
+    - id: ty
+      name: ty
+      entry: uv run ty check
+      language: system
+      types: [python]
+      pass_filenames: false
 
 -   repo: https://github.com/tox-dev/pyproject-fmt
-    rev: v2.6.0
+    rev: v2.16.1
     hooks:
       - id: pyproject-fmt
 
 -   repo: https://github.com/abravalheri/validate-pyproject
-    rev: v0.24.1
+    rev: v0.25
     hooks:
       - id: validate-pyproject

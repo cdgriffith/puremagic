@@ -217,7 +217,7 @@ def test_cmd_options():
 def test_bad_magic_input():
     """Test bad magic input"""
     with pytest.raises(ValueError):
-        puremagic.main.perform_magic(None, None, None)
+        puremagic.main.perform_magic(None, None, None)  # type: ignore[invalid-argument-type]
 
 
 def test_fake_file():
