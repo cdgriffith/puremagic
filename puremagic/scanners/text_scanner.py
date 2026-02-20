@@ -97,11 +97,6 @@ def csv_check(file_path, text) -> Match | None:
         return None
 
 
-    #
-    # # Check for quotes that might indicate CSV
-    # has_quoted_fields = '"' in text and (f'"{best_delimiter}' in text or f'{best_delimiter}\"')
-    #
-
     delimiter_counts = []
     for line in lines:
         delim_count = line.count(best_delimiter)

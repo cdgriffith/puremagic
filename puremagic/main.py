@@ -535,7 +535,7 @@ def command_line_entry(*args):
             print(f"Total Possible Matches: {len(matches)}")
             for i, result in enumerate(matches):
                 if i == 0:
-                    print("\n\tDeepscan Match" if int(result.confidence == 1) else "\n\tBest Match")
+                    print("\n\tDeepscan Match" if result.confidence == 1.0 else "\n\tBest Match")
                 else:
                     print(f"\tAlternative Match #{i}")
                 print(f"\tName: {result.name}")
