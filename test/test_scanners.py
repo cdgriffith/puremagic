@@ -38,6 +38,25 @@ def test_text_scanner():
     assert results[0].confidence == 0.9
 
 
+def test_utf16_le_not_mp1():
+    # GH #134: UTF-16 LE BOM (FF FE) should not be misidentified as .mp1
+    data = b"\xff\xfe" + "a,b,c\n1,2,3\n".encode("utf-16-le")
+    result = puremagic.from_string(data)
+    assert result != ".mp1", "UTF-16 LE data misidentified as .mp1"
+    result_mime = puremagic.from_string(data, mime=True)
+    assert result_mime != "audio/mpeg", "UTF-16 LE data misidentified as audio/mpeg"
+
+
+def test_utf16_le_csv_deep_scan():
+    # GH #134: UTF-16 LE CSV file should be detected as CSV via text_scanner deep scan
+    utf16_csv = OFFICE_DIR / "test_utf16le.csv"
+    results = puremagic.magic_file(utf16_csv)
+    assert results[0].extension == ".csv"
+    assert results[0].mime_type == "text/csv"
+    assert "comma" in results[0].name
+    assert results[0].confidence >= 0.9
+
+
 def test_python_scanner():
     # Test the Python scanner with a sample Python file
     py_file = SYSTEM_DIR / "test.py"

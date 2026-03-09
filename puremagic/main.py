@@ -34,7 +34,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -215,7 +215,7 @@ def perform_magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=N
                 raise PureError("Could not identify file")
             if mime:
                 return results[0].mime_type
-            return results[0].extension
+            return results[0].extension or ""
     if not infos:
         raise PureError("Could not identify file")
     info = infos[0]
@@ -306,7 +306,7 @@ def from_string(string: str | bytes, mime: bool = False, filename: os.PathLike |
         string = string.encode("utf-8")
     head, foot = string_details(string)
     ext = ext_from_filename(filename) if filename else None
-    return perform_magic(head, foot, mime, ext)
+    return perform_magic(head, foot, mime, ext, filename=filename)
 
 
 def from_stream(stream, mime: bool = False, filename: os.PathLike | str | None = None) -> str:
@@ -322,7 +322,7 @@ def from_stream(stream, mime: bool = False, filename: os.PathLike | str | None =
     """
     head, foot = stream_details(stream)
     ext = ext_from_filename(filename) if filename else None
-    return perform_magic(head, foot, mime, ext)
+    return perform_magic(head, foot, mime, ext, filename=filename)
 
 
 def magic_file(filename: os.PathLike | str) -> list[PureMagicWithConfidence]:
@@ -362,6 +362,8 @@ def magic_string(string, filename: os.PathLike | str | None = None) -> list[Pure
     ext = ext_from_filename(filename) if filename else None
     info = identify_all(head, foot, ext)
     info.sort(key=lambda x: x.confidence, reverse=True)
+    if filename and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
+        return run_deep_scan(info, filename, head, foot, raise_on_none=False)
     return info
 
 
@@ -383,6 +385,8 @@ def magic_stream(
     ext = ext_from_filename(filename) if filename else None
     info = identify_all(head, foot, ext)
     info.sort(key=lambda x: x.confidence, reverse=True)
+    if filename and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
+        return run_deep_scan(info, filename, head, foot, raise_on_none=False)
     return info
 
 
@@ -490,6 +494,17 @@ def run_deep_scan(
                     name=result.name,
                 )
             ]
+
+    # No specific scanner matched — try the catch-all text scanner
+    # Only override when existing matches are very low confidence (e.g. 2-byte BOM signatures)
+    if matches[0].confidence < 0.5:
+        try:
+            result = catch_all_deep_scan(filename, head, foot)
+        except Exception:
+            pass
+        else:
+            if result and result.confidence > matches[0].confidence:
+                return [result]
     return matches
 
 

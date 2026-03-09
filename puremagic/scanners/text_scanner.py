@@ -19,6 +19,16 @@ EMAIL_HEADERS = re.compile(
 
 
 def decode_any(unicode: bytes) -> tuple[str, str]:
+    if unicode[:2] == b"\xff\xfe":
+        try:
+            return unicode.decode("utf-16-le").lstrip("\ufeff"), "utf-16-le"
+        except UnicodeDecodeError:
+            pass
+    elif unicode[:2] == b"\xfe\xff":
+        try:
+            return unicode.decode("utf-16-be").lstrip("\ufeff"), "utf-16-be"
+        except UnicodeDecodeError:
+            pass
     try:
         return unicode.decode("ascii"), "ascii"
     except UnicodeDecodeError:
