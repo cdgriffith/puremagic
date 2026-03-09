@@ -4,6 +4,7 @@ Changelog
 Version 2.0.1
 -------------
 
+- Fixing #126 Python scanner false positives — now uses AST node walking instead of regex to verify real Python constructs (thanks to ahobson)
 - Fixing #134 UTF-16 LE BOM (FF FE) no longer misidentified as .mp1 audio, added UTF-16 BOM detection to text scanner (thanks to tomazfs)
 - Fixing #135 from_string(), from_stream(), magic_string(), and magic_stream() now perform deep scan when filename is provided (thanks to denisw)
 

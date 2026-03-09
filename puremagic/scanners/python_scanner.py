@@ -1,40 +1,40 @@
 import ast
 import os
-import re
 
 from puremagic.scanners.helpers import Match
 
-python_common_keywords = [
-    re.compile("\bdef\b"),
-    re.compile("\bclass\b"),
-    re.compile("\bimport\b"),
-    re.compile("\belif\b"),
-    re.compile("\bwhile\b"),
-    re.compile("\bexcept\b"),
-    re.compile("\bfinally\b"),
-    re.compile("\breturn\b"),
-    re.compile("\byield\b"),
-    re.compile("\blambda\b"),
-    re.compile("\bTrue\b"),
-    re.compile("\bFalse\b"),
-    re.compile("\bNone\b"),
-    re.compile("\b__version__\b"),
-    re.compile("__main__"),
-]
+# AST node types that are strong indicators of real Python code
+_PYTHON_NODE_TYPES = (
+    ast.Import,
+    ast.ImportFrom,
+    ast.FunctionDef,
+    ast.AsyncFunctionDef,
+    ast.ClassDef,
+    ast.For,
+    ast.AsyncFor,
+    ast.While,
+    ast.With,
+    ast.AsyncWith,
+    ast.Try,
+    ast.Raise,
+    ast.Assert,
+)
 
-python_patterns = [
-    re.compile(r"\bdef\s+\w+\s*\("),  # Function definitions
-    re.compile(r"\bclass\s+\w+\s*[\(:]"),  # Class definitions
-    re.compile(r"\bimport\s+\w+"),  # Import statements
-    re.compile(r"\bfrom\s+\w+\s+import"),  # From-import statements
-    re.compile(r"\bif\s+.*:"),  # If statements
-    re.compile(r"\bfor\s+\w+\s+in\s+.*:"),  # For loops
-    re.compile(r"\bwhile\s+.*:"),  # While loops
-    re.compile(r"\btry\s*:"),  # Try blocks
-    re.compile(r"\.append\("),  # Method calls
-    re.compile(r"\.join\("),  # String operations
-    re.compile(r"print\s*\("),  # Print statements
-]
+
+def _has_python_constructs(tree: ast.Module, threshold: int = 4) -> bool:
+    """Walk the AST and check for node types that indicate real Python code.
+
+    Simple expressions (tuples, names, constants) can appear in CSV, config files,
+    and other non-Python text that happens to parse. Real Python code will contain
+    imports, function/class definitions, control flow, etc.
+    """
+    count = 0
+    for node in ast.walk(tree):
+        if isinstance(node, _PYTHON_NODE_TYPES):
+            count += 1
+            if count >= threshold:
+                return True
+    return False
 
 
 def main(file_path: os.PathLike | str, _, __) -> Match | None:
@@ -48,11 +48,10 @@ def main(file_path: os.PathLike | str, _, __) -> Match | None:
         with open(file_path, "r", encoding="utf-8") as file:
             content = file.read()
 
-        # Parse to ensure it's valid Python syntax
-        ast.parse(content)
+        tree = ast.parse(content)
 
         if not str(file_path).endswith(".py"):
-            if not is_substantial_python_code(content):
+            if not _has_python_constructs(tree):
                 return None
 
     except (SyntaxError, UnicodeDecodeError, PermissionError, OSError):
@@ -64,43 +63,3 @@ def main(file_path: os.PathLike | str, _, __) -> Match | None:
         mime_type="text/x-python",
         confidence=1.0,
     )
-
-
-def is_substantial_python_code(content: str) -> bool:
-    """
-    Check if the content contains substantial Python code indicators.
-    Returns True if the content appears to be meaningful Python code.
-    """
-    # Remove comments and strings to focus on actual code
-    content_lines = content.splitlines()
-    code_lines = []
-
-    for line in content_lines:
-        # Remove comments (basic approach - doesn't handle strings containing #)
-        line = line.split("#")[0].strip()
-        if line:  # Non-empty after removing comments
-            code_lines.append(line)
-
-    # If too few substantial lines, it's probably not real code
-    if len(code_lines) < 2:
-        return False
-
-    code_text = " ".join(code_lines)
-
-    # Check for Python keywords that indicate actual code
-
-    # Count how many keywords are present
-    keyword_count = 0
-    for keyword in python_common_keywords:
-        if keyword.search(code_text):
-            keyword_count += 1
-
-    # Require at least 2 keywords for substantial code
-    if keyword_count < 2:
-        return False
-
-    # Check for common Python patterns
-    for pattern in python_patterns:
-        if pattern.search(code_text):
-            return True
-    return False
