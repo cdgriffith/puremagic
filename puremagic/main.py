@@ -473,7 +473,16 @@ def run_deep_scan(
             raise
         else:
             if result:
-                return [result]
+                return [
+                    PureMagicWithConfidence(
+                        confidence=result.confidence,
+                        byte_match=None,
+                        offset=None,
+                        extension=result.extension,
+                        mime_type=result.mime_type,
+                        name=result.name,
+                    )
+                ]
         if raise_on_none:
             raise PureError("Could not identify file")
 
@@ -504,7 +513,16 @@ def run_deep_scan(
             pass
         else:
             if result and result.confidence > matches[0].confidence:
-                return [result]
+                return [
+                    PureMagicWithConfidence(
+                        confidence=result.confidence,
+                        byte_match=None,
+                        offset=None,
+                        extension=result.extension,
+                        mime_type=result.mime_type,
+                        name=result.name,
+                    )
+                ]
     return matches
 
 
