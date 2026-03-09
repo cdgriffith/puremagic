@@ -57,6 +57,19 @@ def test_utf16_le_csv_deep_scan():
     assert results[0].confidence >= 0.9
 
 
+def test_from_string_nonexistent_filename():
+    # GH #137: passing filename for extension hint should not raise FileNotFoundError
+    # Use PDF-like bytes so identify_all finds a match via magic numbers,
+    # then deep scan is skipped (file doesn't exist) and the match is returned.
+    pdf_bytes = b"%PDF-1.4 fake content"
+    result = puremagic.from_string(pdf_bytes, filename="nonexistent.pdf")
+    assert result == ".pdf"
+
+    # magic_string should also work without crashing
+    results = puremagic.magic_string(pdf_bytes, filename="nonexistent.pdf")
+    assert any(r.extension == ".pdf" for r in results)
+
+
 def test_python_scanner():
     # Test the Python scanner with a sample Python file
     py_file = SYSTEM_DIR / "test.py"
