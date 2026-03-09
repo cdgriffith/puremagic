@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 2.0.2
+-------------
+
+- Fixing #137 passing non-existent filename to from_string()/from_stream() no longer raises FileNotFoundError (thanks to denisw)
+
 Version 2.0.1
 -------------
 
