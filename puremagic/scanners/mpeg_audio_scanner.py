@@ -64,7 +64,7 @@ mpeg_audio_signatures = [
     b"\xff\xf8",  # MPEG-1, Layer II (MP2), No Protection (CRC not used)
     # Layer I (MP1) - Layer Bits = 11
     b"\xff\xff",  # MPEG-1, Layer I (MP1), Protected (CRC used)
-    b"\xff\xfe",  # MPEG-1, Layer I (MP1), Protected (CRC used)
+    # b"\xff\xfe" excluded — conflicts with UTF-16 LE BOM (GH #134)
     b"\xff\xfd",  # MPEG-1, Layer I (MP1), No Protection (CRC not used)
     b"\xff\xfc",  # MPEG-1, Layer I (MP1), No Protection (CRC not used)
     b"\xff\xfb",  # MPEG-1, Layer I (MP1), Protected (CRC used)
@@ -614,6 +614,8 @@ class MpegAudioDecoder:
 
         # 2. Determine Offsets using validated results
         mpeg_version_str = header_results.get("mpeg_version")
+        if mpeg_version_str is None:
+            return None
         mpeg_version_index = self.mpeg_version_reverse.get(mpeg_version_str)
 
         if mpeg_version_index is None:

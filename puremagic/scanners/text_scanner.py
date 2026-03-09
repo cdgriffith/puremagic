@@ -19,6 +19,16 @@ EMAIL_HEADERS = re.compile(
 
 
 def decode_any(unicode: bytes) -> tuple[str, str]:
+    if unicode[:2] == b"\xff\xfe":
+        try:
+            return unicode.decode("utf-16-le").lstrip("\ufeff"), "utf-16-le"
+        except UnicodeDecodeError:
+            pass
+    elif unicode[:2] == b"\xfe\xff":
+        try:
+            return unicode.decode("utf-16-be").lstrip("\ufeff"), "utf-16-be"
+        except UnicodeDecodeError:
+            pass
     try:
         return unicode.decode("ascii"), "ascii"
     except UnicodeDecodeError:
@@ -42,13 +52,8 @@ def csv_check(file_path, text) -> Match | None:
     lines = text.splitlines()
     if len(lines) < 2:  # Need at least 2 lines to detect a pattern
         # If filename ends with .csv, give it the benefit of the doubt
-        if str(file_path).lower().endswith('.csv'):
-            return Match(
-                ".csv",
-                "Comma-separated values (single line)",
-                "text/csv",
-                confidence=0.7
-            )
+        if str(file_path).lower().endswith(".csv"):
+            return Match(".csv", "Comma-separated values (single line)", "text/csv", confidence=0.7)
         return None
 
     # Remove any blank lines
@@ -56,10 +61,10 @@ def csv_check(file_path, text) -> Match | None:
     if len(lines) < 2:
         return None
     if len(lines) > 100:
-        lines = lines[:-1] # Remove last line in case it's been truncated
+        lines = lines[:-1]  # Remove last line in case it's been truncated
 
     # Try to determine the delimiter by checking common ones
-    potential_delimiters = [',', ';', '\t', '|', ':']
+    potential_delimiters = [",", ";", "\t", "|", ":"]
     delimiter_scores = {}
 
     for delimiter in potential_delimiters:
@@ -85,7 +90,7 @@ def csv_check(file_path, text) -> Match | None:
     # Try using csv module's Sniffer as a fallback
     csv_sniffer_result = None
     try:
-        dialect = csv.Sniffer().sniff(text, delimiters=''.join(potential_delimiters))
+        dialect = csv.Sniffer().sniff(text, delimiters="".join(potential_delimiters))
         csv_sniffer_result = dialect.delimiter
     except Exception:
         pass
@@ -105,7 +110,6 @@ def csv_check(file_path, text) -> Match | None:
         # No clear delimiter pattern found
         return None
 
-
     delimiter_counts = []
     for line in lines:
         delim_count = line.count(best_delimiter)
@@ -123,27 +127,20 @@ def csv_check(file_path, text) -> Match | None:
             return None
 
     # Boost confidence if filename ends with .csv
-    if str(file_path).lower().endswith('.csv'):
+    if str(file_path).lower().endswith(".csv"):
         confidence = min(1.0, confidence + 0.1)
 
     # Return match with appropriate confidence
-    delimiter_name = {
-        ',': 'comma',
-        ';': 'semicolon',
-        '\t': 'tab',
-        '|': 'pipe',
-        ':': 'colon'
-    }.get(best_delimiter, best_delimiter)
-
-    return Match(
-        ".csv",
-        f"{delimiter_name}-separated values",
-        "text/csv",
-        confidence=confidence
+    delimiter_name = {",": "comma", ";": "semicolon", "\t": "tab", "|": "pipe", ":": "colon"}.get(
+        best_delimiter, best_delimiter
     )
+
+    return Match(".csv", f"{delimiter_name}-separated values", "text/csv", confidence=confidence)
+
 
 def file_ending_match(extension, text, mime, file_path):
     return Match(extension, text, mime, confidence=1.0 if str(file_path).lower().endswith(extension) else 0.9)
+
 
 def eml_check(head: bytes) -> Match | None:
     """Check if raw bytes look like an RFC 2822 email message."""
@@ -153,6 +150,7 @@ def eml_check(head: bytes) -> Match | None:
     if b"\r\n\r\n" not in head and b"\n\n" not in head:
         return None
     return Match(".eml", "RFC 2822 Email Message", "message/rfc822", confidence=1.0)
+
 
 def dynamic_checks(text, file_path) -> Match | None:
     text = text.strip()
@@ -193,6 +191,7 @@ def dynamic_checks(text, file_path) -> Match | None:
         return file_ending_match(".iqtree", "IQ-TREE phylogenetic analysis", "text/plain", file_path)
 
     return None
+
 
 def main(file_path: os.PathLike | str, _, __) -> Match | None:
     with open(file_path, "rb") as file:

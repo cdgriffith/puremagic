@@ -714,9 +714,6 @@
     "fffd": [
         ["544147", -128, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"]
     ],
-    "fffe": [
-        ["544147", -128, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"]
-    ],
     "ffff": [
         ["544147", -128, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"]
     ]
@@ -974,7 +971,6 @@
     ["fffb", 0, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"],
     ["fffc", 0, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"],
     ["fffd", 0, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"],
-    ["fffe", 0, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"],
     ["ffff", 0, ".mp1", "audio/mpeg", "MPEG-1 Audio Layer I (MP1) file"],
     ["4f67675300020000000000000000", 0, ".ogg", "application/ogg", "Ogg Vorbis audio file"],
     ["57415645666d7420", 8, ".wav", "audio/x-wav", "Windows audio file "],
@@ -1027,7 +1023,7 @@
     ["504b0304140008000800", 0, ".jar", "application/java-archive", "Java Archive file"],
     ["5f27a889", 0, ".jar", "application/java-archive", "Jar Archive file"],
     ["edabeedb", 0, ".rpm", "application/x-rpm", "RedHat Package Manager file"],
-    ["fffe", 0, ".ini", "text/plain", "Windows INI file"],
+    ["fffe", 0, ".txt", "text/plain", "UTF-16 LE text file"],
     ["fffe23006c0069006e00650020003100", 0, ".mof", "text/plain", "Windows MSinfo file"],
     ["ffffffff", 0, ".sys", "text/plain", "DOS system driver"],
     [
