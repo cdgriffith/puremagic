@@ -12,11 +12,25 @@ _SUBTYPES = [
     # Loom - single-cell genomics
     ([], [b"/matrix", b"/row_attrs", b"/col_attrs"], 2, ".loom", "Loom single-cell data", "application/x-loom"),
     # Multi-resolution Cooler (must check before single-resolution)
-    ([b"/resolutions"], [b"/bins", b"/chroms"], 1, ".mcool", "Multi-resolution Cooler contact matrix", "application/x-mcool"),
+    (
+        [b"/resolutions"],
+        [b"/bins", b"/chroms"],
+        1,
+        ".mcool",
+        "Multi-resolution Cooler contact matrix",
+        "application/x-mcool",
+    ),
     # Cooler - genomic contact matrices
     ([], [b"/bins", b"/chroms", b"/pixels"], 2, ".cool", "Cooler contact matrix", "application/x-cooler"),
     # BIOM v2 - biological observation matrix
-    ([], [b"BIOM", b"/observation", b"/sample"], 2, ".biom2", "BIOM v2 biological observation matrix", "application/x-biom2"),
+    (
+        [],
+        [b"BIOM", b"/observation", b"/sample"],
+        2,
+        ".biom2",
+        "BIOM v2 biological observation matrix",
+        "application/x-biom2",
+    ),
     # mz5 - mass spectrometry
     ([], [b"/SpectrumMetaData", b"/ChomatogramMetaData"], 1, ".mz5", "mz5 mass spectrometry data", "application/x-mz5"),
     # h5mlm - ML model

@@ -614,6 +614,8 @@ class MpegAudioDecoder:
 
         # 2. Determine Offsets using validated results
         mpeg_version_str = header_results.get("mpeg_version")
+        if mpeg_version_str is None:
+            return None
         mpeg_version_index = self.mpeg_version_reverse.get(mpeg_version_str)
 
         if mpeg_version_index is None:

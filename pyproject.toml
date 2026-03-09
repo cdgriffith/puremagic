@@ -1,6 +1,6 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = [ "setuptools", "setuptools-scm[toml]>=6.2"]
+requires = [ "setuptools", "setuptools-scm[toml]>=6.2" ]
 
 [project]
 name = "puremagic"
@@ -24,49 +24,38 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Utilities",
 ]
-
 dynamic = [ "version" ]
 urls.Homepage = "https://github.com/cdgriffith/puremagic"
 scripts.puremagic = "puremagic.main:command_line_entry"
 
 [dependency-groups]
 dev = [
-  "coverage>=7.9.2",
-  "poethepoet>=0.36.0",
-  "pre-commit>=4.2",
-  "pytest>=8.4.1",
-  "pytest-cov>=6.2.1",
-  "ruff>=0.12.2",
-  "setuptools>=80.9",
-  "twine>=6.1",
-  "ty>=0.0.17",
-  "wheel>=0.45.1",
+  "coverage>=7.13.4",
+  "poethepoet>=0.42.1",
+  "pre-commit>=4.5.1",
+  "pytest>=9.0.2",
+  "pytest-cov>=7",
+  "ruff>=0.15.5",
+  "setuptools>=82",
+  "twine>=6.2",
+  "ty>=0.0.21",
+  "wheel>=0.46.3",
 ]
 
-[tool.setuptools.packages.find]
-where = [ "." ]
-include = [ "puremagic*" ]
-
-[tool.setuptools.package-data]
-"*" = [ '*.json' ]
-
-[tool.setuptools.dynamic]
-version = { attr = "puremagic.main.__version__" }
+[tool.setuptools]
+dynamic.version = { attr = "puremagic.main.__version__" }
+package-data."*" = [ "*.json" ]
+packages.find.where = [ "." ]
+packages.find.include = [ "puremagic*" ]
 
 [tool.black]
 # Prevent black from linting as we use Ruff now
-force-exclude = '.*\.py$'
-
-[tool.flake8]
-# Prevent flake8 from linting as we use Ruff now
-exclude = ["*"]
+force-exclude = ".*\\.py$"
 
 [tool.ruff]
 target-version = "py312"
-
 line-length = 120
 indent-width = 4
-
 # Exclude a variety of commonly ignored directories.
 exclude = [
   ".direnv",
@@ -74,10 +63,10 @@ exclude = [
   ".git",
   ".git-rewrite",
   ".ipynb_checkpoints",
-  ".ty",
   ".pytest_cache",
   ".pytype",
   ".ruff_cache",
+  ".ty",
   ".venv",
   ".vscode",
   "__pypackages__",
@@ -87,7 +76,6 @@ exclude = [
   "dist",
   "venv",
 ]
-
 # Like Black, indent with spaces, rather than tabs.
 format.indent-style = "space"
 # Like Black, use double quotes for strings.
@@ -110,11 +98,13 @@ format.docstring-code-format = true
 lint.fixable = [ "F541" ]
 lint.unfixable = [ "F401" ]
 
+[tool.flake8]
+# Prevent flake8 from linting as we use Ruff now
+exclude = [ "*" ]
+
 [tool.poe]
 executor.type = "uv"
-
-[tool.poe.tasks]
-test = "pytest --cov=puremagic test/"
-lint = "ruff check --fix"
-format = "ruff format"
-typecheck = "ty check"
+tasks.test = "pytest --cov=puremagic test/"
+tasks.lint = "ruff check --fix"
+tasks.format = "ruff format"
+tasks.typecheck = "ty check"
