@@ -30,6 +30,7 @@ scripts.puremagic = "puremagic.main:command_line_entry"
 
 [dependency-groups]
 dev = [
+  "codespell>=2.4.2",
   "coverage>=7.13.4",
   "poethepoet>=0.42.1",
   "pre-commit>=4.5.1",
@@ -108,3 +109,4 @@ tasks.test = "pytest --cov=puremagic test/"
 tasks.lint = "ruff check --fix"
 tasks.format = "ruff format"
 tasks.typecheck = "ty check"
+tasks.spellcheck = "codespell --ignore-words-list=addin,caf,tye,wors --skip='*.json' puremagic/"

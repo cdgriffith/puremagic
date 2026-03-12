@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Version 2.1.0
+-------------
+
+- Adding #6 `from_extension()` and `magic_extension()` to look up MIME types by file extension
+- Adding `-e`/`--extension` CLI flag for extension-based MIME type lookup
+- Adding #139 codespell check (thanks to Christian Clauss)
+
 Version 2.0.2
 -------------
 
