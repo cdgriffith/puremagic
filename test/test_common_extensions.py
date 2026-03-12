@@ -261,3 +261,34 @@ def test_cmd_extension_option():
 def test_fake_file():
     results = puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))
     assert results[0].confidence == 0.5, results
+
+
+def test_riff_wav_mime():
+    """RIFF scanner returns audio/wav (not audio/wave) for WAV files"""
+    mime = puremagic.from_file(os.path.join(AUDIO_DIR, "test.wav"), mime=True)
+    assert mime == "audio/wav"
+
+
+
+def test_cfbf_doc():
+    """CFBF scanner correctly identifies Word .doc"""
+    ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.doc"))
+    assert ext == ".doc"
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.doc"), mime=True)
+    assert mime == "application/msword"
+
+
+def test_cfbf_ppt():
+    """CFBF scanner correctly identifies PowerPoint .ppt"""
+    ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.ppt"))
+    assert ext == ".ppt"
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.ppt"), mime=True)
+    assert mime == "application/vnd.ms-powerpoint"
+
+
+def test_cfbf_msg():
+    """CFBF scanner correctly identifies Outlook .msg"""
+    ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"))
+    assert ext == ".msg"
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"), mime=True)
+    assert mime == "application/vnd.ms-outlook"
