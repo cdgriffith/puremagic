@@ -228,7 +228,7 @@ class EndOfFileTags:
         assert self.foot_string is not None
         tag_size = 128
         tag_plus_size = 227
-        speed_loc = 184  # Speed byte posistion in tag
+        speed_loc = 184  # Speed byte position in tag
         combined_size = tag_plus_size + tag_size
 
         if self.foot_size < combined_size:  # TAG+ + ID3v1
@@ -466,7 +466,7 @@ class EndOfFileTags:
             b"MCN",
         )
         id3v1_size = 128
-        max_tag_size = 1048576  # This is a pratical scan range of 1MB, Ape v2 in theory can be 4GB
+        max_tag_size = 1048576  # This is a practical scan range of 1MB, Ape v2 in theory can be 4GB
         combined_size = (max_tag_size + id3v1_size) if id3v1 else max_tag_size
 
         if self.foot_size < combined_size:  # APE OR APE + ID3v1
@@ -493,7 +493,7 @@ class EndOfFileTags:
             f_size = struct.unpack("<I", self.foot_string[end_tag_start + 12 : end_tag_start + 16])[0]
 
             if f_version == 1000:  # v1
-                # Reach first key in tag, in APE the tag key name is preceeded by 8 bytes associated with it.
+                # Reach first key in tag, in APE the tag key name is preceded by 8 bytes associated with it.
                 first_key = combined_size - ((end_size + f_size) - apextag_size) + 8
                 # APE does not care about case for tag keys, but Title and UPPER are commonly accepted as standard
                 if not self.foot_string[first_key:].title().startswith(common_ape_keys):

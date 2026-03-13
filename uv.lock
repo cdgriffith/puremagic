@@ -93,6 +93,15 @@ wheels = [
 ]
 
 [[package]]
+name = "codespell"
+version = "2.4.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2d/9d/1d0903dff693160f893ca6abcabad545088e7a2ee0a6deae7c24e958be69/codespell-2.4.2.tar.gz", hash = "sha256:3c33be9ae34543807f088aeb4832dfad8cb2dae38da61cac0a7045dd376cfdf3", size = 352058, upload-time = "2026-03-05T18:10:42.936Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/42/a1/52fa05533e95fe45bcc09bcf8a503874b1c08f221a4e35608017e0938f55/codespell-2.4.2-py3-none-any.whl", hash = "sha256:97e0c1060cf46bd1d5db89a936c98db8c2b804e1fdd4b5c645e82a1ec6b1f886", size = 353715, upload-time = "2026-03-05T18:10:41.398Z" },
+]
+
+[[package]]
 name = "colorama"
 version = "0.4.6"
 source = { registry = "https://pypi.org/simple" }
@@ -495,6 +504,7 @@ source = { editable = "." }
 
 [package.dev-dependencies]
 dev = [
+    { name = "codespell" },
     { name = "coverage" },
     { name = "poethepoet" },
     { name = "pre-commit" },
@@ -511,14 +521,15 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "codespell", specifier = ">=2.4.2" },
     { name = "coverage", specifier = ">=7.13.4" },
     { name = "poethepoet", specifier = ">=0.42.1" },
     { name = "pre-commit", specifier = ">=4.5.1" },
     { name = "pytest", specifier = ">=9.0.2" },
-    { name = "pytest-cov", specifier = ">=7.0.0" },
+    { name = "pytest-cov", specifier = ">=7" },
     { name = "ruff", specifier = ">=0.15.5" },
-    { name = "setuptools", specifier = ">=82.0.0" },
-    { name = "twine", specifier = ">=6.2.0" },
+    { name = "setuptools", specifier = ">=82" },
+    { name = "twine", specifier = ">=6.2" },
     { name = "ty", specifier = ">=0.0.21" },
     { name = "wheel", specifier = ">=0.46.3" },
 ]

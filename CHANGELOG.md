@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Version 2.1.0
+-------------
+
+- Adding #6 `from_extension()` and `magic_extension()` to look up MIME types by file extension
+- Adding #119 CFBF/OLE2 scanner to distinguish Word, Excel, PowerPoint, Outlook MSG, Visio, and Publisher files (thanks to Simeon Stoykov and Andy - NebularNerd)
+- Adding #139 codespell check (thanks to Christian Clauss)
+- Adding `-e`/`--extension` CLI flag for extension-based MIME type lookup
+- Fixing #104 WAV MIME type changed from `audio/wave` to `audio/wav` (thanks to Simon Willison and Andy - NebularNerd)
+
 Version 2.0.2
 -------------
 

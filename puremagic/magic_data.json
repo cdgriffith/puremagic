@@ -100,7 +100,7 @@
       ["53434448", 8, ".sc2", "", "SimCity 2000 Map File"]
     ],
     "52494646": [
-      ["57415645", 8, ".wav", "audio/wave", "Waveform Audio File Format"],
+      ["57415645", 8, ".wav", "audio/wav", "Waveform Audio File Format"],
       ["41564920", 8, ".avi", "video/avi", "Audio Video Interleave"],
       ["57454250", 8, ".webp", "image/webp", "WebP graphics file format"],
       ["41434f4e", 8, ".ani", "", "Animated cursor"],

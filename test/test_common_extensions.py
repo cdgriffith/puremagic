@@ -220,6 +220,75 @@ def test_bad_magic_input():
         puremagic.main.perform_magic(None, None, None)  # type: ignore[invalid-argument-type]
 
 
+def test_from_extension():
+    """Test from_extension lookup"""
+    assert puremagic.from_extension(".pdf") == "application/pdf"
+    assert puremagic.from_extension("pdf") == "application/pdf"
+    assert puremagic.from_extension("PDF") == "application/pdf"
+    assert puremagic.from_extension(".jpg") == "image/jpeg"
+    assert puremagic.from_extension("png") == "image/png"
+    # Test name mode
+    name = puremagic.from_extension(".pdf", mime=False)
+    assert name != ""
+    # Test unknown extension raises PureError
+    with pytest.raises(puremagic.PureError):
+        puremagic.from_extension(".xyz_unknown_ext")
+
+
+def test_magic_extension():
+    """Test magic_extension returns list of matches"""
+    results = puremagic.magic_extension(".pdf")
+    assert len(results) >= 1
+    assert results[0].mime_type == "application/pdf"
+    assert results[0].extension == ".pdf"
+    # Check sorted by confidence descending
+    for i in range(len(results) - 1):
+        assert results[i].confidence >= results[i + 1].confidence
+    # Unknown extension returns empty list
+    assert puremagic.magic_extension(".xyz_unknown_ext") == []
+
+
+def test_cmd_extension_option():
+    """Test CLI -e option"""
+    from puremagic.main import command_line_entry  # noqa: PLC0415
+
+    command_line_entry("-e", "pdf")
+    command_line_entry("-e", ".jpg")
+    command_line_entry("-e", "pdf", "-v")
+    command_line_entry("-e", "xyz_unknown_ext_123")
+
+
 def test_fake_file():
     results = puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))
     assert results[0].confidence == 0.5, results
+
+
+def test_riff_wav_mime():
+    """RIFF scanner returns audio/wav (not audio/wave) for WAV files"""
+    mime = puremagic.from_file(os.path.join(AUDIO_DIR, "test.wav"), mime=True)
+    assert mime == "audio/wav"
+
+
+
+def test_cfbf_doc():
+    """CFBF scanner correctly identifies Word .doc"""
+    ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.doc"))
+    assert ext == ".doc"
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.doc"), mime=True)
+    assert mime == "application/msword"
+
+
+def test_cfbf_ppt():
+    """CFBF scanner correctly identifies PowerPoint .ppt"""
+    ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.ppt"))
+    assert ext == ".ppt"
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.ppt"), mime=True)
+    assert mime == "application/vnd.ms-powerpoint"
+
+
+def test_cfbf_msg():
+    """CFBF scanner correctly identifies Outlook .msg"""
+    ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"))
+    assert ext == ".msg"
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"), mime=True)
+    assert mime == "application/vnd.ms-outlook"

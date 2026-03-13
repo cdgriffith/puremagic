@@ -31,17 +31,20 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         sndhdr_scanner,
         mpeg_audio_scanner,
         hdf5_scanner,
+        cfbf_scanner,
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.0.2"
+__version__ = "2.1.0"
 __all__ = [
     "magic_file",
     "magic_string",
     "magic_stream",
+    "magic_extension",
     "from_file",
     "from_string",
     "from_stream",
+    "from_extension",
     "ext_from_filename",
     "PureError",
     "PureMagic",
@@ -390,6 +393,51 @@ def magic_stream(
     return info
 
 
+def from_extension(extension: str, mime: bool = True) -> str:
+    """Look up a file type by its extension and return the MIME type or name.
+
+    :param extension: file extension with or without leading dot (e.g. ".pdf" or "pdf")
+    :param mime: Return mime type (default True), or human-readable name if False
+    :return: MIME type string or name
+    :raises PureError: if no match is found
+    """
+    ext = extension.strip().lower()
+    if not ext.startswith("."):
+        ext = f".{ext}"
+
+    matches = []
+    for entry in chain(magic_header_array, magic_footer_array, extension_only_array):
+        if entry.extension == ext:
+            matches.append(entry)
+
+    if not matches:
+        raise PureError(f"Could not find extension {ext!r} in magic database")
+
+    # Prefer entries with longer byte_match (more specific signatures)
+    matches.sort(key=lambda x: len(x.byte_match), reverse=True)
+    best = matches[0]
+    return best.mime_type if mime else best.name
+
+
+def magic_extension(extension: str) -> list[PureMagicWithConfidence]:
+    """Return all matches for a given file extension.
+
+    :param extension: file extension with or without leading dot (e.g. ".pdf" or "pdf")
+    :return: list of PureMagicWithConfidence sorted by confidence descending
+    """
+    ext = extension.strip().lower()
+    if not ext.startswith("."):
+        ext = f".{ext}"
+
+    matches = []
+    for entry in chain(magic_header_array, magic_footer_array, extension_only_array):
+        if entry.extension == ext:
+            con = 0.8 if len(entry.byte_match) >= 9 else float(f"0.{len(entry.byte_match)}")
+            matches.append(PureMagicWithConfidence(confidence=con, **entry._asdict()))
+
+    return sorted(matches, key=lambda x: (x.confidence, len(x.byte_match)), reverse=True)
+
+
 def single_deep_scan(
     bytes_match: bytes | bytearray | None,
     filename: os.PathLike | str,
@@ -417,6 +465,8 @@ def single_deep_scan(
             result = mpeg_audio_scanner.main(filename, head, foot)
             if result and result.confidence > confidence:
                 return result
+        case cfbf_scanner.match_bytes | cfbf_scanner.match_bytes_short:
+            return cfbf_scanner.main(filename, head, foot)
 
     if eml_result := text_scanner.eml_check(head):
         return eml_result
@@ -544,9 +594,42 @@ def command_line_entry(*args):
         help="Return the mime type instead of file type",
     )
     parser.add_argument("-v", "--verbose", action="store_true", dest="verbose", help="Print verbose output")
-    parser.add_argument("files", nargs="+", type=Path)
+    parser.add_argument(
+        "-e",
+        "--extension",
+        dest="extension",
+        help="Look up MIME type for a file extension (e.g. pdf or .pdf)",
+    )
+    parser.add_argument("files", nargs="*", type=Path)
     parser.add_argument("--version", action="version", version=puremagic.__version__)
     args = parser.parse_args(args if args else sys.argv[1:])
+
+    if args.extension:
+        if args.verbose:
+            matches = magic_extension(args.extension)
+            if not matches:
+                print(f"No matches found for extension '{args.extension}'")
+            else:
+                print(f"Total Possible Matches: {len(matches)}")
+                for i, result in enumerate(matches):
+                    if i == 0:
+                        print("\n\tBest Match")
+                    else:
+                        print(f"\tAlternative Match #{i}")
+                    print(f"\tName: {result.name}")
+                    print(f"\tConfidence: {int(result.confidence * 100)}%")
+                    print(f"\tExtension: {result.extension}")
+                    print(f"\tMime Type: {result.mime_type}")
+                    print(f"\tByte Match: {result.byte_match}\n")
+        else:
+            try:
+                print(from_extension(args.extension, mime=not args.mime))
+            except PureError as e:
+                print(str(e))
+        return
+
+    if not args.files:
+        parser.error("the following arguments are required: files (or use -e/--extension)")
 
     for fn in args.files:
         if not fn.exists():
