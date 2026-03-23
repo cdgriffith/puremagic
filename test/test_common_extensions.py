@@ -269,7 +269,6 @@ def test_riff_wav_mime():
     assert mime == "audio/wav"
 
 
-
 def test_cfbf_doc():
     """CFBF scanner correctly identifies Word .doc"""
     ext = puremagic.from_file(os.path.join(OFFICE_DIR, "test.doc"))

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Version 2.1.1
+-------------
+
+- Fixing #141 deep scan no longer overrides valid binary format matches (e.g. JPEG) for files without extensions (thanks to marph91)
+
 Version 2.1.0
 -------------
 

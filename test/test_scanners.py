@@ -1,5 +1,5 @@
 import puremagic
-from test.common import OFFICE_DIR, SYSTEM_DIR, AUDIO_DIR
+from test.common import IMAGE_DIR, OFFICE_DIR, SYSTEM_DIR, AUDIO_DIR
 from puremagic.scanners import python_scanner, json_scanner, sndhdr_scanner
 
 sample_text = b"""Lorem ipsum dolor sit amet, consectetur adipiscing elit,{ending}
@@ -102,6 +102,25 @@ def test_eml_scanner():
     assert results[0].name == "RFC 2822 Email Message"
     assert results[0].mime_type == "message/rfc822"
     assert results[0].confidence == 1.0
+
+
+def test_jpg_without_extension():
+    # GH #141: JPEG file without extension should still be identified as image/jpeg
+    import struct
+
+    data = b"\xff\xd8\xff\xe0"
+    data += struct.pack(">H", 16)
+    data += b"JFIF\x00\x01\x01\x00"
+    data += struct.pack(">HH", 1, 1)
+    data += b"\x00\x00\xff\xd9"
+
+    no_ext_file = IMAGE_DIR / "test_jpeg_no_ext"
+    no_ext_file.write_bytes(data)
+    try:
+        result = puremagic.from_file(no_ext_file, mime=True)
+        assert result == "image/jpeg", f"Expected image/jpeg, got {result}"
+    finally:
+        no_ext_file.unlink()
 
 
 def test_sndhdr_scanner():
