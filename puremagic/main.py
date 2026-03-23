@@ -35,7 +35,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -212,13 +212,12 @@ def perform_magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=N
         raise PureValueError("Input was empty")
     infos = identify_all(header, footer, ext)
     if filename and os.path.isfile(filename) and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
-        results = run_deep_scan(infos, filename, header, footer, raise_on_none=True)
-        if results:
-            if results[0].extension == "":
-                raise PureError("Could not identify file")
+        results = run_deep_scan(infos, filename, header, footer, raise_on_none=not infos)
+        if results and results[0].extension != "":
             if mime:
                 return results[0].mime_type
             return results[0].extension or ""
+        # Deep scan returned empty extension or no results — fall through to original matches
     if not infos:
         raise PureError("Could not identify file")
     info = infos[0]
@@ -556,13 +555,18 @@ def run_deep_scan(
 
     # No specific scanner matched — try the catch-all text scanner
     # Only override when existing matches are very low confidence (e.g. 2-byte BOM signatures)
-    if matches[0].confidence < 0.5:
+    # Only let the catch-all text scanner override when existing matches are
+    # generic text types (e.g. BOM-only signatures).  If the magic database
+    # already identified a specific non-text file type, trust it over a generic text guess.
+    best_mime = matches[0].mime_type or ""
+    is_generic = best_mime.startswith("text/") or best_mime == "application/octet-stream" or not best_mime
+    if matches[0].confidence < 0.5 and is_generic:
         try:
             result = catch_all_deep_scan(filename, head, foot)
         except Exception:
             pass
         else:
-            if result and result.confidence > matches[0].confidence:
+            if result and result.extension and result.confidence > matches[0].confidence:
                 return [
                     PureMagicWithConfidence(
                         confidence=result.confidence,
