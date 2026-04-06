@@ -35,7 +35,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 __all__ = [
     "magic_file",
     "magic_string",

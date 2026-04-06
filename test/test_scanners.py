@@ -1,3 +1,7 @@
+import os
+import tempfile
+from zipfile import ZipFile
+
 import puremagic
 from test.common import IMAGE_DIR, OFFICE_DIR, SYSTEM_DIR, AUDIO_DIR
 from puremagic.scanners import python_scanner, json_scanner, sndhdr_scanner
@@ -135,3 +139,81 @@ def test_sndhdr_scanner():
     assert result.name.startswith("Macintosh SNDR Resource")
     assert result.mime_type == "audio/x-sndr"
     assert result.confidence == 0.1
+
+
+def test_ooxml_content_type_detection():
+    # GH #146: All OOXML files should be detected with correct extension and MIME type
+    expected = {
+        "test.docx": (".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+        "test.docm": (".docm", "application/vnd.ms-word.document.macroEnabled.12"),
+        "test.dotx": (".dotx", "application/vnd.openxmlformats-officedocument.wordprocessingml.template"),
+        "test.dotm": (".dotm", "application/vnd.ms-word.template.macroEnabled.12"),
+        "test.xlsx": (".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"),
+        "test.xlsm": (".xlsm", "application/vnd.ms-excel.sheet.macroEnabled.12"),
+        "test.xlsb": (".xlsb", "application/vnd.ms-excel.sheet.binary.macroEnabled.12"),
+        "test.xltx": (".xltx", "application/vnd.openxmlformats-officedocument.spreadsheetml.template"),
+        "test.xltm": (".xltm", "application/vnd.ms-excel.template.macroEnabled.12"),
+        "test.pptx": (".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"),
+        "test.pptm": (".pptm", "application/vnd.ms-powerpoint.presentation.macroEnabled.12"),
+        "test.potx": (".potx", "application/vnd.openxmlformats-officedocument.presentationml.template"),
+        "test.potm": (".potm", "application/vnd.ms-powerpoint.template.macroEnabled.12"),
+    }
+    for filename, (exp_ext, exp_mime) in expected.items():
+        filepath = os.path.join(OFFICE_DIR, filename)
+        ext = puremagic.from_file(filepath)
+        mime = puremagic.from_file(filepath, mime=True)
+        assert ext == exp_ext, f"{filename}: expected ext {exp_ext}, got {ext}"
+        assert mime == exp_mime, f"{filename}: expected mime {exp_mime}, got {mime}"
+
+
+def test_ooxml_without_app_xml():
+    # GH #146: OOXML files without docProps/app.xml should still be detected
+    # (e.g., Google Docs exports)
+    content_types = b"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Override PartName="/word/document.xml"
+  ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>
+</Types>"""
+
+    with tempfile.NamedTemporaryFile(suffix=".docx", delete=False) as f:
+        with ZipFile(f, "w") as zf:
+            zf.writestr("[Content_Types].xml", content_types)
+            zf.writestr("word/document.xml", "<w:document/>")
+        tmppath = f.name
+
+    try:
+        ext = puremagic.from_file(tmppath)
+        assert ext == ".docx"
+        mime = puremagic.from_file(tmppath, mime=True)
+        assert mime == "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+    finally:
+        os.unlink(tmppath)
+
+
+def test_ooxml_libreoffice_application():
+    # GH #146: OOXML files with non-Microsoft Application tag should still be detected
+    content_types = b"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+<Override PartName="/xl/workbook.xml"
+  ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+</Types>"""
+
+    app_xml = b"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties">
+<Application>LibreOffice/24.8.5.2</Application>
+</Properties>"""
+
+    with tempfile.NamedTemporaryFile(suffix=".xlsx", delete=False) as f:
+        with ZipFile(f, "w") as zf:
+            zf.writestr("[Content_Types].xml", content_types)
+            zf.writestr("docProps/app.xml", app_xml)
+            zf.writestr("xl/workbook.xml", "<workbook/>")
+        tmppath = f.name
+
+    try:
+        ext = puremagic.from_file(tmppath)
+        assert ext == ".xlsx"
+        mime = puremagic.from_file(tmppath, mime=True)
+        assert mime == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    finally:
+        os.unlink(tmppath)

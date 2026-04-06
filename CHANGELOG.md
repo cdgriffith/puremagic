@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Version 2.2.0
+-------------
+
+- Adding MSI (Windows Installer) and MPP (Microsoft Project) detection to CFBF scanner
+- Fixing #146 OOXML detection now uses `[Content_Types].xml` content types as primary method, correctly identifying docx/xlsx/pptx files from LibreOffice, Google Docs, and other non-Microsoft tools (thanks to jonasdeboeck79)
+- Fixing ZIP deep scan now inspects all ZIP files instead of short-circuiting on .zip extension
+- Fixing mz5 HDF5 scanner typo in chromatogram dataset name
+
 Version 2.1.1
 -------------
 
