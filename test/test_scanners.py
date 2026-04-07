@@ -3,7 +3,7 @@ import tempfile
 from zipfile import ZipFile
 
 import puremagic
-from test.common import IMAGE_DIR, OFFICE_DIR, SYSTEM_DIR, AUDIO_DIR
+from test.common import IMAGE_DIR, OFFICE_DIR, SYSTEM_DIR, AUDIO_DIR, VIDEO_DIR
 from puremagic.scanners import python_scanner, json_scanner, sndhdr_scanner
 
 sample_text = b"""Lorem ipsum dolor sit amet, consectetur adipiscing elit,{ending}
@@ -217,3 +217,24 @@ def test_ooxml_libreoffice_application():
         assert mime == "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     finally:
         os.unlink(tmppath)
+
+
+def test_ogg_opus_scanner():
+    opus_file = AUDIO_DIR / "test.opus"
+    results = puremagic.magic_file(opus_file)
+    assert results[0].extension == ".opus"
+    assert results[0].mime_type == "audio/ogg"
+
+
+def test_matroska_scanner():
+    mkv_file = VIDEO_DIR / "test.mkv"
+    results = puremagic.magic_file(mkv_file)
+    assert results[0].extension == ".mkv"
+    assert results[0].mime_type == "video/x-matroska"
+
+
+def test_asf_wmv_scanner():
+    wmv_file = VIDEO_DIR / "test.wmv"
+    results = puremagic.magic_file(wmv_file)
+    assert results[0].extension == ".wmv"
+    assert results[0].mime_type == "video/x-ms-wmv"
