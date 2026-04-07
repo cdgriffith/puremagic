@@ -200,6 +200,10 @@ def main(file_path: os.PathLike | str, _, __) -> Match | None:
     if len(head) < 8:
         return Match("", "very short file", "application/octet-stream", confidence=0.5)
 
+    # NUL bytes indicate binary data, but skip this check for UTF-16 (which has NUL bytes naturally)
+    if b"\x00" in head and head[:2] not in (b"\xff\xfe", b"\xfe\xff"):
+        return Match("", "data", "application/octet-stream", confidence=0.5)
+
     try:
         text, encoding = decode_any(head)
     except TypeError:
