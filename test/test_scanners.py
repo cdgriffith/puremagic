@@ -1,5 +1,6 @@
 import os
 import tempfile
+from pathlib import Path
 from zipfile import ZipFile
 
 import puremagic
@@ -291,7 +292,7 @@ def test_ogg_scanner_synthetic_codecs():
     ]
     for codec_id, expected_ext, expected_name, expected_mime in cases:
         head = _make_ogg_bos_page(codec_id)
-        result = ogg_scanner.main("fake.ogg", head, b"")
+        result = ogg_scanner.main(Path("fake.ogg"), head, b"")
         assert result is not None, f"codec {codec_id!r}: expected {expected_ext}, got None"
         assert result.extension == expected_ext
         assert result.name == expected_name
@@ -302,15 +303,15 @@ def test_ogg_scanner_synthetic_codecs():
 def test_ogg_scanner_rejects_non_ogg():
     from puremagic.scanners import ogg_scanner
 
-    assert ogg_scanner.main("fake.ogg", b"not ogg data at all", b"") is None
-    assert ogg_scanner.main("fake.ogg", b"", b"") is None
+    assert ogg_scanner.main(Path("fake.ogg"), b"not ogg data at all", b"") is None
+    assert ogg_scanner.main(Path("fake.ogg"), b"", b"") is None
     # Valid OggS but wrong version
-    assert ogg_scanner.main("fake.ogg", b"OggS\x01\x02" + b"\x00" * 50, b"") is None
+    assert ogg_scanner.main(Path("fake.ogg"), b"OggS\x01\x02" + b"\x00" * 50, b"") is None
     # Valid OggS but not BOS page
-    assert ogg_scanner.main("fake.ogg", b"OggS\x00\x00" + b"\x00" * 50, b"") is None
+    assert ogg_scanner.main(Path("fake.ogg"), b"OggS\x00\x00" + b"\x00" * 50, b"") is None
     # Valid BOS page but unknown codec
     head = _make_ogg_bos_page(b"UnknownCodecXYZ")
-    assert ogg_scanner.main("fake.ogg", head, b"") is None
+    assert ogg_scanner.main(Path("fake.ogg"), head, b"") is None
 
 
 def test_asf_wmv_scanner():
@@ -363,7 +364,7 @@ def test_asf_scanner_generic_fallback():
     obj_count = struct.pack("<I", 0)
     reserved = b"\x01\x02"
     data = header_guid + header_size + obj_count + reserved
-    result = asf_scanner.main("fake.asf", data, b"")
+    result = asf_scanner.main(Path("fake.asf"), data, b"")
     assert result is not None
     assert result.extension == ".asf"
     assert result.mime_type == "video/x-ms-asf"
@@ -373,8 +374,8 @@ def test_asf_scanner_generic_fallback():
 def test_asf_scanner_rejects_non_asf():
     from puremagic.scanners import asf_scanner
 
-    assert asf_scanner.main("fake.wmv", b"not asf data", b"") is None
-    assert asf_scanner.main("fake.wmv", b"", b"") is None
+    assert asf_scanner.main(Path("fake.wmv"), b"not asf data", b"") is None
+    assert asf_scanner.main(Path("fake.wmv"), b"", b"") is None
 
 
 def test_ebml_matroska_scanner():
@@ -417,9 +418,9 @@ def test_ebml_scanner_direct():
 def test_ebml_scanner_rejects_non_ebml():
     from puremagic.scanners import ebml_scanner
 
-    assert ebml_scanner.main("fake.mkv", b"not an ebml file", b"") is None
-    assert ebml_scanner.main("fake.mkv", b"\x1a\x45\xdf\xa3" + b"\x00" * 60, b"") is None
-    assert ebml_scanner.main("fake.mkv", b"", b"") is None
+    assert ebml_scanner.main(Path("fake.mkv"), b"not an ebml file", b"") is None
+    assert ebml_scanner.main(Path("fake.mkv"), b"\x1a\x45\xdf\xa3" + b"\x00" * 60, b"") is None
+    assert ebml_scanner.main(Path("fake.mkv"), b"", b"") is None
 
 
 # ── Bug fix tests ─────────────────────────────────────────────────────
@@ -450,7 +451,7 @@ def test_ogg_scanner_truncated_head():
     head[4] = 0  # version
     head[5] = 0x02  # BOS flag
     head[26] = 200  # seg_count → payload at offset 227
-    assert ogg_scanner.main("fake.ogg", bytes(head), b"") is None
+    assert ogg_scanner.main(Path("fake.ogg"), bytes(head), b"") is None
 
 
 def test_json_scanner_array():
@@ -505,7 +506,7 @@ def test_asf_scanner_wrong_magic_30_bytes():
     """asf_scanner line 18: 30+ bytes but wrong magic."""
     from puremagic.scanners import asf_scanner
 
-    assert asf_scanner.main("fake.asf", b"\x00" * 30, b"") is None
+    assert asf_scanner.main(Path("fake.asf"), b"\x00" * 30, b"") is None
 
 
 def test_asf_scanner_file_io_error():
@@ -518,7 +519,7 @@ def test_asf_scanner_file_io_error():
     head += struct.pack("<Q", 99999)  # header_size
     head += struct.pack("<I", 0)  # obj_count
     head += b"\x01\x02"  # reserved
-    assert asf_scanner.main("/nonexistent/path/fake.asf", head, b"") is None
+    assert asf_scanner.main(Path("/nonexistent/path/fake.asf"), head, b"") is None
 
 
 def test_asf_scanner_truncated_object():
@@ -532,7 +533,7 @@ def test_asf_scanner_truncated_object():
     head += struct.pack("<I", 1)  # obj_count = 1 (but no object data follows)
     head += b"\x01\x02"  # reserved
     # Total = 30 bytes, offset starts at 30, but offset+24=54 > 30 → break
-    result = asf_scanner.main("fake.asf", head, b"")
+    result = asf_scanner.main(Path("fake.asf"), head, b"")
     assert result is not None
     assert result.extension == ".asf"  # Falls through to generic ASF
 
@@ -546,7 +547,7 @@ def test_asf_scanner_bad_object_size():
     # Object with GUID(16 bytes of 0xFF) + size=0 (invalid)
     obj = b"\xff" * 16 + struct.pack("<Q", 0)
     data = asf_scanner.match_bytes + struct.pack("<Q", 30 + len(obj)) + header_body + obj
-    result = asf_scanner.main("fake.asf", data, b"")
+    result = asf_scanner.main(Path("fake.asf"), data, b"")
     assert result is not None
     assert result.extension == ".asf"  # Falls through to generic ASF
 
@@ -613,28 +614,28 @@ def test_deepscan_disabled_magic_stream(monkeypatch):
 def test_single_deep_scan_disabled(monkeypatch):
     """main.py line 451: single_deep_scan returns None when PUREMAGIC_DEEPSCAN=0."""
     monkeypatch.setenv("PUREMAGIC_DEEPSCAN", "0")
-    result = puremagic.main.single_deep_scan(b"PK\x03\x04", "fake.zip", head=b"\x00", foot=b"\x00")
+    result = puremagic.main.single_deep_scan(b"PK\x03\x04", Path("fake.zip"), head=b"\x00", foot=b"\x00")
     assert result is None
 
 
 def test_single_deep_scan_none_head():
     """main.py line 453: single_deep_scan returns None when head is None."""
-    result = puremagic.main.single_deep_scan(b"PK\x03\x04", "fake.zip", head=None, foot=b"\x00")
+    result = puremagic.main.single_deep_scan(b"PK\x03\x04", Path("fake.zip"), head=None, foot=b"\x00")
     assert result is None
-    result = puremagic.main.single_deep_scan(b"PK\x03\x04", "fake.zip", head=b"\x00", foot=None)
+    result = puremagic.main.single_deep_scan(b"PK\x03\x04", Path("fake.zip"), head=b"\x00", foot=None)
     assert result is None
 
 
 def test_catch_all_deep_scan_disabled(monkeypatch):
     """main.py line 498: catch_all_deep_scan returns None when PUREMAGIC_DEEPSCAN=0."""
     monkeypatch.setenv("PUREMAGIC_DEEPSCAN", "0")
-    result = puremagic.main.catch_all_deep_scan("fake.txt", head=b"\x00", foot=b"\x00")
+    result = puremagic.main.catch_all_deep_scan(Path("fake.txt"), head=b"\x00", foot=b"\x00")
     assert result is None
 
 
 def test_catch_all_deep_scan_none_head():
     """main.py line 500: catch_all_deep_scan returns None when head is None."""
-    result = puremagic.main.catch_all_deep_scan("fake.txt", head=None, foot=b"\x00")
+    result = puremagic.main.catch_all_deep_scan(Path("fake.txt"), head=None, foot=b"\x00")
     assert result is None
 
 
@@ -816,14 +817,14 @@ def test_cfbf_main_short_head():
     """cfbf_scanner line 115: head < 76 bytes → None."""
     from puremagic.scanners import cfbf_scanner
 
-    assert cfbf_scanner.main("fake.doc", b"\xd0\xcf\x11\xe0" + b"\x00" * 30, b"") is None
+    assert cfbf_scanner.main(Path("fake.doc"), b"\xd0\xcf\x11\xe0" + b"\x00" * 30, b"") is None
 
 
 def test_cfbf_main_wrong_magic():
     """cfbf_scanner lines 119-120: neither full nor short magic → None."""
     from puremagic.scanners import cfbf_scanner
 
-    assert cfbf_scanner.main("fake.doc", b"\x00" * 76, b"") is None
+    assert cfbf_scanner.main(Path("fake.doc"), b"\x00" * 76, b"") is None
 
 
 def test_cfbf_main_bad_sector_shift():
@@ -834,7 +835,7 @@ def test_cfbf_main_bad_sector_shift():
     head = bytearray(76)
     head[0:8] = cfbf_scanner.match_bytes
     struct.pack_into("<H", head, 30, 10)  # invalid sector_shift
-    assert cfbf_scanner.main("fake.doc", bytes(head), b"") is None
+    assert cfbf_scanner.main(Path("fake.doc"), bytes(head), b"") is None
 
 
 def test_cfbf_main_negative_dir_secid():
@@ -846,7 +847,7 @@ def test_cfbf_main_negative_dir_secid():
     head[0:8] = cfbf_scanner.match_bytes
     struct.pack_into("<H", head, 30, 9)  # valid sector_shift
     struct.pack_into("<i", head, 48, -1)  # negative secid
-    assert cfbf_scanner.main("fake.doc", bytes(head), b"") is None
+    assert cfbf_scanner.main(Path("fake.doc"), bytes(head), b"") is None
 
 
 def test_cfbf_main_file_read_error():
@@ -858,7 +859,7 @@ def test_cfbf_main_file_read_error():
     head[0:8] = cfbf_scanner.match_bytes
     struct.pack_into("<H", head, 30, 9)  # sector_shift=9 → sector_size=512
     struct.pack_into("<i", head, 48, 0)  # dir at sector 0 → offset 512
-    assert cfbf_scanner.main("/nonexistent/path.doc", bytes(head), b"") is None
+    assert cfbf_scanner.main(Path("/nonexistent/path.doc"), bytes(head), b"") is None
 
 
 def test_cfbf_main_empty_dir_data():
