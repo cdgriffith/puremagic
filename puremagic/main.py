@@ -209,10 +209,12 @@ def identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithCo
     return determine_confidence(matches, ext)
 
 
-def perform_magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=None) -> str:
+def perform_magic(header: bytes | None, footer: bytes | None, mime: bool | None, ext=None, filename=None) -> str:
     """Discover what type of file it is based on the incoming string"""
     if not header:
         raise PureValueError("Input was empty")
+    if not footer:
+        footer = b""
     infos = identify_all(header, footer, ext)
     if filename and os.path.isfile(filename) and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         results = run_deep_scan(infos, filename, header, footer, raise_on_none=not infos)
