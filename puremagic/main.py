@@ -32,10 +32,13 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         mpeg_audio_scanner,
         hdf5_scanner,
         cfbf_scanner,
+        ogg_scanner,
+        asf_scanner,
+        ebml_scanner,
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.1.1"
+__version__ = "2.2.0"
 __all__ = [
     "magic_file",
     "magic_string",
@@ -206,10 +209,12 @@ def identify_all(header: bytes, footer: bytes, ext=None) -> list[PureMagicWithCo
     return determine_confidence(matches, ext)
 
 
-def perform_magic(header: bytes, footer: bytes, mime: bool, ext=None, filename=None) -> str:
+def perform_magic(header: bytes | None, footer: bytes | None, mime: bool | None, ext=None, filename=None) -> str:
     """Discover what type of file it is based on the incoming string"""
     if not header:
         raise PureValueError("Input was empty")
+    if not footer:
+        footer = b""
     infos = identify_all(header, footer, ext)
     if filename and os.path.isfile(filename) and os.getenv("PUREMAGIC_DEEPSCAN") != "0":
         results = run_deep_scan(infos, filename, header, footer, raise_on_none=not infos)
@@ -466,6 +471,14 @@ def single_deep_scan(
                 return result
         case cfbf_scanner.match_bytes | cfbf_scanner.match_bytes_short:
             return cfbf_scanner.main(filename, head, foot)
+        case ogg_scanner.match_bytes:
+            result = ogg_scanner.main(filename, head, foot)
+            if result and result.confidence > confidence:
+                return result
+        case asf_scanner.match_bytes:
+            return asf_scanner.main(filename, head, foot)
+        case ebml_scanner.match_bytes:
+            return ebml_scanner.main(filename, head, foot)
 
     if eml_result := text_scanner.eml_check(head):
         return eml_result

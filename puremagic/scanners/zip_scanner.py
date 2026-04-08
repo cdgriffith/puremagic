@@ -8,6 +8,120 @@ match_bytes = b"PK\x03\x04"
 office_macro_enable_match = b"macroEnabled"
 
 application_re = re.compile(b"<Application>(.*)</Application>")
+_content_type_re = re.compile(rb'ContentType="([^"]*main[^"]*)"')
+
+# Maps OOXML main content type fragments (from [Content_Types].xml) to
+# (extension, name, mime_type). Based on ECMA-376 Part 2.
+_OOXML_CONTENT_TYPE_MAP: dict[str, tuple[str, str, str]] = {
+    # Word
+    "wordprocessingml.document.main+xml": (
+        ".docx",
+        "Word Document",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ),
+    "wordprocessingml.template.main+xml": (
+        ".dotx",
+        "Word Template",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+    ),
+    "ms-word.document.macroEnabled.main+xml": (
+        ".docm",
+        "Word Document (Macro-Enabled)",
+        "application/vnd.ms-word.document.macroEnabled.12",
+    ),
+    "ms-word.template.macroEnabledTemplate.main+xml": (
+        ".dotm",
+        "Word Template (Macro-Enabled)",
+        "application/vnd.ms-word.template.macroEnabled.12",
+    ),
+    # Excel
+    "spreadsheetml.sheet.main+xml": (
+        ".xlsx",
+        "Excel Spreadsheet",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ),
+    "spreadsheetml.template.main+xml": (
+        ".xltx",
+        "Excel Template",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
+    ),
+    "ms-excel.sheet.macroEnabled.main+xml": (
+        ".xlsm",
+        "Excel Spreadsheet (Macro-Enabled)",
+        "application/vnd.ms-excel.sheet.macroEnabled.12",
+    ),
+    "ms-excel.template.macroEnabled.main+xml": (
+        ".xltm",
+        "Excel Template (Macro-Enabled)",
+        "application/vnd.ms-excel.template.macroEnabled.12",
+    ),
+    "ms-excel.sheet.binary.macroEnabled.main": (
+        ".xlsb",
+        "Excel Binary Workbook",
+        "application/vnd.ms-excel.sheet.binary.macroEnabled.12",
+    ),
+    "ms-excel.addin.macroEnabled.main+xml": (
+        ".xlam",
+        "Excel Add-In (Macro-Enabled)",
+        "application/vnd.ms-excel.addin.macroEnabled.12",
+    ),
+    # PowerPoint
+    "presentationml.presentation.main+xml": (
+        ".pptx",
+        "PowerPoint Presentation",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ),
+    "presentationml.template.main+xml": (
+        ".potx",
+        "PowerPoint Template",
+        "application/vnd.openxmlformats-officedocument.presentationml.template",
+    ),
+    "ms-powerpoint.presentation.macroEnabled.main+xml": (
+        ".pptm",
+        "PowerPoint Presentation (Macro-Enabled)",
+        "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
+    ),
+    "ms-powerpoint.template.macroEnabled.main+xml": (
+        ".potm",
+        "PowerPoint Template (Macro-Enabled)",
+        "application/vnd.ms-powerpoint.template.macroEnabled.12",
+    ),
+    "presentationml.slideshow.main+xml": (
+        ".ppsx",
+        "PowerPoint Slideshow",
+        "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+    ),
+    "ms-powerpoint.slideshow.macroEnabled.main+xml": (
+        ".ppsm",
+        "PowerPoint Slideshow (Macro-Enabled)",
+        "application/vnd.ms-powerpoint.slideshow.macroEnabled.12",
+    ),
+    "ms-powerpoint.addin.macroEnabled.main+xml": (
+        ".ppam",
+        "PowerPoint Add-In (Macro-Enabled)",
+        "application/vnd.ms-powerpoint.addin.macroEnabled",
+    ),
+}
+
+
+def _detect_from_content_types(zip_file: ZipFile) -> Match | None:
+    """Detect OOXML format from [Content_Types].xml main content types.
+
+    This is the ECMA-376 standard approach, working with all compliant
+    implementations (Microsoft Office, LibreOffice, Google Docs, etc.).
+    """
+    try:
+        ct_data = zip_file.read("[Content_Types].xml")
+    except KeyError:
+        return None
+
+    for match in _content_type_re.finditer(ct_data):
+        content_type = match.group(1).decode("utf-8")
+        for key, (ext, name, mime) in _OOXML_CONTENT_TYPE_MAP.items():
+            if key in content_type:
+                return Match(ext, name, mime)
+
+    return None
 
 
 def open_office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Match | None:
@@ -32,9 +146,10 @@ def open_office_check(internal_files: list[str], zip_file: ZipFile, extension: s
     return None
 
 
-def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Match | None:
-    if "[Content_Types].xml" not in internal_files:
-        return None
+def _detect_from_application(
+    internal_files: list[str], zip_file: ZipFile, extension: str | None = None
+) -> Match | None:
+    """Fallback detection using docProps/app.xml Application tag."""
     if "docProps/app.xml" not in internal_files:
         return None
     app_type_matches = application_re.search(zip_file.read("docProps/app.xml"))
@@ -44,22 +159,30 @@ def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | 
 
     if "PowerPoint" in application_type:
         if extension:
+            if extension == "pptm":
+                return Match(".pptm", application_type, "application/vnd.ms-powerpoint.presentation.macroEnabled.12")
             if extension == "ppsm":
                 return Match(".ppsm", application_type, "application/vnd.ms-powerpoint.slideshow.macroEnabled.12")
+            if extension == "ppsx":
+                return Match(
+                    ".ppsx",
+                    application_type,
+                    "application/vnd.openxmlformats-officedocument.presentationml.slideshow",
+                )
             if extension == "potm":
                 return Match(".potm", application_type, "application/vnd.ms-powerpoint.template.macroEnabled.12")
             if extension == "potx":
                 return Match(
-                    "potx",
+                    ".potx",
                     application_type,
                     "application/vnd.openxmlformats-officedocument.presentationml.template",
                 )
             if extension == "ppam":
                 return Match(".ppam", application_type, "application/vnd.ms-powerpoint.addin.macroEnabled")
         if office_macro_enable_match in zip_file.read("[Content_Types].xml"):
-            return Match(".ppsm", application_type, "application/vnd.ms-powerpoint.slideshow.macroEnabled.12")
+            return Match(".pptm", application_type, "application/vnd.ms-powerpoint.presentation.macroEnabled.12")
         return Match(
-            "pptx",
+            ".pptx",
             application_type,
             "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         )
@@ -75,7 +198,7 @@ def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | 
                 return Match(".xltm", application_type, "application/vnd.ms-excel.template.macroEnabled.12")
             if extension == "xltx":
                 return Match(
-                    "xltx",
+                    ".xltx",
                     application_type,
                     "application/vnd.openxmlformats-officedocument.spreadsheetml.template",
                 )
@@ -91,17 +214,30 @@ def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | 
                 return Match(".dotm", application_type, "application/vnd.ms-word.template.macroEnabled.12")
             if extension == "dotx":
                 return Match(
-                    "dotx",
+                    ".dotx",
                     application_type,
                     "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
                 )
         if office_macro_enable_match in zip_file.read("[Content_Types].xml"):
             return Match(".docm", application_type, "application/vnd.ms-word.document.macroEnabled.12")
         return Match(
-            "docx", application_type, "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            ".docx", application_type, "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 
     return None
+
+
+def office_check(internal_files: list[str], zip_file: ZipFile, extension: str | None = None) -> Match | None:
+    if "[Content_Types].xml" not in internal_files:
+        return None
+
+    # Primary: content-type-based detection (works with all OOXML creators)
+    result = _detect_from_content_types(zip_file)
+    if result:
+        return result
+
+    # Fallback: application-based detection for non-standard OOXML packages
+    return _detect_from_application(internal_files, zip_file, extension)
 
 
 def jar_check(internal_files: list[str], zip_file: ZipFile) -> Match | None:
@@ -156,8 +292,6 @@ def cbz_check(internal_files: list[str], extension: str) -> Match | None:
 
 def main(file_path: os.PathLike, _, __) -> Match | None:
     extension = str(file_path).split(".")[-1].lower()
-    if extension == "zip" and not str(file_path).endswith(".fb2.zip"):
-        return Match(".zip", "ZIP archive", "application/zip")
 
     with ZipFile(file_path) as myzip:
         internal_files = myzip.namelist()
@@ -189,4 +323,5 @@ def main(file_path: os.PathLike, _, __) -> Match | None:
         if cbz_result:
             return cbz_result
 
-        return None
+        # No specific format detected — return generic ZIP (same confidence as other matches)
+        return Match(".zip", "ZIP archive", "application/zip")

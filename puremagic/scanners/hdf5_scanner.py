@@ -32,7 +32,7 @@ _SUBTYPES = [
         "application/x-biom2",
     ),
     # mz5 - mass spectrometry
-    ([], [b"/SpectrumMetaData", b"/ChomatogramMetaData"], 1, ".mz5", "mz5 mass spectrometry data", "application/x-mz5"),
+    ([], [b"/SpectrumMetaData", b"/ChromatogramList"], 1, ".mz5", "mz5 mass spectrometry data", "application/x-mz5"),
     # h5mlm - ML model
     ([], [b"model_type", b"h5mlm"], 1, ".h5mlm", "HDF5 ML model", "application/x-h5mlm"),
 ]

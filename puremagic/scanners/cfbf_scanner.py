@@ -24,6 +24,32 @@ _PREFIX_MATCHES = [
     ("__substg1.0_", ".msg", "Outlook Message", "application/vnd.ms-outlook"),
 ]
 
+# Multi-stream detection: all listed streams must be present.
+# Each entry: (required_streams, extension, name, mime_type)
+_MULTI_STREAM_MATCHES = [
+    (("_StringPool", "_StringData"), ".msi", "Windows Installer Package", "application/x-msi"),
+]
+
+# Root directory entry CLSIDs that identify specific formats.
+# CLSIDs are stored in mixed-endian format in CFBF files.
+# Each entry: (clsid_bytes, extension, name, mime_type)
+_CLSID_MATCHES = [
+    # Microsoft Project 98/2000/2002/2003: {74b78f3a-c8c8-11d1-be11-00c04fb6faf1}
+    (
+        b"\x3a\x8f\xb7\x74\xc8\xc8\xd1\x11\xbe\x11\x00\xc0\x4f\xb6\xfa\xf1",
+        ".mpp",
+        "Microsoft Project",
+        "application/vnd.ms-project",
+    ),
+    # Microsoft Project 4.x: {72fd3320-9a05-11cf-85a4-00a0c904de5f}
+    (
+        b"\x20\x33\xfd\x72\x05\x9a\xcf\x11\x85\xa4\x00\xa0\xc9\x04\xde\x5f",
+        ".mpp",
+        "Microsoft Project",
+        "application/vnd.ms-project",
+    ),
+]
+
 
 def _extract_stream_names(dir_data: bytes) -> set[str]:
     """Parse CFBF directory entries and return the set of stream/storage names."""
@@ -45,8 +71,19 @@ def _extract_stream_names(dir_data: bytes) -> set[str]:
     return names
 
 
-def _identify_format(stream_names: set[str]) -> Match | None:
-    """Match stream names against known CFBF format signatures."""
+def _extract_root_clsid(dir_data: bytes) -> bytes | None:
+    """Extract the CLSID from the root directory entry (obj_type 5)."""
+    for i in range(0, len(dir_data), 128):
+        entry = dir_data[i : i + 128]
+        if len(entry) < 96:
+            break
+        if entry[66] == 5:  # Root storage
+            return entry[80:96]
+    return None
+
+
+def _identify_format(stream_names: set[str], dir_data: bytes) -> Match | None:
+    """Match stream names and CLSIDs against known CFBF format signatures."""
     # Check prefix matches first (e.g. __substg1.0_ for MSG)
     for name in stream_names:
         for prefix, ext, fmt_name, mime in _PREFIX_MATCHES:
@@ -57,6 +94,18 @@ def _identify_format(stream_names: set[str]) -> Match | None:
     for stream_name, ext, fmt_name, mime in _STREAM_MATCHES:
         if stream_name in stream_names:
             return Match(ext, fmt_name, mime)
+
+    # Check multi-stream matches (all required streams must be present)
+    for required_streams, ext, fmt_name, mime in _MULTI_STREAM_MATCHES:
+        if all(s in stream_names for s in required_streams):
+            return Match(ext, fmt_name, mime)
+
+    # Check root CLSID
+    root_clsid = _extract_root_clsid(dir_data)
+    if root_clsid:
+        for clsid, ext, fmt_name, mime in _CLSID_MATCHES:
+            if root_clsid == clsid:
+                return Match(ext, fmt_name, mime)
 
     return None
 
@@ -94,4 +143,4 @@ def main(file_path: os.PathLike, head: bytes, foot: bytes) -> Match | None:
         return None
 
     stream_names = _extract_stream_names(dir_data)
-    return _identify_format(stream_names)
+    return _identify_format(stream_names, dir_data)
