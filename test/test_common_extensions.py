@@ -291,3 +291,15 @@ def test_cfbf_msg():
     assert ext == ".msg"
     mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"), mime=True)
     assert mime == "application/vnd.ms-outlook"
+
+
+def test_bash_shebang_detected():
+    """Regression for #150: shell script shebangs identify as .sh, not .txt."""
+    bash = puremagic.from_stream(BytesIO(b"#!/bin/bash\necho hi\n"))
+    assert bash == ".sh"
+    sh = puremagic.from_stream(BytesIO(b"#!/bin/sh\necho hi\n"))
+    assert sh == ".sh"
+    env_bash = puremagic.from_stream(BytesIO(b"#!/usr/bin/env bash\necho hi\n"))
+    assert env_bash == ".sh"
+    zsh = puremagic.from_stream(BytesIO(b"#!/bin/zsh\necho hi\n"))
+    assert zsh == ".sh"
