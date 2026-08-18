@@ -1,4 +1,5 @@
 import os
+import time
 from io import BytesIO
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -291,3 +292,11 @@ def test_cfbf_msg():
     assert ext == ".msg"
     mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"), mime=True)
     assert mime == "application/vnd.ms-outlook"
+
+def test_html_xls_msg():
+    """CFBF scanner correctly identifies Outlook .msg"""
+    start = time.perf_counter()
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test_html.xls"), mime=True)
+    elapsed = time.perf_counter() - start
+    assert mime == "text/html"
+    assert elapsed < 1
