@@ -291,3 +291,8 @@ def test_cfbf_msg():
     assert ext == ".msg"
     mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"), mime=True)
     assert mime == "application/vnd.ms-outlook"
+
+def test_html_xls_msg():
+    """Mime Detection correctly identifies HTML File with .xls extension and capitalized <HTML tag"""
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test_html.xls"), mime=True)
+    assert mime == "text/html"
