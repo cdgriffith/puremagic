@@ -1,6 +1,6 @@
 import csv
-import re
 import os
+import re
 
 from puremagic.scanners.helpers import Match
 
@@ -33,7 +33,7 @@ def decode_any(unicode: bytes) -> tuple[str, str]:
         return unicode.decode("ascii"), "ascii"
     except UnicodeDecodeError:
         pass
-    for encoding in {"utf-8", "cp1252"}:
+    for encoding in ("utf-8", "cp1252"):
         try:
             return unicode.decode(encoding), encoding
         except UnicodeDecodeError:
@@ -185,7 +185,7 @@ def dynamic_checks(text, file_path) -> Match | None:
         return file_ending_match(".cmap", "cmap", "text/plain", file_path)
     if text.startswith("##fileformat=VCF"):
         return file_ending_match(".vcf", "Variant Call Format", "text/x-vcard", file_path)
-    if text.startswith("@HD\t") or text.startswith("@SQ\t"):
+    if text.startswith(("@HD\t", "@SQ\t")):
         return file_ending_match(".sam", "Sequence Alignment Map", "text/x-sam", file_path)
     if text.startswith("IQ-TREE"):
         return file_ending_match(".iqtree", "IQ-TREE phylogenetic analysis", "text/plain", file_path)

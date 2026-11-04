@@ -1,5 +1,5 @@
-import re
 import os
+import re
 from zipfile import ZipFile
 
 from puremagic.scanners.helpers import Match

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # cSpell:disable
 
 """
@@ -29,7 +28,7 @@ Note on Tags:
 
 import os
 import struct
-from typing import IO, Any, Dict, List, Optional
+from typing import IO, Any
 
 from puremagic.scanners.helpers import Match
 
@@ -232,7 +231,7 @@ class EndOfFileTags:
         combined_size = tag_plus_size + tag_size
 
         if self.foot_size < combined_size:  # TAG+ + ID3v1
-            return None  # Too small to contain TAG+
+            return  # Too small to contain TAG+
 
         try:
             # Scan only calculated tag area, try to avoid false positives
@@ -240,20 +239,20 @@ class EndOfFileTags:
             tag_end = tag_start + tag_plus_size
             find_tag_loc = self.foot_string.rfind(b"TAG+", tag_start, tag_end)
             if find_tag_loc == -1:
-                return None  # Tag not found
+                return  # Tag not found
 
             tag_calc_size = self.foot_size - find_tag_loc
             if tag_calc_size != combined_size:
-                return None  # Tag+ not valid size
+                return  # Tag+ not valid size
 
             speed_position = find_tag_loc + speed_loc
             if 0 <= self.foot_string[speed_position] <= 4:
                 self.tags.append("TAG+")
             else:
-                return None  # Speed byte not in range
+                return  # Speed byte not in range
 
         except Exception:
-            return None  # Other unexpected issues
+            return  # Other unexpected issues
 
     def _ext_tag(self) -> None:
         """
@@ -274,7 +273,7 @@ class EndOfFileTags:
         combined_size = ext_tag_size + tag_size
 
         if self.foot_size < combined_size:  # EXT + ID3v1
-            return None  # Too small to contain EXT
+            return  # Too small to contain EXT
 
         try:
             # Scan only calculated tag area, try to avoid false positives
@@ -282,16 +281,16 @@ class EndOfFileTags:
             tag_end = tag_start + ext_tag_size
             find_tag_loc = self.foot_string.rfind(b"EXT", tag_start, tag_end)
             if find_tag_loc == -1:
-                return None  # Tag not found
+                return  # Tag not found
 
             tag_calc_size = self.foot_size - find_tag_loc
             if tag_calc_size != combined_size:
-                return None  # EXT not valid size
+                return  # EXT not valid size
             else:
                 self.tags.append("EXT")
 
         except Exception:
-            return None  # Other unexpected issues
+            return  # Other unexpected issues
 
     def _3di(self, id3v1: bool | None) -> None:
         """
@@ -313,7 +312,7 @@ class EndOfFileTags:
         size_3di = 10
         combined_size = (size_3di + tag_size) if id3v1 else size_3di
         if self.foot_size < combined_size:  # 3DI OR 3DI + ID3v1
-            return None  # Too small to contain 3DI
+            return  # Too small to contain 3DI
 
         try:
             # Scan only calculated tag area, try to avoid false positives
@@ -321,16 +320,16 @@ class EndOfFileTags:
             tag_end = tag_start + size_3di
             find_tag_loc = self.foot_string.rfind(b"3DI", tag_start, tag_end)
             if find_tag_loc == -1:
-                return None  # Tag not found
+                return  # Tag not found
 
             tag_calc_size = self.foot_size - find_tag_loc
             if tag_calc_size != combined_size:
-                return None  # 3DI not valid size
+                return  # 3DI not valid size
             else:
                 self.tags.append("3DI")
 
         except Exception:
-            return None  # Other unexpected issues
+            return  # Other unexpected issues
 
     def _lyrics3(self, id3v1: bool | None) -> None:
         """
@@ -357,8 +356,7 @@ class EndOfFileTags:
         max_tag_size = 1048576  # This is on paper the max a Lyrics3 tag could be (v1 in theory has no limit)
         combined_size = (max_tag_size + id3v1_size) if id3v1 else max_tag_size
 
-        if self.foot_size < combined_size:  # LYRICS OR LYRICS + ID3v1
-            combined_size = self.foot_size
+        combined_size = min(combined_size, self.foot_size)
 
         try:
             # Scan only calculated tag area, try to avoid false positives
@@ -374,7 +372,7 @@ class EndOfFileTags:
                 if find_tag_end != -1:
                     found_lyric = lyric_end
             if found_lyric is None:
-                return None  # No end marker found
+                return  # No end marker found
 
             # Now we can scan for the start marker,
             # as we cannot overly target a scan we go for a broad
@@ -384,15 +382,15 @@ class EndOfFileTags:
             tag_start_end = tag_start_start + max_tag_size
             find_tag_start = self.foot_string.rfind(b"LYRICSBEGIN", tag_start_start, tag_start_end)
             if find_tag_start == -1:
-                return None  # Tag start not found
+                return  # Tag start not found
 
             # Now we have the tag size and can scan inside the tag
             lyric3_tags = [b"IND", b"LYR", b"INF", b"AUT", b"EAL", b"EAR", b"ETT", b"IMG", b"GRE"]
             tag_block = self.foot_string[find_tag_start:end_tag_end]
 
-            if found_lyric == b"LYRICSEND":  # v1
-                if any(tag in tag_block for tag in lyric3_tags):  # This is the best we can do for v1
-                    self.tags.append("Lyricsv1")
+            # v1: checking for known tags is the best we can do
+            if found_lyric == b"LYRICSEND" and any(tag in tag_block for tag in lyric3_tags):
+                self.tags.append("Lyricsv1")
 
             if found_lyric == b"LYRICS200":  # v2
                 # Get the v2 size data
@@ -403,10 +401,10 @@ class EndOfFileTags:
                 if any(tag in tag_block for tag in lyric3_tags) and tag_size == v2_tag_size_calc:
                     self.tags.append("Lyricsv2")
 
-            return None  # Could not find a valid tag block
+            return  # Could not find a valid tag block
 
         except Exception:
-            return None  # Other unexpected issues
+            return  # Other unexpected issues
 
     def _ape(self, id3v1: bool | None) -> None:
         """
@@ -469,8 +467,7 @@ class EndOfFileTags:
         max_tag_size = 1048576  # This is a practical scan range of 1MB, Ape v2 in theory can be 4GB
         combined_size = (max_tag_size + id3v1_size) if id3v1 else max_tag_size
 
-        if self.foot_size < combined_size:  # APE OR APE + ID3v1
-            combined_size = self.foot_size
+        combined_size = min(combined_size, self.foot_size)
 
         try:
             # Scan only calculated tag area, try to avoid false positives
@@ -482,13 +479,13 @@ class EndOfFileTags:
 
             find_tag_end = self.foot_string.rfind(b"APETAGEX", end_tag_start, end_tag_end)
             if find_tag_end == -1:
-                return None  # Tag not found
+                return  # Tag not found
 
             # Footer tag
             # Check Version (bytes 8-11, Little-Endian)
             f_version = struct.unpack("<I", self.foot_string[end_tag_start + 8 : end_tag_start + 12])[0]
             if f_version not in (1000, 2000):
-                return None  # Unsupported/Invalid tag version
+                return  # Unsupported/Invalid tag version
             # Check Size (bytes 13-16, Little-Endian)
             f_size = struct.unpack("<I", self.foot_string[end_tag_start + 12 : end_tag_start + 16])[0]
 
@@ -497,7 +494,7 @@ class EndOfFileTags:
                 first_key = combined_size - ((end_size + f_size) - apextag_size) + 8
                 # APE does not care about case for tag keys, but Title and UPPER are commonly accepted as standard
                 if not self.foot_string[first_key:].title().startswith(common_ape_keys):
-                    return None  # Tag may start with a unknown or invalid key
+                    return  # Tag may start with a unknown or invalid key
                 self.tags.append("APEv1")
 
             if f_version == 2000:  # v2
@@ -508,25 +505,25 @@ class EndOfFileTags:
                 h_size = struct.unpack("<I", self.foot_string[tag_header + 12 : tag_header + 16])[0]
                 first_key = combined_size - ((end_size + f_size) - apextag_size) + 8
                 if h_version != f_version:
-                    return None  # Tag versions do not match
+                    return  # Tag versions do not match
                 if h_size != f_size:
-                    return None  # Tag size bytes do not match
+                    return  # Tag size bytes do not match
                 if len(tag_block) != h_size + apextag_size:  # APE size does not include the 32 header bytes
-                    return None  # Tag size bytes and real size do not match
+                    return  # Tag size bytes and real size do not match
                 if not self.foot_string[first_key:].title().startswith(common_ape_keys):
-                    return None  # Tag may start with a unknown or invalid key
+                    return  # Tag may start with a unknown or invalid key
                 self.tags.append("APEv2")
 
-            return None  # Could not find a valid tag block
+            return  # Could not find a valid tag block
 
         except Exception:
-            return None  # Other unexpected issues
+            return  # Other unexpected issues
 
     def find_tags(self, file: IO[bytes]) -> None:
         """Read last 1.5MB of file and look for tags."""
         file.seek(max(0, self.file_size - self.foot_size))
         self.foot_string = file.read()
-        self.foot_size = len(self.foot_string) if len(self.foot_string) < self.foot_size else self.foot_size
+        self.foot_size = min(self.foot_size, len(self.foot_string))
         file.seek(0)
         id3v1 = self._id3v1()
         if id3v1:  # These two require an ID3v1 TAG to be present
@@ -594,7 +591,7 @@ class MpegAudioDecoder:
             (0, True): 13,  # MPEG 2.5, Mono
         }
 
-    def _parse_vbr_header(self, frame_bytes: bytes, header_results: Dict[str, Any]) -> Optional[str]:
+    def _parse_vbr_header(self, frame_bytes: bytes, header_results: dict[str, Any]) -> str | None:
         """
         Checks the first frame for Xing/Info (LAME) and VBRI (Fraunhofer) VBR tags.
 
@@ -1026,7 +1023,7 @@ class ID3v2Decoder:
             b"WYY",
         ]
 
-    def _check_id3v2_tag(self, head: bytes) -> Optional[int]:
+    def _check_id3v2_tag(self, head: bytes) -> int | None:
         """
         Checks for ID3v2 tags. Calculates the size of the ID3v2 tag from the
         synchsafe size field (bytes 6-9).
@@ -1054,11 +1051,9 @@ class ID3v2Decoder:
 
         # ID3v2.3 or ID3v2.4
         elif head[0:5] == b"ID3\x03\x00" or head[0:5] == b"ID3\x04\x00":
-            # Quick tag scan for v2.3/v2.4 (4-letter frames)
-            if head[10:14] not in self.tagsv23:
-                # Check for niche 3-letter v2.3 frames
-                if head[10:13] not in self.tagsv23_3letter:
-                    return None
+            # Quick tag scan for v2.3/v2.4 (4-letter frames), then niche 3-letter v2.3 frames
+            if head[10:14] not in self.tagsv23 and head[10:13] not in self.tagsv23_3letter:
+                return None
             # ID3v2.3 and ID3v2.4 use the Synchsafe Integer for size
             tag_content_size = (size_field[0] << 21) | (size_field[1] << 14) | (size_field[2] << 7) | size_field[3]
             tag = "ID3v2.3" if head[0:5] == b"ID3\x03\x00" else "ID3v2.4"
@@ -1086,7 +1081,7 @@ class ID3v2Decoder:
         return audio_start_offset if audio_start_offset is not None else 0
 
 
-def build_name(mpega, id3v2_tags: str | None, eof_tags: List) -> tuple[str, str] | tuple[None, None]:
+def build_name(mpega, id3v2_tags: str | None, eof_tags: list) -> tuple[str, str] | tuple[None, None]:
     """
     Build an return the full name string and extension.
 
@@ -1142,7 +1137,7 @@ def build_name(mpega, id3v2_tags: str | None, eof_tags: List) -> tuple[str, str]
     return full_name, ext
 
 
-def test_mpega(file_path: os.PathLike | str, head: bytes) -> Optional[Match]:
+def test_mpega(file_path: os.PathLike | str, head: bytes) -> Match | None:
     """Main workflow"""
     if DataCache.is_cached() and DataCache.get_file_path() == file_path:
         if DataCache.is_matched():
@@ -1174,5 +1169,5 @@ def test_mpega(file_path: os.PathLike | str, head: bytes) -> Optional[Match]:
         return result
 
 
-def main(file_path: os.PathLike | str, head: bytes, _) -> Optional[Match]:
+def main(file_path: os.PathLike | str, head: bytes, _) -> Match | None:
     return test_mpega(file_path, head)
