@@ -10,6 +10,12 @@ office_macro_enable_match = b"macroEnabled"
 application_re = re.compile(b"<Application>(.*)</Application>")
 _content_type_re = re.compile(rb'ContentType="([^"]*main[^"]*)"')
 
+_ODF_TEMPLATE_MAP: dict[str, tuple[str, str]] = {
+    "application/vnd.oasis.opendocument.text-template": (".ott", "OpenDocument Text Template"),
+    "application/vnd.oasis.opendocument.spreadsheet-template": (".ots", "OpenDocument Spreadsheet Template"),
+    "application/vnd.oasis.opendocument.presentation-template": (".otp", "OpenDocument Presentation Template"),
+}
+
 # Maps OOXML main content type fragments (from [Content_Types].xml) to
 # (extension, name, mime_type). Based on ECMA-376 Part 2.
 _OOXML_CONTENT_TYPE_MAP: dict[str, tuple[str, str, str]] = {
@@ -133,6 +139,11 @@ def open_office_check(internal_files: list[str], zip_file: ZipFile, extension: s
     known_extensions = ["odt", "ods", "odp", "sxd", "sxi", "sxw"]
 
     mime_type = zip_file.read("mimetype").decode("utf-8").strip()
+
+    # Template MIME types contain the document MIME type as a prefix.
+    template = _ODF_TEMPLATE_MAP.get(mime_type)
+    if template is not None:
+        return Match(template[0], template[1], mime_type)
 
     if "application/vnd.oasis.opendocument.text" in mime_type:
         return Match(".odt", "OpenDocument Text Document", "application/vnd.oasis.opendocument.text")
