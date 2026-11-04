@@ -89,6 +89,7 @@ def csv_check(file_path, text) -> Match | None:
 
     # Try using csv module's Sniffer as a fallback
     csv_sniffer_result = None
+    dialect = None
     try:
         dialect = csv.Sniffer().sniff(text, delimiters="".join(potential_delimiters))
         csv_sniffer_result = dialect.delimiter
@@ -110,12 +111,14 @@ def csv_check(file_path, text) -> Match | None:
         # No clear delimiter pattern found
         return None
 
-    delimiter_counts = []
-    for line in lines:
-        delim_count = line.count(best_delimiter)
-        if delim_count == 0:
-            return None
-        delimiter_counts.append(delim_count)
+    try:
+        rows = csv.reader(lines, dialect) if dialect else csv.reader(lines, delimiter=best_delimiter)
+        delimiter_counts = [len(row) - 1 for row in rows]
+    except csv.Error:
+        # Preserve the heuristic for samples exceeding the CSV parser's field limit.
+        delimiter_counts = [line.count(best_delimiter) for line in lines]
+    if not delimiter_counts or any(count <= 0 for count in delimiter_counts):
+        return None
 
     average = sum(delimiter_counts) / len(delimiter_counts)
 
