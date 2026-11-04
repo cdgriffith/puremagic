@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross-platform
