@@ -7,17 +7,16 @@ import pytest
 
 import puremagic
 from test.common import (
-    RESOURCE_DIR,
-    IMAGE_DIR,
-    VIDEO_DIR,
-    AUDIO_DIR,
-    OFFICE_DIR,
     ARCHIVE_DIR,
-    MEDIA_DIR,
-    SYSTEM_DIR,
+    AUDIO_DIR,
+    IMAGE_DIR,
     LOCAL_DIR,
+    MEDIA_DIR,
+    OFFICE_DIR,
+    RESOURCE_DIR,
+    SYSTEM_DIR,
+    VIDEO_DIR,
 )
-
 
 TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
@@ -215,7 +214,7 @@ def test_ext_ignores_parent_directory_dots(path_type, filename, expected):
 def test_cmd_options():
     """Test CLI options"""
     try:
-        from puremagic.main import command_line_entry  # noqa: PLC0415
+        from puremagic.main import command_line_entry
     except ImportError:
         raise AssertionError("could not load command_line_entry")
 
@@ -260,7 +259,7 @@ def test_magic_extension():
 
 def test_cmd_extension_option():
     """Test CLI -e option"""
-    from puremagic.main import command_line_entry  # noqa: PLC0415
+    from puremagic.main import command_line_entry
 
     command_line_entry("-e", "pdf")
     command_line_entry("-e", ".jpg")

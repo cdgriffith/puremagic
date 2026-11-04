@@ -21,6 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Utilities",
 ]
@@ -96,8 +97,9 @@ format.docstring-code-line-length = "dynamic"
 # This is currently disabled by default, but it is planned for this
 # to be opt-out in the future.
 format.docstring-code-format = true
-# Pin the rule set explicitly: ruff 0.17 widened its default selection
-lint.select = [ "E4", "E7", "E9", "F" ]
+# Deep scanning is best effort: a malformed or unusual file must fall through to the next
+# scanner instead of crashing detection, so broad exception handling is intentional.
+lint.ignore = [ "BLE001", "S110", "S112" ]
 lint.fixable = [ "F541" ]
 lint.unfixable = [ "F401" ]
 
@@ -107,7 +109,7 @@ exclude = [ "*" ]
 
 [tool.pyproject-fmt]
 # Only claim Python versions that CI tests
-max_supported_python = "3.14"
+max_supported_python = "3.15"
 
 [tool.poe]
 executor.type = "uv"
