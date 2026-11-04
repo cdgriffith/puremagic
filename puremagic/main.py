@@ -270,7 +270,7 @@ def ext_from_filename(filename: os.PathLike | str) -> str:
     :return: the extension off the end (empty string if it can't find one)
     """
     try:
-        base, ext = str(filename).lower().rsplit(".", 1)
+        base, ext = os.path.basename(filename).lower().rsplit(".", 1)
     except ValueError:
         return ""
     ext = f".{ext}"

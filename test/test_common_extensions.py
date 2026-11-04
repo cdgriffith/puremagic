@@ -202,6 +202,16 @@ def test_ext():
     assert ext == ".tar.bz2", ext
 
 
+@pytest.mark.parametrize("path_type", [str, Path])
+@pytest.mark.parametrize(
+    "filename, expected",
+    [("README", ""), ("report.PDF", ".pdf"), ("archive.tar.bz2", ".tar.bz2"), (".profile", ".profile")],
+)
+def test_ext_ignores_parent_directory_dots(path_type, filename, expected):
+    filename = path_type(os.path.join("directory.with.dots", filename))
+    assert puremagic.ext_from_filename(filename) == expected
+
+
 def test_cmd_options():
     """Test CLI options"""
     try:
