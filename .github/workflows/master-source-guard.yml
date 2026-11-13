@@ -1,0 +1,27 @@
+# Releases only: every change lands on develop first, then ships to master
+# as a single versioned release PR from develop.
+
+name: Master Source Guard
+
+on:
+  pull_request:
+    branches: [ master ]
+    types: [ opened, reopened, synchronize, edited ]
+
+permissions: {}
+
+jobs:
+  require-develop:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Require PRs into master to come from develop
+      env:
+        HEAD_REF: ${{ github.head_ref }}
+        HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+        BASE_REPO: ${{ github.repository }}
+      run: |
+        if [ "$HEAD_REF" != "develop" ] || [ "$HEAD_REPO" != "$BASE_REPO" ]; then
+          echo "::error::PRs into master must come from $BASE_REPO:develop (got $HEAD_REPO:$HEAD_REF). Please retarget this PR to develop."
+          exit 1
+        fi

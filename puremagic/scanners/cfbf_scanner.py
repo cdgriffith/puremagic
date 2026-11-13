@@ -115,9 +115,8 @@ def main(file_path: os.PathLike, head: bytes, foot: bytes) -> Match | None:
         return None
 
     # Verify magic bytes
-    if head[:8] != match_bytes:
-        if head[:4] != match_bytes_short:
-            return None
+    if head[:8] != match_bytes and head[:4] != match_bytes_short:
+        return None
 
     # Parse CFBF header
     sector_shift = struct.unpack_from("<H", head, 30)[0]

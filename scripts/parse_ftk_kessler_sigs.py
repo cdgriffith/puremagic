@@ -20,7 +20,7 @@ for file in os.listdir(folder):
     if file.endswith(".xml"):
         tree = ET.parse(os.path.join(folder, file))
         root = tree.getroot()
-        sig = {}
+        sig: dict = {}
         for child in root[0]:
             if child.text:
                 sig[child.tag] = child.text

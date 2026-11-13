@@ -50,9 +50,8 @@ def main(file_path: os.PathLike | str, _, __) -> Match | None:
 
         tree = ast.parse(content)
 
-        if not str(file_path).endswith(".py"):
-            if not _has_python_constructs(tree):
-                return None
+        if not str(file_path).endswith(".py") and not _has_python_constructs(tree):
+            return None
 
     except (SyntaxError, UnicodeDecodeError, PermissionError, OSError):
         return None
