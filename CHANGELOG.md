@@ -1,6 +1,19 @@
 Changelog
 =========
 
+Version 2.2.1
+-------------
+
+- Fixing #150 shell scripts with `#!/bin/sh`, `bash`, or `zsh` shebangs are now identified as `.sh` / `application/x-shellscript` instead of plain text (thanks to jbleyel and Sai Asish Y)
+- Fixing #152 CSV detection only sniffs a bounded sample, so large files (such as HTML exported from Excel as `.xls`) no longer take minutes to identify, and HTML starting with an uppercase `<HTML` tag is detected (thanks to nikilase)
+- Fixing #156 ISO media files (HEIC, AVIF, MP4, 3GP, MOV) are identified by their `ftyp` major brand instead of the box size (thanks to Nick Gigliotti and zhouh)
+- Fixing #157 CSV files with quoted delimiters, escaped quotes, or multiline fields are no longer rejected (thanks to zhouh)
+- Fixing #164 JPEG data without a filename hint now reports `.jpg` instead of `.jfif` (thanks to Gil Forcada Codinachs)
+- Fixing OpenDocument templates (`.ott`, `.ots`, `.otp`) are no longer reported as regular documents during ZIP scanning (thanks to pabszero)
+- Fixing file extensions are taken from the file's base name, so dots in directory names no longer produce bogus extensions (thanks to rui-zju)
+- Adding Python 3.15 to tested and supported versions
+- Changing PyPI releases to use Trusted Publishing, with GitHub Actions pinned to commit SHAs
+
 Version 2.2.0
 -------------
 
