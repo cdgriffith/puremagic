@@ -111,8 +111,17 @@ def csv_check(file_path, text) -> Match | None:
         # No clear delimiter pattern found
         return None
 
+    # Count fields per logical record so quoted delimiters and newlines are not counted.
+    # Only the delimiter, quote character and spacing come from the Sniffer; quotes are always
+    # escaped by doubling (RFC 4180), because Python < 3.14 often fails to detect doublequote.
     try:
-        rows = csv.reader(lines, dialect) if dialect else csv.reader(lines, delimiter=best_delimiter)
+        rows = csv.reader(
+            lines,
+            delimiter=best_delimiter,
+            quotechar=(dialect.quotechar if dialect else None) or '"',
+            doublequote=True,
+            skipinitialspace=dialect.skipinitialspace if dialect else False,
+        )
         delimiter_counts = [len(row) - 1 for row in rows]
     except csv.Error:
         # Preserve the heuristic for samples exceeding the CSV parser's field limit.

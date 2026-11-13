@@ -14,6 +14,8 @@ from puremagic.scanners.text_scanner import csv_check
         'product,description\nwidget,"say ""hello, world"""\n',
         'product;description\nwidget;"red; green"\n',
         'product\tdescription\nwidget\t"red\tgreen"\n',
+        'product;description\nwidget;"say ""hi; there"""\n',
+        'id,name,note\n1,"Smith, J","said ""no, thanks"""\n2,Doe,"plain"\n3,"Lee, K",""""\n',
     ],
 )
 def test_quoted_csv_is_recognized(tmp_path, text):
