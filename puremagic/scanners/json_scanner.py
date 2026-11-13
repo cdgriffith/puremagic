@@ -1,5 +1,5 @@
-import os
 import json
+import os
 
 from puremagic.scanners.helpers import Match
 

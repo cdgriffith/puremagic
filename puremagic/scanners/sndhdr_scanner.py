@@ -5,7 +5,6 @@ Other formats are already handled via standard magic_data logic.
 """
 
 import struct
-from typing import Optional
 
 from puremagic.scanners.helpers import Match
 
@@ -19,7 +18,7 @@ def get_short_le(b: bytes) -> int:
     return struct.unpack("<H", b)[0]
 
 
-def test_hcom(head: bytes) -> Optional[Match]:
+def test_hcom(head: bytes) -> Match | None:
     """Test for HCOM format."""
     if head[65:69] == b"FSSD" and head[128:132] == b"HCOM":
         return Match(
@@ -31,7 +30,7 @@ def test_hcom(head: bytes) -> Optional[Match]:
     return None
 
 
-def main(_, head: bytes, __) -> Optional[Match]:
+def main(_, head: bytes, __) -> Match | None:
     try:
         rate = get_short_le(head[2:4])
         if 4000 <= rate <= 48000:

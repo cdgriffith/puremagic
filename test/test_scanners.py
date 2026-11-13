@@ -4,8 +4,8 @@ from pathlib import Path
 from zipfile import ZipFile
 
 import puremagic
-from test.common import IMAGE_DIR, OFFICE_DIR, SYSTEM_DIR, AUDIO_DIR, VIDEO_DIR
-from puremagic.scanners import python_scanner, json_scanner, sndhdr_scanner
+from puremagic.scanners import json_scanner, python_scanner, sndhdr_scanner
+from test.common import AUDIO_DIR, IMAGE_DIR, OFFICE_DIR, SYSTEM_DIR, VIDEO_DIR
 
 sample_text = b"""Lorem ipsum dolor sit amet, consectetur adipiscing elit,{ending}
 sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.{ending}
@@ -355,6 +355,7 @@ def test_asf_scanner_direct():
 def test_asf_scanner_generic_fallback():
     """ASF with no recognized stream types should return .asf."""
     import struct
+
     from puremagic.scanners import asf_scanner
 
     # Build minimal ASF header: GUID(16) + size(8) + count(4) + reserved(2) = 30 bytes
@@ -512,6 +513,7 @@ def test_asf_scanner_wrong_magic_30_bytes():
 def test_asf_scanner_file_io_error():
     """asf_scanner lines 28-29: OSError when header_size > len(head) and file doesn't exist."""
     import struct
+
     from puremagic.scanners import asf_scanner
 
     # Valid ASF magic + header_size=99999 (much larger than head) + obj_count=0
@@ -525,6 +527,7 @@ def test_asf_scanner_file_io_error():
 def test_asf_scanner_truncated_object():
     """asf_scanner line 39: break when offset + 24 > len(data)."""
     import struct
+
     from puremagic.scanners import asf_scanner
 
     # Valid header with obj_count=1 but no actual object data after the header
@@ -541,6 +544,7 @@ def test_asf_scanner_truncated_object():
 def test_asf_scanner_bad_object_size():
     """asf_scanner line 43: break when obj_size < 24."""
     import struct
+
     from puremagic.scanners import asf_scanner
 
     header_body = struct.pack("<I", 1) + b"\x01\x02"  # obj_count=1, reserved
@@ -663,6 +667,7 @@ def test_magic_file_no_matches():
 def test_run_deep_scan_no_matches_raises(monkeypatch):
     """main.py lines 546-547: run_deep_scan raises PureError when no matches and raise_on_none=True."""
     import pytest
+
     from puremagic.scanners import text_scanner
 
     random_file = SYSTEM_DIR / "test_unrecognizable.bin"
@@ -732,9 +737,9 @@ def test_cfbf_extract_stream_names_incomplete_entry():
 
 def test_cfbf_extract_stream_names_invalid_obj_type():
     """cfbf_scanner line 67: skip entries with invalid obj_type."""
-    from puremagic.scanners.cfbf_scanner import _extract_stream_names
-
     import struct
+
+    from puremagic.scanners.cfbf_scanner import _extract_stream_names
 
     entry = bytearray(128)
     name = "SomeStream".encode("utf-16-le") + b"\x00\x00"
@@ -830,6 +835,7 @@ def test_cfbf_main_wrong_magic():
 def test_cfbf_main_bad_sector_shift():
     """cfbf_scanner line 125: sector_shift not 9 or 12 → None."""
     import struct
+
     from puremagic.scanners import cfbf_scanner
 
     head = bytearray(76)
@@ -841,6 +847,7 @@ def test_cfbf_main_bad_sector_shift():
 def test_cfbf_main_negative_dir_secid():
     """cfbf_scanner line 130: first_dir_secid < 0 → None."""
     import struct
+
     from puremagic.scanners import cfbf_scanner
 
     head = bytearray(76)
@@ -853,6 +860,7 @@ def test_cfbf_main_negative_dir_secid():
 def test_cfbf_main_file_read_error():
     """cfbf_scanner lines 139-140: OSError reading directory sector."""
     import struct
+
     from puremagic.scanners import cfbf_scanner
 
     head = bytearray(76)
@@ -865,6 +873,7 @@ def test_cfbf_main_file_read_error():
 def test_cfbf_main_empty_dir_data():
     """cfbf_scanner line 143: empty dir_data → None."""
     import struct
+
     from puremagic.scanners import cfbf_scanner
 
     # Create a tiny file with valid CFBF header but too small to contain directory sector
