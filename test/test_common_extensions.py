@@ -312,3 +312,14 @@ def test_bash_shebang_detected():
     assert env_bash == ".sh"
     zsh = puremagic.from_stream(BytesIO(b"#!/bin/zsh\necho hi\n"))
     assert zsh == ".sh"
+
+
+def test_jpeg_defaults_to_jpg_extension():
+    """#164 JPEG data without a filename hint should report the common .jpg extension"""
+    with open(os.path.join(IMAGE_DIR, "test.jpg"), "rb") as f:
+        data = f.read()
+    assert puremagic.from_string(data) == ".jpg"
+    assert puremagic.from_stream(BytesIO(data)) == ".jpg"
+    assert puremagic.magic_string(data)[0].extension == ".jpg"
+    assert puremagic.from_string(data, filename="photo.jpeg") == ".jpeg"
+    assert puremagic.from_string(data, mime=True) == "image/jpeg"
