@@ -12,7 +12,7 @@ Version 2.2.1
 - Fixing OpenDocument templates (`.ott`, `.ots`, `.otp`) are no longer reported as regular documents during ZIP scanning (thanks to pabszero)
 - Fixing file extensions are taken from the file's base name, so dots in directory names no longer produce bogus extensions (thanks to rui-zju)
 - Adding Python 3.15 to tested and supported versions
-- Changing PyPI releases to use Trusted Publishing, with GitHub Actions pinned to commit SHAs
+- Changing PyPI releases to use Trusted Publishing, with GitHub Actions pinned to commit SHAs and upgraded off the deprecated Node.js 20 runtime
 
 Version 2.2.0
 -------------
