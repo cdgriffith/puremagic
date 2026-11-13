@@ -323,3 +323,9 @@ def test_jpeg_defaults_to_jpg_extension():
     assert puremagic.magic_string(data)[0].extension == ".jpg"
     assert puremagic.from_string(data, filename="photo.jpeg") == ".jpeg"
     assert puremagic.from_string(data, mime=True) == "image/jpeg"
+
+
+def test_html_xls_msg():
+    """Mime Detection correctly identifies HTML File with .xls extension and capitalized <HTML tag"""
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test_html.xls"), mime=True)
+    assert mime == "text/html"

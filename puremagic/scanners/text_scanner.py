@@ -91,7 +91,8 @@ def csv_check(file_path, text) -> Match | None:
     csv_sniffer_result = None
     dialect = None
     try:
-        dialect = csv.Sniffer().sniff(text, delimiters="".join(potential_delimiters))
+        sample = "\n".join(lines[:50])[:8192]
+        dialect = csv.Sniffer().sniff(sample, delimiters="".join(potential_delimiters))
         csv_sniffer_result = dialect.delimiter
     except Exception:
         pass

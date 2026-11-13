@@ -36,3 +36,37 @@ def test_parser_field_limit_preserves_unquoted_csv_detection():
     finally:
         csv.field_size_limit(limit)
     assert result is not None and result.mime_type == "text/csv"
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        # Many short rows
+        "id,name,value\n" + "".join(f"{i},name{i},{i * 3}\n" for i in range(5000)),
+        # A few very long rows, like the HTML-as-.xls export in #152
+        "\n".join(",".join(f"cell{i}x{j}" for j in range(20000)) for i in range(5)),
+    ],
+)
+def test_sniffer_sample_is_bounded(monkeypatch, text):
+    """#152 csv.Sniffer is slow on large input, so only a bounded sample may be passed to it"""
+    samples = []
+    original_sniff = csv.Sniffer.sniff
+
+    def recording_sniff(self, sample, delimiters=None):
+        samples.append(sample)
+        return original_sniff(self, sample, delimiters)
+
+    monkeypatch.setattr(csv.Sniffer, "sniff", recording_sniff)
+    result = csv_check("data.csv", text)
+    assert samples, "csv.Sniffer was not called"
+    assert all(len(s) <= 8192 and s.count("\n") < 50 for s in samples)
+    assert result is not None and result.mime_type == "text/csv"
+
+
+def test_uppercase_html_tag_detected(tmp_path):
+    """#152 HTML starting with an uppercase <HTML tag is identified as HTML"""
+    path = tmp_path / "export.dat"
+    path.write_bytes(
+        b"<HTML>\n<HEAD><TITLE>t</TITLE></HEAD>\n<BODY><TABLE><TR><TD>a</TD></TR></TABLE></BODY>\n</HTML>\n"
+    )
+    assert puremagic.from_file(path, mime=True) == "text/html"
