@@ -7,17 +7,16 @@ import pytest
 
 import puremagic
 from test.common import (
-    RESOURCE_DIR,
-    IMAGE_DIR,
-    VIDEO_DIR,
-    AUDIO_DIR,
-    OFFICE_DIR,
     ARCHIVE_DIR,
-    MEDIA_DIR,
-    SYSTEM_DIR,
+    AUDIO_DIR,
+    IMAGE_DIR,
     LOCAL_DIR,
+    MEDIA_DIR,
+    OFFICE_DIR,
+    RESOURCE_DIR,
+    SYSTEM_DIR,
+    VIDEO_DIR,
 )
-
 
 TGA_FILE = os.path.join(IMAGE_DIR, "test.tga")
 
@@ -202,10 +201,20 @@ def test_ext():
     assert ext == ".tar.bz2", ext
 
 
+@pytest.mark.parametrize("path_type", [str, Path])
+@pytest.mark.parametrize(
+    "filename, expected",
+    [("README", ""), ("report.PDF", ".pdf"), ("archive.tar.bz2", ".tar.bz2"), (".profile", ".profile")],
+)
+def test_ext_ignores_parent_directory_dots(path_type, filename, expected):
+    filename = path_type(os.path.join("directory.with.dots", filename))
+    assert puremagic.ext_from_filename(filename) == expected
+
+
 def test_cmd_options():
     """Test CLI options"""
     try:
-        from puremagic.main import command_line_entry  # noqa: PLC0415
+        from puremagic.main import command_line_entry
     except ImportError:
         raise AssertionError("could not load command_line_entry")
 
@@ -250,7 +259,7 @@ def test_magic_extension():
 
 def test_cmd_extension_option():
     """Test CLI -e option"""
-    from puremagic.main import command_line_entry  # noqa: PLC0415
+    from puremagic.main import command_line_entry
 
     command_line_entry("-e", "pdf")
     command_line_entry("-e", ".jpg")
@@ -291,3 +300,32 @@ def test_cfbf_msg():
     assert ext == ".msg"
     mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test.msg"), mime=True)
     assert mime == "application/vnd.ms-outlook"
+
+
+def test_bash_shebang_detected():
+    """Regression for #150: shell script shebangs identify as .sh, not .txt."""
+    bash = puremagic.from_stream(BytesIO(b"#!/bin/bash\necho hi\n"))
+    assert bash == ".sh"
+    sh = puremagic.from_stream(BytesIO(b"#!/bin/sh\necho hi\n"))
+    assert sh == ".sh"
+    env_bash = puremagic.from_stream(BytesIO(b"#!/usr/bin/env bash\necho hi\n"))
+    assert env_bash == ".sh"
+    zsh = puremagic.from_stream(BytesIO(b"#!/bin/zsh\necho hi\n"))
+    assert zsh == ".sh"
+
+
+def test_jpeg_defaults_to_jpg_extension():
+    """#164 JPEG data without a filename hint should report the common .jpg extension"""
+    with open(os.path.join(IMAGE_DIR, "test.jpg"), "rb") as f:
+        data = f.read()
+    assert puremagic.from_string(data) == ".jpg"
+    assert puremagic.from_stream(BytesIO(data)) == ".jpg"
+    assert puremagic.magic_string(data)[0].extension == ".jpg"
+    assert puremagic.from_string(data, filename="photo.jpeg") == ".jpeg"
+    assert puremagic.from_string(data, mime=True) == "image/jpeg"
+
+
+def test_html_xls_msg():
+    """Mime Detection correctly identifies HTML File with .xls extension and capitalized <HTML tag"""
+    mime = puremagic.from_file(os.path.join(OFFICE_DIR, "test_html.xls"), mime=True)
+    assert mime == "text/html"

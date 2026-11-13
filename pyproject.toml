@@ -21,6 +21,7 @@ classifiers = [
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
+  "Programming Language :: Python :: 3.15",
   "Programming Language :: Python :: Implementation :: PyPy",
   "Topic :: Utilities",
 ]
@@ -30,24 +31,24 @@ scripts.puremagic = "puremagic.main:command_line_entry"
 
 [dependency-groups]
 dev = [
-  "codespell>=2.4.2",
-  "coverage>=7.13.4",
-  "poethepoet>=0.42.1",
-  "pre-commit>=4.5.1",
-  "pytest>=9.0.2",
+  "codespell>=2.4.3",
+  "coverage>=7.17.1",
+  "poethepoet>=0.49",
+  "pre-commit>=4.7",
+  "pytest>=9.2",
   "pytest-cov>=7",
-  "ruff>=0.15.5",
-  "setuptools>=82",
-  "twine>=6.2",
-  "ty>=0.0.21",
-  "wheel>=0.46.3",
+  "ruff>=0.17.3",
+  "setuptools>=84.2",
+  "twine>=7",
+  "ty>=0.0.97",
+  "wheel>=0.48",
 ]
 
 [tool.setuptools]
-dynamic.version = { attr = "puremagic.main.__version__" }
-package-data."*" = [ "*.json" ]
 packages.find.where = [ "." ]
 packages.find.include = [ "puremagic*" ]
+package-data."*" = [ "*.json" ]
+dynamic.version = { attr = "puremagic.main.__version__" }
 
 [tool.black]
 # Prevent black from linting as we use Ruff now
@@ -96,12 +97,19 @@ format.docstring-code-line-length = "dynamic"
 # This is currently disabled by default, but it is planned for this
 # to be opt-out in the future.
 format.docstring-code-format = true
+# Deep scanning is best effort: a malformed or unusual file must fall through to the next
+# scanner instead of crashing detection, so broad exception handling is intentional.
+lint.ignore = [ "BLE001", "S110", "S112" ]
 lint.fixable = [ "F541" ]
 lint.unfixable = [ "F401" ]
 
 [tool.flake8]
 # Prevent flake8 from linting as we use Ruff now
 exclude = [ "*" ]
+
+[tool.pyproject-fmt]
+# Only claim Python versions that CI tests
+max_supported_python = "3.15"
 
 [tool.poe]
 executor.type = "uv"

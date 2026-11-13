@@ -1,0 +1,62 @@
+<HTML xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:x="urn:schemas-microsoft-com:office:excel"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<HEAD>
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+    <meta name=ProgId content=Excel.Sheet>
+    <meta name=Generator content="Microsoft Excel 15">
+    <META HTTP-EQUIV='Expires' CONTENT='Tue, 04 Dec 1993 21:29:02 GMT'>
+    <BASE target=Collection01>
+</HEAD>
+
+<BODY link=blue vlink=purple>
+
+<x:WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel">
+    <x:DisplayGridlines/>
+    <x:Print>
+        <x:ValidPrinterInfo/>
+        <x:HorizontalResolution>600</x:HorizontalResolution>
+        <x:VerticalResolution>600</x:VerticalResolution>
+    </x:Print>
+    <x:ProtectObjects>False</x:ProtectObjects>
+    <x:ProtectScenarios>False</x:ProtectScenarios>
+    <x:ActiveSheet>0</x:ActiveSheet>
+    <x:Selected>Sheet1!A1:G1</x:Selected>
+    <x:FreezePanes/>
+    <x:WindowHeight>12000</x:WindowHeight>
+    <x:WindowWidth>24000</x:WindowWidth>
+    <x:TopLeftBottomLeftActive/>
+</x:WorksheetOptions>
+<TABLE border=0 cellpadding=0 cellspacing=0 width=1170 style='border-collapse:collapse;width:877.5pt'>
+<TR height=20 style='height:15pt'>
+<TD height=20 class=xl65 style='height:15pt;width:130pt'>Auftragsnummer</TD>
+<TD height=20 class=xl65 style='height:15pt;width:190pt'>Kundenname</TD>
+<TD height=20 class=xl65 style='height:15pt;width:90pt'>Datum</TD>
+<TD height=20 class=xl65 style='height:15pt;width:90pt'>Betrag</TD>
+<TD height=20 class=xl65 style='height:15pt;width:120pt'>Kategorie</TD>
+<TD height=20 class=xl65 style='height:15pt;width:110pt'>Status</TD>
+<TD height=20 class=xl65 style='height:15pt;width:240pt'>Bemerkung</TD>
+</TR>
+<TR height=15 style='height:11.25pt'>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>2001-000001</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Katja Fischer</TD>
+<TD height=15 class=xl66 style='height:11.25pt'>20.08.2023</TD>
+<TD height=15 class=xl67 style='height:11.25pt;mso-number-format:"0.00"'>36122.50</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Support</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Storno</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Dringende Bearbeitung</TD>
+</TR>
+<TR height=15 style='height:11.25pt'>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>2002-000002</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Wolfgang Ziegler</TD>
+<TD height=15 class=xl66 style='height:11.25pt'>26.08.2025</TD>
+<TD height=15 class=xl67 style='height:11.25pt;mso-number-format:"0.00"'>58141.18</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Support</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>In Arbeit</TD>
+<TD height=15 class=xl66 style='height:11.25pt;mso-number-format:"\@"'>Lieferung erfolgt in zwei Teillieferungen</TD>
+</TR>
+</TABLE>
+
+</BODY>
+</HTML>

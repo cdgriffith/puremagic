@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 """
 puremagic is a pure python module that will identify a file based off it's
 magic numbers. It is designed to be minimalistic and inherently cross-platform
@@ -23,38 +22,39 @@ import puremagic
 
 if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     from puremagic.scanners import (
-        zip_scanner,
-        pdf_scanner,
-        text_scanner,
+        asf_scanner,
+        cfbf_scanner,
+        ebml_scanner,
+        hdf5_scanner,
         json_scanner,
+        mpeg_audio_scanner,
+        ogg_scanner,
+        pdf_scanner,
         python_scanner,
         sndhdr_scanner,
-        mpeg_audio_scanner,
-        hdf5_scanner,
-        cfbf_scanner,
-        ogg_scanner,
-        asf_scanner,
-        ebml_scanner,
+        text_scanner,
+        zip_scanner,
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.2.0"
+__version__ = "2.2.1"
 __all__ = [
-    "magic_file",
-    "magic_string",
-    "magic_stream",
-    "magic_extension",
-    "from_file",
-    "from_string",
-    "from_stream",
-    "from_extension",
-    "ext_from_filename",
     "PureError",
     "PureMagic",
     "PureMagicWithConfidence",
+    "ext_from_filename",
+    "from_extension",
+    "from_file",
+    "from_stream",
+    "from_string",
+    "magic_extension",
+    "magic_file",
+    "magic_stream",
+    "magic_string",
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))
+DEFAULT_MAGIC_DATA = os.path.join(here, "magic_data.json")
 
 PureMagic = namedtuple(
     "PureMagic",
@@ -88,7 +88,7 @@ class PureValueError(ValueError):
 
 
 def magic_data(
-    filename: os.PathLike | str = os.path.join(here, "magic_data.json"),
+    filename: os.PathLike | str = DEFAULT_MAGIC_DATA,
 ) -> tuple[list[PureMagic], list[PureMagic], list[PureMagic], dict[bytes, list[PureMagic]]]:
     """Read the magic file"""
     with open(filename, encoding="utf-8") as f:
@@ -270,7 +270,7 @@ def ext_from_filename(filename: os.PathLike | str) -> str:
     :return: the extension off the end (empty string if it can't find one)
     """
     try:
-        base, ext = str(filename).lower().rsplit(".", 1)
+        base, ext = os.path.basename(filename).lower().rsplit(".", 1)
     except ValueError:
         return ""
     ext = f".{ext}"
@@ -529,22 +529,18 @@ def run_deep_scan(
                         name=result.name,
                     )
                 ]
-        try:
-            result = catch_all_deep_scan(filename, head, foot)
-        except Exception:
-            raise
-        else:
-            if result:
-                return [
-                    PureMagicWithConfidence(
-                        confidence=result.confidence,
-                        byte_match=None,
-                        offset=None,
-                        extension=result.extension,
-                        mime_type=result.mime_type,
-                        name=result.name,
-                    )
-                ]
+        result = catch_all_deep_scan(filename, head, foot)
+        if result:
+            return [
+                PureMagicWithConfidence(
+                    confidence=result.confidence,
+                    byte_match=None,
+                    offset=None,
+                    extension=result.extension,
+                    mime_type=result.mime_type,
+                    name=result.name,
+                )
+            ]
         if raise_on_none:
             raise PureError("Could not identify file")
 
@@ -594,8 +590,8 @@ def run_deep_scan(
 
 
 def command_line_entry(*args):
-    import sys  # noqa: PLC0415
-    from argparse import ArgumentParser  # noqa: PLC0415
+    import sys
+    from argparse import ArgumentParser
 
     parser = ArgumentParser(
         description=(
