@@ -100,6 +100,24 @@ If you already have a file open, or raw byte string, you could also use:
         # [PureMagicWithConfidence(byte_match=b'ftypisom', offset=4, extension='.mp4', mime_type='video/mp4', name='MPEG-4 video', confidence=0.8),
         #  PureMagicWithConfidence(byte_match=b'iso2avc1mp4', offset=20, extension='.mp4', mime_type='video/mp4', name='MP4 Video', confidence=0.8)]
 
+Extension and MIME Lookup
+-------------------------
+
+To look up a type without a file, use "from_extension" to get the MIME
+type for an extension, or "from_mime" to get the most likely extension
+for a MIME type. "magic_extension" and "magic_mime" return every match.
+
+.. code:: python
+
+        puremagic.from_extension(".pdf")
+        # 'application/pdf'
+
+        puremagic.from_mime("image/jpeg")
+        # '.jpg'
+
+        [m.extension for m in puremagic.magic_mime("image/jpeg")]
+        # ['.jpg', '.jpe', '.jp2', '.jfif', '.jpeg']
+
 Deep Scan
 ---------
 

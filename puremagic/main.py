@@ -12,9 +12,11 @@ Gary C. Kessler
 """
 
 import json
+import mimetypes
 import os
 from binascii import unhexlify
 from collections import namedtuple
+from functools import cache
 from itertools import chain
 from pathlib import Path
 
@@ -45,10 +47,12 @@ __all__ = [
     "ext_from_filename",
     "from_extension",
     "from_file",
+    "from_mime",
     "from_stream",
     "from_string",
     "magic_extension",
     "magic_file",
+    "magic_mime",
     "magic_stream",
     "magic_string",
 ]
@@ -440,6 +444,52 @@ def magic_extension(extension: str) -> list[PureMagicWithConfidence]:
             matches.append(PureMagicWithConfidence(confidence=con, **entry._asdict()))
 
     return sorted(matches, key=lambda x: (x.confidence, len(x.byte_match)), reverse=True)
+
+
+@cache
+def _stdlib_preferred_extension(mime_type: str) -> str | None:
+    """Python's built-in preferred extension for a MIME type, ignoring system mime.types files."""
+    return mimetypes.MimeTypes().guess_extension(mime_type, strict=False)
+
+
+def magic_mime(mime_type: str) -> list[PureMagic]:
+    """Return one entry per known extension for a MIME type, most likely extension first.
+
+    Parameters such as ``; charset=utf-8`` are ignored and matching is case-insensitive.
+
+    :param mime_type: MIME type to look up (e.g. "image/jpeg")
+    :return: list of PureMagic, one per extension, best first (empty if unknown)
+    """
+    mime = mime_type.split(";", 1)[0].strip().lower()
+    if not mime:
+        return []
+
+    by_extension: dict[str, list[PureMagic]] = {}
+    for entry in chain(magic_header_array, magic_footer_array, extension_only_array):
+        if entry.mime_type.lower() == mime and entry.extension.startswith("."):
+            by_extension.setdefault(entry.extension, []).append(entry)
+
+    preferred = _stdlib_preferred_extension(mime)
+
+    def rank(ext: str) -> tuple:
+        entries = by_extension[ext]
+        return ext == preferred, len(entries), max(len(e.byte_match) for e in entries)
+
+    ordered = sorted(by_extension, key=rank, reverse=True)
+    return [max(by_extension[ext], key=lambda e: len(e.byte_match)) for ext in ordered]
+
+
+def from_mime(mime_type: str) -> str:
+    """Look up the most likely file extension for a MIME type.
+
+    :param mime_type: MIME type to look up (e.g. "image/jpeg")
+    :return: file extension with leading dot (e.g. ".jpg")
+    :raises PureError: if no match is found
+    """
+    matches = magic_mime(mime_type)
+    if not matches:
+        raise PureError(f"Could not find MIME type {mime_type!r} in magic database")
+    return matches[0].extension
 
 
 def single_deep_scan(
