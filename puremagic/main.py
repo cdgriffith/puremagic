@@ -657,11 +657,18 @@ def command_line_entry(*args):
         help="Return the mime type instead of file type",
     )
     parser.add_argument("-v", "--verbose", action="store_true", dest="verbose", help="Print verbose output")
-    parser.add_argument(
+    lookup = parser.add_mutually_exclusive_group()
+    lookup.add_argument(
         "-e",
         "--extension",
         dest="extension",
         help="Look up MIME type for a file extension (e.g. pdf or .pdf)",
+    )
+    lookup.add_argument(
+        "-t",
+        "--mime-type",
+        dest="mime_type",
+        help="Look up file extension for a MIME type (e.g. image/jpeg)",
     )
     parser.add_argument("files", nargs="*", type=Path)
     parser.add_argument("--version", action="version", version=puremagic.__version__)
@@ -691,8 +698,30 @@ def command_line_entry(*args):
                 print(str(e))
         return
 
+    if args.mime_type:
+        if args.verbose:
+            mime_matches = magic_mime(args.mime_type)
+            if not mime_matches:
+                print(f"No matches found for MIME type '{args.mime_type}'")
+            else:
+                print(f"Total Possible Matches: {len(mime_matches)}")
+                for i, result in enumerate(mime_matches):
+                    if i == 0:
+                        print("\n\tBest Match")
+                    else:
+                        print(f"\tAlternative Match #{i}")
+                    print(f"\tName: {result.name}")
+                    print(f"\tExtension: {result.extension}")
+                    print(f"\tMime Type: {result.mime_type}\n")
+        else:
+            try:
+                print(from_mime(args.mime_type))
+            except PureError as e:
+                print(str(e))
+        return
+
     if not args.files:
-        parser.error("the following arguments are required: files (or use -e/--extension)")
+        parser.error("the following arguments are required: files (or use -e/--extension or -t/--mime-type)")
 
     for fn in args.files:
         if not fn.exists():

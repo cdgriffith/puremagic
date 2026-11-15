@@ -294,6 +294,26 @@ def test_cmd_extension_option():
     command_line_entry("-e", "xyz_unknown_ext_123")
 
 
+def test_cmd_mime_type_option(capsys):
+    """Test CLI -t option"""
+    from puremagic.main import command_line_entry
+
+    command_line_entry("-t", "image/jpeg")
+    assert capsys.readouterr().out.strip() == ".jpg"
+    command_line_entry("--mime-type", "application/pdf")
+    assert capsys.readouterr().out.strip() == ".pdf"
+    command_line_entry("-t", "image/jpeg", "-v")
+    out = capsys.readouterr().out
+    assert "Best Match" in out
+    assert "Extension: .jpg" in out
+    command_line_entry("-t", "application/x-unknown-mime-type")
+    assert "Could not find MIME type" in capsys.readouterr().out
+    command_line_entry("-t", "application/x-unknown-mime-type", "-v")
+    assert "No matches found" in capsys.readouterr().out
+    with pytest.raises(SystemExit):
+        command_line_entry("-t", "image/jpeg", "-e", "pdf")
+
+
 def test_fake_file():
     results = puremagic.magic_file(filename=Path(LOCAL_DIR, "resources", "fake_file"))
     assert results[0].confidence == 0.5, results

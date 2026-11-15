@@ -160,6 +160,8 @@ Script
 
 -  :code:`-m, --mime` — Return the MIME type instead of file extension
 -  :code:`-v, --verbose` — Print verbose output with all possible matches
+-  :code:`-e, --extension EXT` — Look up the MIME type for a file extension
+-  :code:`-t, --mime-type MIME` — Look up the file extension for a MIME type
 -  :code:`--version` — Show program version
 
 Directories can be passed as arguments; all files within will be scanned.
