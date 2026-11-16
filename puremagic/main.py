@@ -12,9 +12,11 @@ Gary C. Kessler
 """
 
 import json
+import mimetypes
 import os
 from binascii import unhexlify
 from collections import namedtuple
+from functools import cache
 from itertools import chain
 from pathlib import Path
 
@@ -37,7 +39,7 @@ if os.getenv("PUREMAGIC_DEEPSCAN") != "0":
     )
 
 __author__ = "Chris Griffith"
-__version__ = "2.2.1"
+__version__ = "2.3.0"
 __all__ = [
     "PureError",
     "PureMagic",
@@ -45,10 +47,12 @@ __all__ = [
     "ext_from_filename",
     "from_extension",
     "from_file",
+    "from_mime",
     "from_stream",
     "from_string",
     "magic_extension",
     "magic_file",
+    "magic_mime",
     "magic_stream",
     "magic_string",
 ]
@@ -442,6 +446,52 @@ def magic_extension(extension: str) -> list[PureMagicWithConfidence]:
     return sorted(matches, key=lambda x: (x.confidence, len(x.byte_match)), reverse=True)
 
 
+@cache
+def _stdlib_preferred_extension(mime_type: str) -> str | None:
+    """Python's built-in preferred extension for a MIME type, ignoring system mime.types files."""
+    return mimetypes.MimeTypes().guess_extension(mime_type, strict=False)
+
+
+def magic_mime(mime_type: str) -> list[PureMagic]:
+    """Return one entry per known extension for a MIME type, most likely extension first.
+
+    Parameters such as ``; charset=utf-8`` are ignored and matching is case-insensitive.
+
+    :param mime_type: MIME type to look up (e.g. "image/jpeg")
+    :return: list of PureMagic, one per extension, best first (empty if unknown)
+    """
+    mime = mime_type.split(";", 1)[0].strip().lower()
+    if not mime:
+        return []
+
+    by_extension: dict[str, list[PureMagic]] = {}
+    for entry in chain(magic_header_array, magic_footer_array, extension_only_array):
+        if entry.mime_type.lower() == mime and entry.extension.startswith("."):
+            by_extension.setdefault(entry.extension, []).append(entry)
+
+    preferred = _stdlib_preferred_extension(mime)
+
+    def rank(ext: str) -> tuple:
+        entries = by_extension[ext]
+        return ext == preferred, len(entries), max(len(e.byte_match) for e in entries)
+
+    ordered = sorted(by_extension, key=rank, reverse=True)
+    return [max(by_extension[ext], key=lambda e: len(e.byte_match)) for ext in ordered]
+
+
+def from_mime(mime_type: str) -> str:
+    """Look up the most likely file extension for a MIME type.
+
+    :param mime_type: MIME type to look up (e.g. "image/jpeg")
+    :return: file extension with leading dot (e.g. ".jpg")
+    :raises PureError: if no match is found
+    """
+    matches = magic_mime(mime_type)
+    if not matches:
+        raise PureError(f"Could not find MIME type {mime_type!r} in magic database")
+    return matches[0].extension
+
+
 def single_deep_scan(
     bytes_match: bytes | bytearray | None,
     filename: os.PathLike | str,
@@ -607,11 +657,18 @@ def command_line_entry(*args):
         help="Return the mime type instead of file type",
     )
     parser.add_argument("-v", "--verbose", action="store_true", dest="verbose", help="Print verbose output")
-    parser.add_argument(
+    lookup = parser.add_mutually_exclusive_group()
+    lookup.add_argument(
         "-e",
         "--extension",
         dest="extension",
         help="Look up MIME type for a file extension (e.g. pdf or .pdf)",
+    )
+    lookup.add_argument(
+        "-t",
+        "--mime-type",
+        dest="mime_type",
+        help="Look up file extension for a MIME type (e.g. image/jpeg)",
     )
     parser.add_argument("files", nargs="*", type=Path)
     parser.add_argument("--version", action="version", version=puremagic.__version__)
@@ -641,8 +698,30 @@ def command_line_entry(*args):
                 print(str(e))
         return
 
+    if args.mime_type:
+        if args.verbose:
+            mime_matches = magic_mime(args.mime_type)
+            if not mime_matches:
+                print(f"No matches found for MIME type '{args.mime_type}'")
+            else:
+                print(f"Total Possible Matches: {len(mime_matches)}")
+                for i, result in enumerate(mime_matches):
+                    if i == 0:
+                        print("\n\tBest Match")
+                    else:
+                        print(f"\tAlternative Match #{i}")
+                    print(f"\tName: {result.name}")
+                    print(f"\tExtension: {result.extension}")
+                    print(f"\tMime Type: {result.mime_type}\n")
+        else:
+            try:
+                print(from_mime(args.mime_type))
+            except PureError as e:
+                print(str(e))
+        return
+
     if not args.files:
-        parser.error("the following arguments are required: files (or use -e/--extension)")
+        parser.error("the following arguments are required: files (or use -e/--extension or -t/--mime-type)")
 
     for fn in args.files:
         if not fn.exists():

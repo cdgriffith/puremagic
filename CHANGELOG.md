@@ -1,6 +1,12 @@
 Changelog
 =========
 
+Version 2.3.0
+-------------
+
+- Adding #149 `from_mime()` and `magic_mime()` to look up file extensions by MIME type, with a `-t`/`--mime-type` CLI flag (thanks to eight04)
+- Fixing #169 MP3 deep scan results are no longer reused after a file is rewritten in place at the same path (thanks to Rahul)
+
 Version 2.2.1
 -------------
 

@@ -257,6 +257,33 @@ def test_magic_extension():
     assert puremagic.magic_extension(".xyz_unknown_ext") == []
 
 
+def test_from_mime():
+    """Test from_mime lookup (#149)"""
+    assert puremagic.from_mime("application/pdf") == ".pdf"
+    assert puremagic.from_mime("image/jpeg") == ".jpg"
+    assert puremagic.from_mime("image/png") == ".png"
+    assert puremagic.from_mime("audio/mpeg") == ".mp3"
+    assert puremagic.from_mime("text/plain") == ".txt"
+    # Case-insensitive and MIME parameters are ignored
+    assert puremagic.from_mime("IMAGE/PNG") == ".png"
+    assert puremagic.from_mime("text/html; charset=UTF-8") == ".html"
+    with pytest.raises(puremagic.PureError):
+        puremagic.from_mime("application/x-unknown-mime-type")
+    with pytest.raises(puremagic.PureError):
+        puremagic.from_mime("")
+
+
+def test_magic_mime():
+    """Test magic_mime returns one entry per extension, best first"""
+    results = puremagic.magic_mime("image/jpeg")
+    extensions = [r.extension for r in results]
+    assert extensions[0] == ".jpg"
+    assert ".jpeg" in extensions
+    assert len(extensions) == len(set(extensions))
+    assert all(r.mime_type == "image/jpeg" for r in results)
+    assert puremagic.magic_mime("application/x-unknown-mime-type") == []
+
+
 def test_cmd_extension_option():
     """Test CLI -e option"""
     from puremagic.main import command_line_entry
@@ -265,6 +292,26 @@ def test_cmd_extension_option():
     command_line_entry("-e", ".jpg")
     command_line_entry("-e", "pdf", "-v")
     command_line_entry("-e", "xyz_unknown_ext_123")
+
+
+def test_cmd_mime_type_option(capsys):
+    """Test CLI -t option"""
+    from puremagic.main import command_line_entry
+
+    command_line_entry("-t", "image/jpeg")
+    assert capsys.readouterr().out.strip() == ".jpg"
+    command_line_entry("--mime-type", "application/pdf")
+    assert capsys.readouterr().out.strip() == ".pdf"
+    command_line_entry("-t", "image/jpeg", "-v")
+    out = capsys.readouterr().out
+    assert "Best Match" in out
+    assert "Extension: .jpg" in out
+    command_line_entry("-t", "application/x-unknown-mime-type")
+    assert "Could not find MIME type" in capsys.readouterr().out
+    command_line_entry("-t", "application/x-unknown-mime-type", "-v")
+    assert "No matches found" in capsys.readouterr().out
+    with pytest.raises(SystemExit):
+        command_line_entry("-t", "image/jpeg", "-e", "pdf")
 
 
 def test_fake_file():
