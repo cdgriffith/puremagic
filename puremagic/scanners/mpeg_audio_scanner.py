@@ -112,11 +112,20 @@ class DataCache:
 
     Work is performed on first call, cached output is returned in subsequent calls.
     This saves doing everything twice.
+
+    The cache is keyed on the file path together with its size and modification
+    time, so a file rewritten in place at the same path is scanned again.
     """
 
     _processed_result = None
-    _file_path = None
+    _file_key = None
     _matched = False
+
+    @staticmethod
+    def file_key(file_path: os.PathLike | str) -> tuple:
+        """Builds a cache key that changes when the file's contents are rewritten."""
+        stat = os.stat(file_path)
+        return os.fspath(file_path), stat.st_size, stat.st_mtime_ns
 
     @classmethod
     def set_result(cls, result):
@@ -125,9 +134,9 @@ class DataCache:
         cls._matched = True
 
     @classmethod
-    def set_file_path(cls, file_path: os.PathLike | str):
-        """Stores the file_path and resets results."""
-        cls._file_path = file_path
+    def set_file_key(cls, file_key: tuple):
+        """Stores the file key and resets results."""
+        cls._file_key = file_key
         cls._processed_result = None
         cls._matched = False
 
@@ -142,9 +151,9 @@ class DataCache:
         return cls._matched
 
     @classmethod
-    def get_file_path(cls) -> os.PathLike | str | None:
-        """Retrieves the file path."""
-        return cls._file_path
+    def get_file_key(cls) -> tuple | None:
+        """Retrieves the file key."""
+        return cls._file_key
 
     @classmethod
     def is_cached(cls):
@@ -1138,13 +1147,17 @@ def build_name(mpega, id3v2_tags: str | None, eof_tags: list) -> tuple[str, str]
 
 def test_mpega(file_path: os.PathLike | str, head: bytes) -> Match | None:
     """Main workflow"""
-    if DataCache.is_cached() and DataCache.get_file_path() == file_path:
+    try:
+        file_key = DataCache.file_key(file_path)
+    except OSError:
+        return None
+    if DataCache.is_cached() and DataCache.get_file_key() == file_key:
         if DataCache.is_matched():
             return DataCache.get_result()  # Send cached results
         else:
             return None  # No match was made
     else:
-        DataCache.set_file_path(file_path)
+        DataCache.set_file_key(file_key)
         eof = EndOfFileTags(os.path.getsize(file_path))
         mpega = MpegAudioDecoder()
         id3v2 = ID3v2Decoder(os.path.getsize(file_path), mpega)
