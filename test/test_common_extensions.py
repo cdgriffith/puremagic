@@ -223,6 +223,79 @@ def test_cmd_options():
     command_line_entry(__file__, os.path.join(RESOURCE_DIR, "fake_file"), "-v")
 
 
+@pytest.mark.parametrize("mime", [False, True])
+@pytest.mark.parametrize("verbose", [False, True])
+def test_cmd_directory_options(tmp_path, capsys, mime, verbose):
+    from puremagic.main import command_line_entry
+
+    images = [("test.gif", ".gif", "image/gif"), ("test.png", ".png", "image/png")]
+    expected = set()
+    for name, extension, mime_type in images:
+        filename = tmp_path / name
+        filename.write_bytes((Path(IMAGE_DIR) / name).read_bytes())
+        expected.add(f"'{filename}' : {mime_type if mime else extension}")
+    empty = tmp_path / "empty"
+    empty.touch()
+    expected.add(f"'{empty}' : could not be Identified")
+    nested = tmp_path / "nested"
+    nested.mkdir()
+    (nested / "nested.gif").write_bytes((Path(IMAGE_DIR) / "test.gif").read_bytes())
+
+    args = [str(tmp_path)]
+    if mime:
+        args.append("-m")
+    if verbose:
+        args.append("-v")
+    command_line_entry(*args)
+
+    out = capsys.readouterr().out
+    summaries = [line for line in out.splitlines() if line.startswith("'")]
+    assert len(summaries) == len(expected)
+    assert set(summaries) == expected
+    assert str(nested) not in out
+    assert out.count("Total Possible Matches:") == (len(images) if verbose else 0)
+    if verbose:
+        for name, extension, mime_type in images:
+            filename = tmp_path / name
+            summary = f"'{filename}' : {mime_type if mime else extension}"
+            assert f"{summary}\nTotal Possible Matches:" in out
+            assert f"Extension: {extension}" in out
+            assert f"Mime Type: {mime_type}" in out
+
+
+@pytest.mark.parametrize("nested_only", [False, True])
+def test_cmd_empty_directory_verbose(tmp_path, capsys, nested_only):
+    from puremagic.main import command_line_entry
+
+    if nested_only:
+        (tmp_path / "nested").mkdir()
+
+    command_line_entry(str(tmp_path), "-v")
+
+    assert capsys.readouterr().out == ""
+
+
+def test_cmd_verbose_file_errors(tmp_path, capsys):
+    from puremagic.main import command_line_entry
+
+    missing = tmp_path / "missing"
+    empty = tmp_path / "empty"
+    empty.touch()
+    image = tmp_path / "test.gif"
+    image.write_bytes((Path(IMAGE_DIR) / "test.gif").read_bytes())
+
+    command_line_entry(str(missing), str(empty), str(image), "-v")
+
+    out = capsys.readouterr().out
+    assert out.startswith(
+        f"File '{missing}' does not exist!\n"
+        f"'{empty}' : could not be Identified\n"
+        f"'{image}' : .gif\nTotal Possible Matches:"
+    )
+    assert out.count("Total Possible Matches:") == 1
+    assert "Extension: .gif" in out
+
+
 def test_bad_magic_input():
     """Test bad magic input"""
     with pytest.raises(ValueError):

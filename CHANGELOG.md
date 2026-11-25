@@ -1,6 +1,11 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+- Fixing verbose command-line output for directory arguments so each file gets its own match details
+
 Version 2.3.0
 -------------
 
