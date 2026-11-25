@@ -728,34 +728,29 @@ def command_line_entry(*args):
             print(f"File '{fn}' does not exist!")
             continue
         if fn.is_dir():
-            for file in fn.iterdir():
-                if not file.is_file():
-                    continue
-                try:
-                    print(f"'{file}' : {from_file(file, args.mime)}")
-                except (PureError, PureValueError):
-                    print(f"'{file}' : could not be Identified")
-                    continue
+            files = (file for file in fn.iterdir() if file.is_file())
         else:
+            files = (fn,)
+        for file in files:
             try:
-                print(f"'{fn}' : {from_file(fn, args.mime)}")
+                print(f"'{file}' : {from_file(file, args.mime)}")
             except (PureError, PureValueError):
-                print(f"'{fn}' : could not be Identified")
+                print(f"'{file}' : could not be Identified")
                 continue
-        if args.verbose:
-            matches = magic_file(fn)
-            print(f"Total Possible Matches: {len(matches)}")
-            for i, result in enumerate(matches):
-                if i == 0:
-                    print("\n\tDeepscan Match" if result.confidence == 1.0 else "\n\tBest Match")
-                else:
-                    print(f"\tAlternative Match #{i}")
-                print(f"\tName: {result.name}")
-                print(f"\tConfidence: {int(result.confidence * 100)}%")
-                print(f"\tExtension: {result.extension}")
-                print(f"\tMime Type: {result.mime_type}")
-                print(f"\tByte Match: {result.byte_match}")
-                print(f"\tOffset: {result.offset}\n")
+            if args.verbose:
+                matches = magic_file(file)
+                print(f"Total Possible Matches: {len(matches)}")
+                for i, result in enumerate(matches):
+                    if i == 0:
+                        print("\n\tDeepscan Match" if result.confidence == 1.0 else "\n\tBest Match")
+                    else:
+                        print(f"\tAlternative Match #{i}")
+                    print(f"\tName: {result.name}")
+                    print(f"\tConfidence: {int(result.confidence * 100)}%")
+                    print(f"\tExtension: {result.extension}")
+                    print(f"\tMime Type: {result.mime_type}")
+                    print(f"\tByte Match: {result.byte_match}")
+                    print(f"\tOffset: {result.offset}\n")
 
 
 if __name__ == "__main__":  # pragma: no cover
